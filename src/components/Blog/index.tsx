@@ -1,30 +1,46 @@
-import SectionTitle from "../Common/SectionTitle";
-import SingleBlog from "./SingleBlog";
-import blogData from "./blogData";
+import SingleBlog from "@/components/Blog/SingleBlog";
+import blogData from "@/components/Blog/blogData";
+import Link from "next/link";
 
-const Blog = () => {
+const BeritaSekilas = () => {
+  // Ambil hanya 3 berita terbaru
+  const beritaTerbaru = blogData.slice(0, 3);
+
   return (
-    <section
-      id="blog"
-      className="bg-gray-light dark:bg-bg-color-dark py-16 md:py-20 lg:py-28"
-    >
+    <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
       <div className="container">
-        <SectionTitle
-          title="Our Latest Blogs"
-          paragraph="There are many variations of passages of Lorem Ipsum available but the majority have suffered alteration in some form."
-          center
-        />
+        {/* Judul */}
+        <div className="mb-12 text-center">
+          <h2 className="text-dark mb-3 text-3xl font-bold dark:text-white">
+            Publikasi{" "}
+          </h2>
+          <p className="text-body-color dark:text-gray-400">
+            Dapatkan informasi terbaru seputar kegiatan, mitra, dan layanan
+            Bosowa Bandar Indonesia.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 md:gap-x-6 lg:gap-x-8 xl:grid-cols-3">
-          {blogData.map((blog) => (
-            <div key={blog.id} className="w-full">
+        {/* Grid 3 Berita */}
+        <div className="-mx-4 flex flex-wrap justify-center">
+          {beritaTerbaru.map((blog) => (
+            <div key={blog.id} className="w-full px-4 md:w-1/2 lg:w-1/3">
               <SingleBlog blog={blog} />
             </div>
           ))}
+        </div>
+
+        {/* Tombol Lihat Semua */}
+        <div className="mt-10 text-center">
+          <Link
+            href="/berita"
+            className="bg-primary hover:bg-opacity-90 rounded-lg px-6 py-3 text-sm font-medium text-white shadow transition"
+          >
+            Lihat Semua
+          </Link>
         </div>
       </div>
     </section>
   );
 };
 
-export default Blog;
+export default BeritaSekilas;

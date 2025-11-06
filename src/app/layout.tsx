@@ -3,6 +3,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import ScrollToTop from "@/components/ScrollToTop";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Inter } from "next/font/google";
 import "../styles/index.css";
 
@@ -34,4 +35,3 @@ export default function RootLayout({
 }
 
 import { Providers } from "./providers";
-

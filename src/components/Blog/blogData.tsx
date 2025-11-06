@@ -3,45 +3,25 @@ import { Blog } from "@/types/blog";
 const blogData: Blog[] = [
   {
     id: 1,
-    title: "Best UI components for modern websites",
+    title: "OTO KLINIK Luncurkan Program Membership, Ada Voucher Diskon Servis",
     paragraph:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet dictum neque, laoreet dolor.",
-    image: "/images/blog/blog-01.jpg",
-    author: {
-      name: "Samuyl Joshi",
-      image: "/images/blog/author-03.png",
-      designation: "Graphic Designer",
-    },
-    tags: ["creative"],
-    publishDate: "2025",
+      "Sebagai bentuk apresiasi kepada pelanggan setia, OTO KLINIK menghadirkan Program Membership yang memberikan keuntungan eksklusif bagi pengguna layanan servis kendaraan.",
+    image: "/images/blog/blog1.png",
   },
   {
     id: 2,
-    title: "9 simple ways to improve your design skills",
+    title: "Bosowa Bandar Dukung Efisiensi Logistik Nasional",
     paragraph:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet dictum neque, laoreet dolor.",
-    image: "/images/blog/blog-02.jpg",
-    author: {
-      name: "Musharof Chy",
-      image: "/images/blog/author-02.png",
-      designation: "Content Writer",
-    },
-    tags: ["computer"],
-    publishDate: "2025",
+      "Bosowa Bandar Indonesia terus memperkuat perannya dalam mendukung rantai pasok nasional melalui layanan pelabuhan yang modern, cepat, dan efisien.",
+    image: "/images/blog/blog2.png",
   },
   {
     id: 3,
-    title: "Tips to quickly improve your coding speed.",
+    title: "Sinergi Bersama Mitra untuk Pelayanan Lebih Baik",
     paragraph:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras sit amet dictum neque, laoreet dolor.",
-    image: "/images/blog/blog-03.jpg",
-    author: {
-      name: "Lethium Deo",
-      image: "/images/blog/author-03.png",
-      designation: "Graphic Designer",
-    },
-    tags: ["design"],
-    publishDate: "2025",
+      "Melalui kolaborasi strategis dengan berbagai mitra usaha, Bosowa Bandar berkomitmen memberikan layanan pelabuhan yang unggul dan berdaya saing.",
+    image: "/images/blog/blog3.png",
   },
 ];
+
 export default blogData;
