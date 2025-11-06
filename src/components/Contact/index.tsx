@@ -1,81 +1,139 @@
-import NewsLatterBox from "./NewsLatterBox";
+"use client";
+import { useState } from "react";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Pesan terkirim!");
+  };
+
   return (
-    <section id="contact" className="overflow-hidden py-16 md:py-20 lg:py-28">
-      <div className="container">
-        <div className="-mx-4 flex flex-wrap">
-          <div className="w-full px-4 lg:w-7/12 xl:w-8/12">
-            <div
-              className="mb-12 rounded-xs bg-white px-8 py-11 shadow-three dark:bg-gray-dark sm:p-[55px] lg:mb-5 lg:px-8 xl:p-[55px]"
-              data-wow-delay=".15s
-              "
-            >
-              <h2 className="mb-3 text-2xl font-bold text-black dark:text-white sm:text-3xl lg:text-2xl xl:text-3xl">
-                Need Help? Open a Ticket
-              </h2>
-              <p className="mb-12 text-base font-medium text-body-color">
-                Our support team will get back to you ASAP via email.
+    <section
+      id="contact"
+      className="relative bg-cover bg-center py-20"
+      style={{
+        backgroundImage: "url('/images/contact/pelabuhan.jpg')", // ubah sesuai gambar background-mu
+      }}
+    >
+      {/* Overlay transparan opsional */}
+      <div className="absolute inset-0 bg-black/20"></div>
+
+      <div className="relative z-10 container mx-auto px-4">
+        <div className="mx-auto flex w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white shadow-xl md:flex-row">
+          {/* KIRI: Peta & Info Kontak */}
+          <div className="w-full p-8 md:w-1/2">
+            <h2 className="mb-6 text-2xl font-bold text-black">Kontak</h2>
+
+            <div className="mb-6 h-[250px] w-full overflow-hidden rounded-md">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1986.903175462349!2d119.41332684624446!3d-5.134862231354158!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbf1d565744bd59%3A0x7bc6dc5b9fc4bb3!2sMenara%20Bosowa!5e0!3m2!1sid!2sid!4v1762399905057!5m2!1sid!2sid"
+                width="100%"
+                height="250"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Lokasi Menara Bosowa"
+              ></iframe>
+            </div>
+
+            <div className="space-y-3 text-sm leading-relaxed text-gray-700">
+              <p>
+                <strong>Kantor Pusat (Menara Bosowa Lt. 8 Unit J)</strong>
+                <br />
+                Jl. Jend. Sudirman No. 5
+                <br />
+                Makassar 90113
+                <br />
+                Sulawesi Selatan, Indonesia
               </p>
-              <form>
-                <div className="-mx-4 flex flex-wrap">
-                  <div className="w-full px-4 md:w-1/2">
-                    <div className="mb-8">
-                      <label
-                        htmlFor="name"
-                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
-                      >
-                        Your Name
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter your name"
-                        className="border-stroke w-full rounded-xs border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-hidden focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full px-4 md:w-1/2">
-                    <div className="mb-8">
-                      <label
-                        htmlFor="email"
-                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
-                      >
-                        Your Email
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="Enter your email"
-                        className="border-stroke w-full rounded-xs border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-hidden focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full px-4">
-                    <div className="mb-8">
-                      <label
-                        htmlFor="message"
-                        className="mb-3 block text-sm font-medium text-dark dark:text-white"
-                      >
-                        Your Message
-                      </label>
-                      <textarea
-                        name="message"
-                        rows={5}
-                        placeholder="Enter your Message"
-                        className="border-stroke w-full resize-none rounded-xs border bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-hidden focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
-                      ></textarea>
-                    </div>
-                  </div>
-                  <div className="w-full px-4">
-                    <button className="rounded-xs bg-primary px-9 py-4 text-base font-medium text-white shadow-submit duration-300 hover:bg-primary/90 dark:shadow-submit-dark">
-                      Submit Ticket
-                    </button>
-                  </div>
-                </div>
-              </form>
+
+              <p className="flex items-center space-x-2">
+                <i className="fa-solid fa-phone text-primary"></i>
+                <span>+62 411 567 890</span>
+              </p>
+              <p className="flex items-center space-x-2">
+                <i className="fa-solid fa-envelope text-primary"></i>
+                <span>bosowabandarindonesia@bosowa.co.id</span>
+              </p>
             </div>
           </div>
-          <div className="w-full px-4 lg:w-5/12 xl:w-4/12">
-            <NewsLatterBox />
+
+          {/* KANAN: Form Kontak */}
+          <div className="w-full bg-gray-50 p-8 md:w-1/2">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Nama Anda
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  E-mail Anda
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 text-sm"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Subjek
+                </label>
+                <input
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Pesan Anda (opsional)
+                </label>
+                <textarea
+                  name="message"
+                  rows="4"
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="focus:border-primary focus:ring-primary w-full rounded-md border border-gray-300 p-2 text-sm"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="bg-primary hover:bg-primary/90 rounded-md px-6 py-2 text-sm font-semibold text-white"
+              >
+                KIRIM
+              </button>
+            </form>
           </div>
         </div>
       </div>
