@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const BeritaPage = () => {
   return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-40 py-16 md:py-20 lg:py-24">
+    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-20 py-16 md:py-20 lg:py-24">
       <div className="container">
         {/* Judul Halaman */}
         <div className="mb-12 text-center">

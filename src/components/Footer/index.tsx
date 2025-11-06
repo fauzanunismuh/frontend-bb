@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer
       id="Footer"
-      className="dark:bg-gray-dark relative z-10 bg-white pt-16 md:pt-20 lg:pt-24"
+      className="dark:bg-gray-dark relative z-10 mt-20 bg-white pt-16 md:pt-20 lg:pt-15"
     >
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-between">
