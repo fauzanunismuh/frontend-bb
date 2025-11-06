@@ -1,8 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap')
-layer(base);
-
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&display=swap');
 @import 'tailwindcss';
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -19,7 +16,7 @@ layer(base);
   --color-white: #ffffff;
   --color-black: #121723;
   --color-dark: #1d2430;
-  --color-primary: #1E468C; /* 🔵 Warna tema utama diperbarui */
+  --color-primary: #1E468C;
   --color-yellow: #fbb040;
   --color-bg-color-dark: #171c28;
 
@@ -43,14 +40,13 @@ layer(base);
   --color-gray-dark: #1e232e;
   --color-gray-light: #f0f2f9;
 
-  /* 🔵 Ubah bayangan yang berhubungan dengan warna utama agar lebih serasi */
   --shadow-sign-up: 0px 5px 10px rgba(61, 97, 182, 0.2);
   --shadow-one: 0px 2px 3px rgba(7, 7, 77, 0.05);
   --shadow-two: 0px 5px 10px rgba(6, 8, 15, 0.1);
   --shadow-three: 0px 5px 15px rgba(6, 8, 15, 0.05);
   --shadow-sticky: inset 0 -1px 0 0 rgba(0, 0, 0, 0.1);
   --shadow-sticky-dark: inset 0 -1px 0 0 rgba(255, 255, 255, 0.1);
-  --shadow-feature-2: 0px 10px 40px rgba(61, 97, 182, 0.15); /* disesuaikan */
+  --shadow-feature-2: 0px 10px 40px rgba(61, 97, 182, 0.15);
   --shadow-submit: 0px 5px 20px rgba(61, 97, 182, 0.15);
   --shadow-submit-dark: 0px 5px 20px rgba(61, 97, 182, 0.15);
   --shadow-btn: 0px 1px 2px rgba(4, 10, 34, 0.15);
@@ -65,7 +61,6 @@ layer(base);
   padding-inline: 1rem;
 }
 
-/* Border color default */
 @layer base {
   *,
   ::after,
@@ -73,6 +68,18 @@ layer(base);
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
+  }
+
+  html {
+    font-family: 'Sora', sans-serif;
+  }
+
+  body {
+    font-family: 'Sora', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, a, button, input, textarea {
+    font-family: inherit;
   }
 }
 
@@ -113,12 +120,6 @@ layer(base);
 @utility box {
   input#checkboxLabel:checked ~ & span {
     @apply opacity-100;
-  }
-}
-
-@layer base {
-  body {
-    font-family: "Inter", sans-serif;
   }
 }
 

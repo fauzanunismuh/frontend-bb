@@ -82,7 +82,9 @@ const Hero = () => {
                   Bosowa Bandar System
                 </Link>
                 <Link
-                  href={slide.secondaryLink}
+                  href="https://wa.me/628988821777"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-block rounded-xs bg-white/20 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm duration-300 ease-in-out hover:bg-white/30"
                 >
                   Contact Us

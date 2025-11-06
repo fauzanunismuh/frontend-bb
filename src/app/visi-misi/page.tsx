@@ -6,7 +6,7 @@ const VisiMisiPage = () => {
   return (
     <section
       id="visi-misi"
-      className="dark:bg-gray-dark bg-gray-50 pt-20 md:pt-28 lg:pt-32"
+      className="dark:bg-gray-dark mt-15 bg-gray-50 pt-20 md:pt-28 lg:pt-32"
     >
       <div className="container">
         {/* Judul Halaman */}
