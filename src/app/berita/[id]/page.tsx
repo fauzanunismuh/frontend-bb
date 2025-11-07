@@ -1,71 +1,76 @@
-"use client";
-import blogData from "@/components/Blog/blogData";
+import { getBeritaDetail } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 
-const BeritaDetail = () => {
-  const { id } = useParams();
-  const blog = blogData.find((item) => item.id === Number(id));
+type BeritaDetailProps = {
+  params: { id: string };
+};
 
-  if (!blog) {
+export const dynamic = "force-dynamic";
+
+const BeritaDetail = async ({ params }: BeritaDetailProps) => {
+  try {
+    const berita = await getBeritaDetail(params.id);
+    const publishedDate = berita.published_at
+      ? new Date(berita.published_at).toLocaleDateString("id-ID", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        })
+      : null;
+
     return (
-      <div className="container py-20 text-center">
-        <h2 className="text-2xl font-semibold text-red-500">
-          Berita tidak ditemukan.
-        </h2>
-        <Link
-          href="/berita"
-          className="text-primary mt-4 inline-block underline"
-        >
-          ← Kembali ke daftar berita
-        </Link>
-      </div>
-    );
-  }
+      <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
+        <div className="container max-w-4xl">
+          <p className="text-sm uppercase tracking-wide text-primary">
+            Publikasi Bosowa Bandar Indonesia
+          </p>
+          <h1 className="text-dark mb-3 mt-2 text-3xl font-bold dark:text-white">
+            {berita.judul}
+          </h1>
+          {publishedDate && (
+            <p className="text-body-color mb-6 text-sm dark:text-gray-400">
+              Dipublikasikan pada {publishedDate}
+              {berita.penulis?.nama_lengkap
+                ? ` • Oleh ${berita.penulis.nama_lengkap}`
+                : ""}
+            </p>
+          )}
 
-  return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
-      <div className="container max-w-4xl">
-        <h1 className="text-dark mb-6 text-3xl font-bold dark:text-white">
-          {blog.title}
-        </h1>
+          <div className="relative mb-8 h-96 w-full overflow-hidden rounded-lg">
+            <Image
+              src={berita.gambar_utama_url}
+              alt={berita.judul}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
+          </div>
 
-        <div className="relative mb-8 h-96 w-full overflow-hidden rounded-lg">
-          <Image
-            src={blog.image}
-            alt={blog.title}
-            fill
-            className="object-cover"
+          <p className="text-body-color mb-8 text-lg dark:text-gray-200">
+            {berita.ringkasan}
+          </p>
+
+          <article
+            className="prose prose-lg max-w-none dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: berita.isi_konten }}
           />
-        </div>
 
-        <div className="text-body-color space-y-6 leading-relaxed dark:text-gray-300">
-          <p>{blog.paragraph}</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque a
-            tortor non neque tincidunt aliquet. Donec dignissim lorem sit amet
-            libero interdum, nec fermentum magna bibendum. Curabitur viverra
-            malesuada dolor.
-          </p>
-          <p>
-            Bosowa Bandar Indonesia terus berkomitmen untuk memberikan layanan
-            terbaik kepada pelanggan dengan mengutamakan profesionalitas,
-            integritas, dan efisiensi.
-          </p>
+          <div className="mt-10">
+            <Link
+              href="/berita"
+              className="text-primary font-semibold hover:underline"
+            >
+              ← Kembali ke semua berita
+            </Link>
+          </div>
         </div>
-
-        <div className="mt-10">
-          <Link
-            href="/berita"
-            className="text-primary font-semibold hover:underline"
-          >
-            ← Kembali ke semua berita
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  } catch (error) {
+    notFound();
+  }
 };
 
 export default BeritaDetail;
