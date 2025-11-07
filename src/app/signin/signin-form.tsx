@@ -2,8 +2,8 @@
 
 import { loginAdmin } from "@/lib/api";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
 
 const SigninForm = () => {
   const router = useRouter();
@@ -34,94 +34,73 @@ const SigninForm = () => {
   };
 
   return (
-    <div className="-mx-4 flex flex-wrap justify-center">
-      <div className="w-full px-4 md:w-2/3 lg:w-1/2">
-        <div className="shadow-three dark:bg-dark mx-auto max-w-[480px] rounded-md bg-white px-6 py-10 sm:p-[50px]">
-          <h3 className="mb-4 text-center text-2xl font-bold text-black sm:text-3xl dark:text-white">
-            Sign In
-          </h3>
-          <p className="text-body-color mb-6 text-center text-base">
-            Masuk menggunakan akun admin untuk mengelola konten berita.
-          </p>
+    <div className="mt-5 rounded-lg">
+      <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
+        Masuk
+      </h2>
 
-          {error && (
-            <div className="mb-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <label
-                htmlFor="email"
-                className="text-dark mb-3 block text-sm font-medium dark:text-white"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="Masukkan email Anda"
-                autoComplete="email"
-                className="border-stroke dark:text-body-color-dark dark:shadow-two text-body-color focus:border-primary dark:focus:border-primary w-full rounded-md border bg-[#f8f8f8] px-5 py-3 text-base outline-hidden transition-all duration-300 dark:border-transparent dark:bg-[#2C303B]"
-                required
-              />
-            </div>
-
-            <div className="mb-6">
-              <label
-                htmlFor="password"
-                className="text-dark mb-3 block text-sm font-medium dark:text-white"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Masukkan password Anda"
-                autoComplete="current-password"
-                className="border-stroke dark:text-body-color-dark dark:shadow-two text-body-color focus:border-primary dark:focus:border-primary w-full rounded-md border bg-[#f8f8f8] px-5 py-3 text-base outline-hidden transition-all duration-300 dark:border-transparent dark:bg-[#2C303B]"
-                required
-              />
-            </div>
-
-            <div className="mb-8 flex flex-col justify-between sm:flex-row sm:items-center">
-              <label
-                htmlFor="remember"
-                className="text-body-color flex cursor-pointer items-center text-sm select-none"
-              >
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="accent-primary mr-2"
-                  disabled
-                />
-                Remember me (segera hadir)
-              </label>
-              <Link
-                href="#"
-                className="text-primary mt-2 text-sm font-medium hover:underline sm:mt-0"
-              >
-                Forgot Password?
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="shadow-submit dark:shadow-submit-dark bg-primary hover:bg-primary/90 disabled:bg-primary/50 w-full rounded-md px-8 py-3 text-base font-medium text-white duration-300"
-            >
-              {loading ? "Memproses..." : "Sign In"}
-            </button>
-          </form>
+      {error && (
+        <div className="mb-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+          {error}
         </div>
-      </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        <div className="mb-5">
+          <label
+            htmlFor="email"
+            className="mb-2 block text-sm font-medium text-gray-700"
+          >
+            Username / Email
+          </label>
+          <input
+            type="text"
+            id="email"
+            name="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-gray-100 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-700 focus:outline-none"
+            placeholder="Masukkan email Anda"
+            required
+          />
+        </div>
+
+        <div className="mb-5">
+          <label
+            htmlFor="password"
+            className="mb-2 block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            className="w-full rounded-md border border-gray-300 bg-gray-100 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-700 focus:outline-none"
+            placeholder="Masukkan password Anda"
+            required
+          />
+        </div>
+
+        <div className="mb-8 flex items-center justify-between">
+          <Link
+            href="#"
+            className="text-sm font-medium text-gray-800 hover:underline"
+          >
+            Lupa Password?
+          </Link>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-md bg-[#000F68] py-3 font-semibold text-white transition-all duration-300 hover:bg-[#001A99]"
+        >
+          {loading ? "Memproses..." : "Masuk"}
+        </button>
+      </form>
     </div>
   );
 };

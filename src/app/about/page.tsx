@@ -56,131 +56,80 @@ const AboutPage = () => {
         {/* ========== Bagian 2: Bosowa Bandar Indonesia ========== */}
         <div className="mb-20">
           <SectionTitle
-            title="Bosowa Bandar Indonesia"
-            paragraph="PT Bosowa Bandar Indonesia (BBI) adalah salah satu unit bisnis strategis di bawah Bosowa Group yang berfokus pada pengelolaan pelabuhan, jasa bongkar muat, dan logistik terpadu. Didirikan untuk mendukung kegiatan distribusi dan perdagangan nasional, BBI menjadi penghubung penting antara sektor industri, perdagangan, dan transportasi laut."
+            title="Bosowa Bandar Group"
+            paragraph="Bosowa Bandar Group adalah salah satu unit bisnis strategis di bawah Bosowa Group yang berfokus pada pengelolaan pelabuhan, jasa bongkar muat, dan logistik terpadu. Didirikan untuk mendukung kegiatan distribusi dan perdagangan nasional, Bosowa Bandar Group  menjadi penghubung penting antara sektor industri, perdagangan, dan transportasi laut."
             mb="40px"
           />
-
-          <div className="-mx-4 flex flex-wrap items-center">
-            <div className="w-full px-4 lg:w-1/2">
-              <p className="text-body-color mb-6 text-lg leading-relaxed">
-                Dengan infrastruktur modern dan manajemen profesional, Bosowa
-                Bandar Indonesia menghadirkan solusi logistik yang efisien dan
-                terintegrasi — mulai dari bongkar muat, penyimpanan, hingga
-                distribusi. BBI beroperasi di bawah prinsip{" "}
-                <strong>efisiensi, keandalan, dan keberlanjutan</strong>, serta
-                terus mengembangkan layanan untuk memenuhi kebutuhan industri di
-                berbagai wilayah Indonesia.
-              </p>
-
-              <ul className="text-body-color space-y-3 text-lg">
-                <li>• Lokasi strategis di kawasan pelabuhan industri.</li>
-                <li>• Fasilitas modern dengan sistem manajemen digital.</li>
-                <li>• SDM berkompeten di bidang pelabuhan dan logistik.</li>
-                <li>
-                  • Berorientasi pada keselamatan, kecepatan, dan ketepatan
-                  layanan.
-                </li>
-              </ul>
-            </div>
-
-            <div className="w-full px-4 lg:w-1/2">
-              <div className="relative mx-auto aspect-[150/60] max-w-[500px]">
-                <Image
-                  src="/images/about/bosowa-bandar-dark.png"
-                  alt="Bosowa Bandar Indonesia"
-                  fill
-                  className="mx-auto rounded-2xl object-cover shadow-lg dark:hidden"
-                />
-                <Image
-                  src="/images/about/bosowa-bandar-dark.png"
-                  alt="Bosowa Bandar Indonesia"
-                  fill
-                  className="mx-auto hidden rounded-2xl object-cover shadow-lg dark:block"
-                />
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* ========== Bagian 3: Unit Bisnis di bawah Bosowa Bandar Indonesia ========== */}
         <div className="mb-20">
           <SectionTitle
-            title="Unit Bisnis di Bawah Bosowa Bandar Indonesia"
-            paragraph="Sebagai bagian dari Grup Bosowa yang terus berkembang, Bosowa Bandar Indonesia menaungi beberapa unit usaha pendukung yang berperan dalam memperkuat ekosistem pelabuhan dan logistik nasional."
+            title="Unit Bisnis di Bawah Bosowa Bandar Group"
+            paragraph="Sebagai bagian dari Grup Bosowa yang terus berkembang, Bosowa Bandar Group menaungi beberapa unit usaha pendukung yang berperan dalam memperkuat ekosistem pelabuhan dan logistik nasional."
             mb="40px"
           />
 
-          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {/* === 1. Bosowa Bandar Agensi === */}
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
+              <div className="relative mb-4 aspect-[20/8] w-full overflow-hidden rounded-lg">
+                <Image
+                  src="/images/about/bosowa-agensi.png"
+                  alt="Bosowa Bandar Agensi"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                PT Bosowa Port Services
+                PT Bosowa Bandar Agensi
               </h4>
               <p className="text-body-color text-base leading-relaxed">
-                Menyediakan layanan bongkar muat kapal, penyimpanan kargo, dan
-                manajemen pelabuhan dengan standar operasional tinggi untuk
-                mendukung kelancaran arus barang di pelabuhan Bosowa.
+                PT Bosowa Bandar Agensi bergerak di bidang keagenan kapal,
+                menyediakan layanan profesional untuk memastikan kelancaran
+                aktivitas pelayaran di pelabuhan Bosowa dan kawasan sekitarnya.
               </p>
             </div>
 
+            {/* === 2. Bosowa Bandar Indonesia === */}
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
+              <div className="relative mb-4 aspect-[20/8] w-full overflow-hidden rounded-lg">
+                <Image
+                  src="/images/about/bosowa-bandar-dark.png"
+                  alt="Bosowa Bandar Indonesia"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                PT Bosowa Terminal Logistics
+                PT Bosowa Bandar Indonesia
               </h4>
               <p className="text-body-color text-base leading-relaxed">
-                Fokus pada layanan logistik dan transportasi darat, termasuk
-                distribusi semen, bahan bangunan, dan komoditas industri dengan
-                jaringan armada yang luas.
+                PT Bosowa Bandar Indonesia (BBI) adalah entitas utama yang
+                mengelola pelabuhan, bongkar muat, dan layanan logistik terpadu
+                dengan standar profesional dan berorientasi pada efisiensi.
               </p>
             </div>
 
+            {/* === 3. Jasa Pelabuhan Indonesia === */}
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
+              <div className="relative mb-4 aspect-[36/8] w-full overflow-hidden rounded-lg">
+                <Image
+                  src="/images/about/jasa-pelabuhan.png"
+                  alt="Jasa Pelabuhan Indonesia"
+                  fill
+                  className="object-cover transition-transform duration-500 hover:scale-105"
+                />
+              </div>
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                PT Bosowa Energy Port
+                PT Jasa Pelabuhan Indonesia
               </h4>
               <p className="text-body-color text-base leading-relaxed">
-                Mengelola fasilitas energi dan terminal bahan bakar pendukung
-                kegiatan pelabuhan serta pasokan energi untuk kawasan industri
-                Bosowa.
+                PT Jasa Pelabuhan Indonesia fokus pada pengelolaan operasional
+                pelabuhan serta penyediaan layanan teknis pendukung seperti
+                bongkar muat, terminal, dan operasional maritim terpadu.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* ========== Bagian 4: Visi & Misi ========== */}
-        <div className="mt-16 grid gap-10 md:grid-cols-2">
-          <div>
-            <h3 className="mb-4 text-2xl font-bold text-[#1E468C] dark:text-white">
-              Visi
-            </h3>
-            <p className="text-body-color text-lg leading-relaxed">
-              Menjadi penyedia layanan pelabuhan dan logistik terpadu terbaik di
-              Indonesia yang berkontribusi pada pembangunan ekonomi nasional dan
-              efisiensi rantai pasok.
-            </p>
-          </div>
-          <div>
-            <h3 className="mb-4 text-2xl font-bold text-[#1E468C] dark:text-white">
-              Misi
-            </h3>
-            <ul className="text-body-color space-y-3 text-lg">
-              <li>
-                • Menghadirkan layanan pelabuhan dan logistik berstandar
-                internasional.
-              </li>
-              <li>
-                • Meningkatkan daya saing melalui digitalisasi dan inovasi
-                operasional.
-              </li>
-              <li>
-                • Membangun sinergi antar unit bisnis untuk menciptakan
-                ekosistem logistik terpadu.
-              </li>
-              <li>
-                • Berkontribusi terhadap pembangunan berkelanjutan dan tanggung
-                jawab sosial.
-              </li>
-            </ul>
           </div>
         </div>
       </div>

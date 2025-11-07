@@ -1,16 +1,16 @@
 import { Brand } from "@/types/brand";
 import Image from "next/image";
 import SectionTitle from "../Common/SectionTitle";
-import brandsData from "./brandsData";
+import MitraData from "./MitraData";
 
-const Brands = () => {
+const Mitra = () => {
   return (
     <section className="py-16 md:py-20 lg:py-28">
       <div className="container">
         {/* ======== Judul & Deskripsi ======== */}
         <SectionTitle
-          title="Mitra dan Klien Kami"
-          paragraph="Bosowa Bandar Indonesia menjalin kemitraan strategis dengan berbagai perusahaan dan lembaga untuk mendukung layanan pelabuhan yang profesional, efisien, dan terpercaya."
+          title="Mitra dan Klien"
+          paragraph="Bosowa Bandar Group menjalin kemitraan strategis dengan berbagai perusahaan dan lembaga untuk mendukung layanan pelabuhan yang profesional, efisien, dan terpercaya."
           center
           mb="80px"
         />
@@ -19,7 +19,7 @@ const Brands = () => {
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
             <div className="bg-gray-light/70 dark:bg-gray-dark/80 flex flex-wrap items-center justify-center rounded-lg px-8 py-10 shadow-sm sm:px-10 md:px-[50px] md:py-[40px] xl:p-[50px] 2xl:px-[70px] 2xl:py-[60px]">
-              {brandsData.map((brand) => (
+              {MitraData.map((brand) => (
                 <SingleBrand key={brand.id} brand={brand} />
               ))}
             </div>
@@ -30,7 +30,7 @@ const Brands = () => {
   );
 };
 
-export default Brands;
+export default Mitra;
 
 const SingleBrand = ({ brand }: { brand: Brand }) => {
   const { href, image, imageLight, name } = brand;

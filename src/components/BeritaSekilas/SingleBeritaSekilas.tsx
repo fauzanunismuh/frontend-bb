@@ -1,9 +1,13 @@
-import { Blog } from "@/types/blog";
+import { BeritaSekilas } from "@/types/BeritaSekilas";
 import Image from "next/image";
 import Link from "next/link";
 
-const SingleBlog = ({ blog }: { blog: Blog }) => {
-  const { title, image, paragraph, id } = blog;
+const SingleBeritaSekilas = ({
+  BeritaSekilas,
+}: {
+  BeritaSekilas: BeritaSekilas;
+}) => {
+  const { title, image, paragraph, id } = BeritaSekilas;
 
   return (
     <div className="group shadow-one hover:shadow-two dark:bg-dark dark:hover:shadow-gray-dark relative overflow-hidden rounded-xs bg-white duration-300">
@@ -43,4 +47,4 @@ const SingleBlog = ({ blog }: { blog: Blog }) => {
   );
 };
 
-export default SingleBlog;
+export default SingleBeritaSekilas;
