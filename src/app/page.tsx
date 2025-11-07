@@ -1,7 +1,7 @@
-import BeritaSekilas from "@/components/Blog";
-import Brands from "@/components/Brands";
+import BeritaSekilas from "@/components/BeritaSekilas";
 import ScrollUp from "@/components/Common/ScrollUp";
 import Hero from "@/components/Hero";
+import Mitra from "@/components/Mitra";
 import UnitBisnis from "@/components/UnitBisnis";
 import Video from "@/components/Video";
 import { Metadata } from "next";
@@ -19,12 +19,12 @@ export default function Home() {
       <Hero />
       <UnitBisnis />
       <Video />
-      <Brands />
+      <Mitra />
       {/* <AboutSectionOne /> */}
       {/* <AboutSectionTwo /> */}
       {/* <Testimonials /> */}
       {/* <Pricing /> */}
-      {/* <Blog /> */}
+      {/* <BeritaSekilas /> */}
       <BeritaSekilas />
       {/* <Contact /> */}
     </>

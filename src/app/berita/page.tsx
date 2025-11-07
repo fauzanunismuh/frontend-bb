@@ -14,13 +14,13 @@ const BeritaPage = async () => {
           </h2>
           <p className="text-body-color dark:text-gray-400">
             Temukan seluruh berita, kegiatan, dan informasi terbaru dari Bosowa
-            Bandar Indonesia.
+            Bandar Group.
           </p>
         </div>
 
         <div className="flex flex-col gap-10">
           {newsList.length === 0 && (
-            <p className="text-center text-body-color dark:text-gray-400">
+            <p className="text-body-color text-center dark:text-gray-400">
               Belum ada berita yang dipublikasikan.
             </p>
           )}

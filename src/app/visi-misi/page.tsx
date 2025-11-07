@@ -11,8 +11,8 @@ const VisiMisiPage = () => {
       <div className="container">
         {/* Judul Halaman */}
         <SectionTitle
-          title="Visi & Misi Bosowa Bandar Indonesia"
-          paragraph="Sebagai bagian dari Grup Bosowa, PT Bosowa Bandar Indonesia berkomitmen untuk menjadi perusahaan pengelola pelabuhan dan logistik yang modern, efisien, dan berdaya saing tinggi. Visi dan misi kami menjadi dasar dalam setiap langkah pengembangan bisnis untuk mendukung pembangunan ekonomi nasional."
+          title="Visi & Misi"
+          paragraph="Sebagai bagian dari Bosowa Group, Bosowa Bandar Group berkomitmen untuk menjadi perusahaan pengelola pelabuhan dan logistik yang modern, efisien, dan berdaya saing tinggi. Visi dan misi kami menjadi dasar dalam setiap langkah pengembangan bisnis untuk mendukung pembangunan ekonomi nasional."
           mb="60px"
         />
 
@@ -22,9 +22,8 @@ const VisiMisiPage = () => {
             Visi
           </h3>
           <p className="text-body-color text-lg leading-relaxed">
-            Menjadi penyedia layanan pelabuhan dan logistik terpadu terbaik di
-            Indonesia yang berkontribusi terhadap efisiensi rantai pasok dan
-            pembangunan ekonomi nasional.
+            Menjadi perusahaan pengelola pelabuhan yang profesional dan
+            berstandar internasional.
           </p>
         </div>
 
@@ -33,63 +32,68 @@ const VisiMisiPage = () => {
           <h3 className="mb-4 text-3xl font-bold text-[#1E468C] dark:text-white">
             Misi
           </h3>
-          <ul className="text-body-color space-y-4 text-lg leading-relaxed">
-            <li>
-              • Menghadirkan layanan pelabuhan dan logistik yang profesional,
-              aman, dan berstandar internasional.
-            </li>
-            <li>
-              • Meningkatkan efisiensi operasional melalui inovasi teknologi dan
-              sistem manajemen digital.
-            </li>
-            <li>
-              • Membangun sinergi antar unit bisnis dalam ekosistem logistik
-              Bosowa Group.
-            </li>
-            <li>
-              • Mengembangkan SDM unggul yang berintegritas dan berorientasi
-              pelayanan.
-            </li>
-            <li>
-              • Berkontribusi pada keberlanjutan lingkungan dan tanggung jawab
-              sosial perusahaan.
-            </li>
+          <ul className="text-body-color list-inside list-decimal space-y-4 text-lg leading-relaxed">
+            <li>Bekerja dengan konsep pelayanan prima.</li>
+            <li>Menjalankan operasional secara profesional dan efisien.</li>
+            <li>Memaksimalkan manfaat bagi seluruh pemangku kepentingan.</li>
           </ul>
         </div>
 
         {/* Nilai Perusahaan */}
         <div className="mt-20">
-          <h3 className="mb-6 text-3xl font-bold text-[#1E468C] dark:text-white">
-            Nilai-Nilai Utama
+          <h3 className="mb-8 text-2xl font-bold text-[#1E468C] dark:text-white">
+            Filosofi PRIMA
           </h3>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                Integritas
+                Profesional
               </h4>
               <p className="text-body-color text-base">
-                Menjunjung tinggi kejujuran, transparansi, dan profesionalisme
-                dalam setiap aspek pekerjaan.
+                Menjalankan tugas dengan kompetensi tinggi, integritas, dan
+                tanggung jawab demi menjaga reputasi Bosowa sebagai mitra
+                terpercaya di industri maritim.
               </p>
             </div>
 
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                Inovasi
+                Responsif
               </h4>
               <p className="text-body-color text-base">
-                Mendorong pengembangan solusi kreatif dan adaptif dalam
-                menghadapi tantangan industri maritim modern.
+                Cepat dan tanggap dalam memenuhi kebutuhan pelanggan serta
+                perubahan situasi di lingkungan pelabuhan dan industri maritim.
               </p>
             </div>
 
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                Kolaborasi
+                Inovatif
               </h4>
               <p className="text-body-color text-base">
-                Mengutamakan kerja sama dan sinergi lintas unit bisnis untuk
-                mencapai tujuan bersama.
+                Terus beradaptasi dan mengembangkan solusi baru guna
+                meningkatkan efisiensi, layanan, dan daya saing perusahaan.
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
+              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
+                Melayani
+              </h4>
+              <p className="text-body-color text-base">
+                Mengutamakan kepuasan pelanggan dengan memberikan pelayanan yang
+                ramah, cepat, dan tepat sasaran.
+              </p>
+            </div>
+
+            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
+              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
+                Amanah & Terpercaya
+              </h4>
+              <p className="text-body-color text-base">
+                Menjaga kepercayaan mitra dan stakeholder dengan bekerja jujur,
+                konsisten, serta menjunjung nilai-nilai moral dan tanggung jawab
+                sosial.
               </p>
             </div>
           </div>

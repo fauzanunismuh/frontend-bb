@@ -33,11 +33,11 @@ const Footer = () => {
               </Link>
 
               <p className="text-body-color dark:text-body-color-dark mt-0 text-base leading-relaxed">
-                PT Bosowa Bandar Indonesia merupakan bagian dari Bosowa
-                Corporindo yang bergerak di bidang pengelolaan pelabuhan,
-                keagenan kapal, bongkar muat, dan kapal tunda secara profesional
-                dan terpercaya. Kami berkomitmen memberikan layanan terbaik bagi
-                mitra industri maritim di Indonesia Timur.
+                Bosowa Bandar Group merupakan bagian dari Bosowa Corporindo yang
+                bergerak di bidang pengelolaan pelabuhan, keagenan kapal,
+                bongkar muat, dan kapal tunda secara profesional dan terpercaya.
+                Kami berkomitmen memberikan layanan terbaik bagi mitra industri
+                maritim di Indonesia Timur.
               </p>
             </div>
           </div>
@@ -74,7 +74,7 @@ const Footer = () => {
                 aria-label="Facebook"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-brands fa-facebook-f text-2xl"></i>
+                <i className="fa-Mitra fa-facebook-f text-2xl"></i>
               </Link>
               <Link
                 href="https://instagram.com"
@@ -82,7 +82,7 @@ const Footer = () => {
                 aria-label="Instagram"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-brands fa-instagram text-2xl"></i>
+                <i className="fa-Mitra fa-instagram text-2xl"></i>
               </Link>
               <Link
                 href="https://linkedin.com"
@@ -90,7 +90,7 @@ const Footer = () => {
                 aria-label="LinkedIn"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-brands fa-linkedin-in text-2xl"></i>
+                <i className="fa-Mitra fa-linkedin-in text-2xl"></i>
               </Link>
               <Link
                 href="https://youtube.com"
@@ -98,7 +98,7 @@ const Footer = () => {
                 aria-label="YouTube"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-brands fa-youtube text-2xl"></i>
+                <i className="fa-Mitra fa-youtube text-2xl"></i>
               </Link>
             </div>
           </div>
@@ -132,7 +132,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="pb-8 text-center">
           <p className="text-body-color text-sm dark:text-white/80">
-            © {new Date().getFullYear()} PT Bosowa Bandar Indonesia. All rights
+            © {new Date().getFullYear()} PT Bosowa Bandar Group. All rights
             reserved.
           </p>
         </div>

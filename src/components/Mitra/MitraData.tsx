@@ -1,6 +1,6 @@
 import { Brand } from "@/types/brand";
 
-const brandsData: Brand[] = [
+const MitraData: Brand[] = [
   {
     id: 1,
     name: "Semen Tiga Roda",
@@ -38,4 +38,4 @@ const brandsData: Brand[] = [
   },
 ];
 
-export default brandsData;
+export default MitraData;

@@ -12,8 +12,8 @@ export default function Video() {
       <section className="relative z-10 py-16 md:py-20 lg:py-28">
         <div className="container">
           <SectionTitle
-            title="Bosowa Bandar Indonesia"
-            paragraph="Perusahaan swasta nasional berdiri membawa sejarah lokal Indonesia Timur. Bosowa Bandar Indonesia merupakan Badan Usaha Pelabuhan (BUP) yang merupakan bagian dari Bosowa Corporindo."
+            title="Bosowa Bandar Group"
+            paragraph="Perusahaan swasta nasional berdiri membawa sejarah lokal Indonesia Timur. Bosowa Bandar Group merupakan Badan Usaha Pelabuhan (BUP) yang merupakan bagian dari Bosowa Corporindo."
             center
             mb="80px"
           />

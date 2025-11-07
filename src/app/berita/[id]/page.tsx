@@ -23,10 +23,10 @@ const BeritaDetail = async ({ params }: BeritaDetailProps) => {
     return (
       <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
         <div className="container max-w-4xl">
-          <p className="text-sm uppercase tracking-wide text-primary">
-            Publikasi Bosowa Bandar Indonesia
+          <p className="text-primary text-sm tracking-wide uppercase">
+            Publikasi Bosowa Bandar Group
           </p>
-          <h1 className="text-dark mb-3 mt-2 text-3xl font-bold dark:text-white">
+          <h1 className="text-dark mt-2 mb-3 text-3xl font-bold dark:text-white">
             {berita.judul}
           </h1>
           {publishedDate && (
@@ -53,7 +53,7 @@ const BeritaDetail = async ({ params }: BeritaDetailProps) => {
           </p>
 
           <article
-            className="prose prose-lg max-w-none dark:prose-invert"
+            className="prose prose-lg dark:prose-invert max-w-none"
             dangerouslySetInnerHTML={{ __html: berita.isi_konten }}
           />
 

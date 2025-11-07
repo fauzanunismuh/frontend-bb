@@ -1,45 +1,40 @@
 import { Metadata } from "next";
+import Image from "next/image";
 import SigninForm from "./signin-form";
 
 export const metadata: Metadata = {
-  title: "Sign In | PT Bosowa Bandar Indonesia",
+  title: "Masuk | PT Bosowa Bandar Indonesia",
   description: "Halaman masuk akun PT Bosowa Bandar Indonesia",
 };
 
 const SigninPage = () => {
   return (
-    <section className="dark:bg-gray-dark relative z-10 mb-0 overflow-hidden bg-gray-50 pt-36 pb-16 md:pb-20 lg:pt-[180px] lg:pb-28">
-      <div className="container">
-        <SigninForm />
+    <section className="mt-15 flex min-h-screen flex-col bg-[#F9FBFF] md:flex-row">
+      {/* Kolom kiri */}
+      <div className="flex w-full flex-col items-start justify-center bg-white px-10 py-16 md:w-1/2 md:px-20">
+        <div className="max-w-md">
+          <Image
+            src="/images/logo/logo-dark.png"
+            alt="Bosowa Logo"
+            width={300}
+            height={400}
+            className="mb-10"
+          />
+
+          <h1 className="mb-4 text-4xl leading-tight font-bold text-[#D90000]">
+            Admin Website <br /> Bosowa Bandar
+          </h1>
+          <p className="mb-10 text-base text-gray-600">
+            Silakan masuk untuk mengelola website Bosowa Bandar
+          </p>
+        </div>
       </div>
 
-      <div className="absolute top-0 left-0 z-[-1] opacity-10">
-        <svg
-          width="1440"
-          height="969"
-          viewBox="0 0 1440 969"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            opacity="0.2"
-            d="M1086.96 297.978L632.959 554.978L935.625 535.926L1086.96 297.978Z"
-            fill="url(#paint0_linear_95:1005)"
-          />
-          <defs>
-            <linearGradient
-              id="paint0_linear_95:1005"
-              x1="1178.4"
-              y1="151.853"
-              x2="780.959"
-              y2="453.581"
-              gradientUnits="userSpaceOnUse"
-            >
-              <stop stopColor="#1E468C" />
-              <stop offset="1" stopColor="#1E468C" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-        </svg>
+      {/* Kolom kanan */}
+      <div className="flex w-full items-center justify-center bg-[#F5F9FF] md:w-1/2">
+        <div className="w-full max-w-md px-8">
+          <SigninForm />
+        </div>
       </div>
     </section>
   );

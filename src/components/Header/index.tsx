@@ -28,21 +28,18 @@ const Header = () => {
     setOpenIndex(openIndex === index ? -1 : index);
   };
 
-  // ✅ Fungsi custom untuk handle link dengan anchor (#contact)
   const handleAnchorClick = (e, href) => {
     if (!href.startsWith("/#")) return;
 
     e.preventDefault();
+    setOpenIndex(-1); // 🔥 Tutup semua submenu
+
     const targetId = href.split("#")[1];
     const element = document.getElementById(targetId);
 
     if (pathname === "/") {
-      // Jika sudah di homepage, langsung scroll
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      if (element) element.scrollIntoView({ behavior: "smooth" });
     } else {
-      // Jika di halaman lain, pindah ke homepage lalu scroll setelah load
       router.push(href);
       setTimeout(() => {
         const el = document.getElementById(targetId);
@@ -117,13 +114,17 @@ const Header = () => {
                 navbarOpen ? "block" : "hidden lg:block"
               }`}
             >
-              <ul className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-10">
+              <ul className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-7">
                 {menuData.map((menuItem, index) => (
                   <li key={index} className="group relative">
                     {menuItem.path ? (
                       <Link
                         href={menuItem.path}
-                        onClick={(e) => handleAnchorClick(e, menuItem.path)}
+                        onClick={(e) => {
+                          handleAnchorClick(e, menuItem.path);
+                          setNavbarOpen(false); // 🔥 Tutup hamburger menu
+                          setOpenIndex(-1); // 🔥 Tutup semua submenu
+                        }}
                         className={`text-white transition ${
                           pathname === menuItem.path
                             ? "font-semibold underline underline-offset-4"
@@ -170,6 +171,10 @@ const Header = () => {
                               href={submenuItem.path}
                               key={idx}
                               className="block px-4 py-2 text-white hover:bg-white/10"
+                              onClick={() => {
+                                setNavbarOpen(false); // 🔥 Tutup hamburger menu
+                                setOpenIndex(-1); // 🔥 Tutup submenu
+                              }}
                             >
                               {submenuItem.title}
                             </Link>
@@ -188,7 +193,7 @@ const Header = () => {
                 href="/signin"
                 className="text-base font-medium text-white hover:opacity-80"
               >
-                Sign In
+                Masuk
               </Link>
               <ThemeToggler />
             </div>
