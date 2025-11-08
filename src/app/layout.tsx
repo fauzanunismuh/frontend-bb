@@ -6,6 +6,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Inter } from "next/font/google";
 import "../styles/index.css";
+import { Providers } from "./providers"; // Dipindahkan ke atas
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,5 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-import { Providers } from "./providers";

@@ -1,14 +1,13 @@
 "use client";
 
-import RichTextEditor from "@/components/RichTextEditor";
 import {
   CreateBeritaPayload,
   PublicBerita,
   createBeritaAdmin,
   deleteBeritaAdmin,
   getBeritaAdmin,
-  uploadImageRequest,
   updateBeritaAdmin,
+  uploadImageRequest,
 } from "@/lib/api";
 import Link from "next/link";
 import {
@@ -72,9 +71,7 @@ const AdminBeritaPage = () => {
       setNews(data);
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Gagal memuat daftar berita.";
+        error instanceof Error ? error.message : "Gagal memuat daftar berita.";
       setListError(message);
       if (
         typeof error === "object" &&
@@ -142,9 +139,7 @@ const AdminBeritaPage = () => {
     }
   };
 
-  const handleImageUpload = async (
-    event: ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (!token) {
@@ -297,7 +292,9 @@ const AdminBeritaPage = () => {
 
   if (initializing) {
     return (
-      <section className="container py-20 text-center">
+      <section className="container mt-24 py-20 text-center">
+        {" "}
+        {/* Ditambah mt-24 */}
         <p className="text-body-color dark:text-gray-400">Memuat...</p>
       </section>
     );
@@ -305,9 +302,11 @@ const AdminBeritaPage = () => {
 
   if (!token) {
     return (
-      <section className="bg-gray-light/30 dark:bg-gray-dark/40 py-20">
+      <section className="bg-gray-light/30 dark:bg-gray-dark/40 mt-24 py-20">
+        {" "}
+        {/* Ditambah mt-24 */}
         <div className="container text-center">
-          <h1 className="text-3xl font-bold text-dark dark:text-white">
+          <h1 className="text-dark text-3xl font-bold dark:text-white">
             Dashboard Admin
           </h1>
           <p className="text-body-color mt-4">
@@ -323,11 +322,13 @@ const AdminBeritaPage = () => {
   }
 
   return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
+    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
+      {" "}
+      {/* Ditambah mt-24 */}
       <div className="container">
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-wide text-primary">
+            <p className="text-primary text-sm tracking-wide uppercase">
               Administrasi Konten
             </p>
             <h1 className="text-dark text-3xl font-bold dark:text-white">
@@ -347,8 +348,8 @@ const AdminBeritaPage = () => {
 
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
-            <h2 className="text-xl font-semibold text-dark dark:text-white">
-              {formTitle}
+            <h2 className="text-dark text-xl font-semibold dark:text-white">
+              Tambah Berita
             </h2>
             <p className="text-body-color mb-4 text-sm dark:text-gray-400">
               {formDescription}
@@ -386,7 +387,7 @@ const AdminBeritaPage = () => {
               <div>
                 <label
                   htmlFor="judul"
-                  className="text-sm font-medium text-dark dark:text-gray-200"
+                  className="text-dark text-sm font-medium dark:text-gray-200"
                 >
                   Judul
                 </label>
@@ -396,13 +397,13 @@ const AdminBeritaPage = () => {
                   value={formState.judul}
                   onChange={handleChange}
                   required
-                  className="border-stroke mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-800"
+                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
                 />
               </div>
               <div>
                 <label
                   htmlFor="ringkasan"
-                  className="text-sm font-medium text-dark dark:text-gray-200"
+                  className="text-dark text-sm font-medium dark:text-gray-200"
                 >
                   Ringkasan
                 </label>
@@ -413,39 +414,30 @@ const AdminBeritaPage = () => {
                   onChange={handleChange}
                   rows={3}
                   required
-                  className="border-stroke mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-800"
+                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
                 />
               </div>
               <div>
                 <label
                   htmlFor="isi_konten"
-                  className="text-sm font-medium text-dark dark:text-gray-200"
+                  className="text-dark text-sm font-medium dark:text-gray-200"
                 >
                   Isi Konten
                 </label>
-                <div className="mt-2">
-                  <RichTextEditor
-                    id="isi_konten"
-                    value={formState.isi_konten}
-                    onChange={(value) =>
-                      setFormState((prev) => ({ ...prev, isi_konten: value }))
-                    }
-                    onUploadImage={handleInlineImageUpload}
-                    onUploadError={(message) => setInlineImageError(message)}
-                  />
-                </div>
-                {inlineImageError && (
-                  <p className="text-xs text-red-500 mt-2">{inlineImageError}</p>
-                )}
-                <p className="text-xs text-body-color mt-2">
-                  Gunakan toolbar (termasuk tombol Img) untuk format teks dan
-                  menyisipkan gambar tanpa menulis HTML.
-                </p>
+                <textarea
+                  id="isi_konten"
+                  name="isi_konten"
+                  value={formState.isi_konten}
+                  onChange={handleChange}
+                  rows={6}
+                  required
+                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+                />
               </div>
               <div>
                 <label
                   htmlFor="gambar_utama_url"
-                  className="text-sm font-medium text-dark dark:text-gray-200"
+                  className="text-dark text-sm font-medium dark:text-gray-200"
                 >
                   Gambar Utama (Upload)
                 </label>
@@ -454,22 +446,24 @@ const AdminBeritaPage = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
-                  className="border-stroke mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-primary/90 dark:border-gray-700 dark:bg-gray-800"
+                  className="border-stroke file:bg-primary hover:file:bg-primary/90 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white dark:border-gray-700 dark:bg-gray-800"
                 />
-                <p className="text-xs text-body-color mt-2">
+                <p className="text-body-color mt-2 text-xs">
                   Maksimal 5MB. Format yang disarankan: JPG atau PNG.
                 </p>
                 {imageUploadError && (
-                  <p className="text-sm text-red-500 mt-2">{imageUploadError}</p>
+                  <p className="mt-2 text-sm text-red-500">
+                    {imageUploadError}
+                  </p>
                 )}
                 {uploadingImage && (
-                  <p className="text-sm text-body-color mt-2">
+                  <p className="text-body-color mt-2 text-sm">
                     Mengunggah gambar...
                   </p>
                 )}
                 {formState.gambar_utama_url && (
                   <div className="mt-4">
-                    <p className="text-xs font-medium text-dark dark:text-gray-200">
+                    <p className="text-dark text-xs font-medium dark:text-gray-200">
                       Pratinjau Gambar:
                     </p>
                     <div className="relative mt-2 h-40 w-full overflow-hidden rounded-md border border-dashed border-gray-300 dark:border-gray-700">
@@ -486,7 +480,7 @@ const AdminBeritaPage = () => {
               <div>
                 <label
                   htmlFor="status"
-                  className="text-sm font-medium text-dark dark:text-gray-200"
+                  className="text-dark text-sm font-medium dark:text-gray-200"
                 >
                   Status
                 </label>
@@ -495,7 +489,7 @@ const AdminBeritaPage = () => {
                   name="status"
                   value={formState.status ?? "draft"}
                   onChange={handleChange}
-                  className="border-stroke mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-800"
+                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Publikasikan</option>
@@ -514,13 +508,13 @@ const AdminBeritaPage = () => {
 
           <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-dark dark:text-white">
+              <h2 className="text-dark text-xl font-semibold dark:text-white">
                 Semua Berita
               </h2>
               <button
                 onClick={loadNews}
                 disabled={listLoading}
-                className="text-sm font-semibold text-primary hover:text-primary/80 disabled:text-primary/40"
+                className="text-primary hover:text-primary/80 disabled:text-primary/40 text-sm font-semibold"
               >
                 {listLoading ? "Menyegarkan..." : "Segarkan"}
               </button>
@@ -533,7 +527,7 @@ const AdminBeritaPage = () => {
 
             <div className="space-y-4">
               {news.length === 0 && !listLoading && (
-                <p className="text-sm text-body-color dark:text-gray-400">
+                <p className="text-body-color text-sm dark:text-gray-400">
                   Belum ada berita yang dibuat.
                 </p>
               )}
@@ -545,14 +539,14 @@ const AdminBeritaPage = () => {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-dark dark:text-white">
+                      <h3 className="text-dark text-lg font-semibold dark:text-white">
                         {item.judul}
                       </h3>
-                      <p className="text-xs uppercase tracking-wide text-primary">
+                      <p className="text-primary text-xs tracking-wide uppercase">
                         {item.status === "published" ? "Published" : "Draft"}
                       </p>
                     </div>
-                    <span className="text-sm text-body-color dark:text-gray-400">
+                    <span className="text-body-color text-sm dark:text-gray-400">
                       {item.published_at
                         ? new Date(item.published_at).toLocaleDateString(
                             "id-ID",
@@ -565,14 +559,14 @@ const AdminBeritaPage = () => {
                         : "-"}
                     </span>
                   </div>
-                  <p className="text-sm text-body-color line-clamp-2 dark:text-gray-400">
+                  <p className="text-body-color line-clamp-2 text-sm dark:text-gray-400">
                     {item.ringkasan}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-3">
                     <Link
                       href={`/berita/${item.slug}`}
                       target="_blank"
-                      className="text-sm font-semibold text-primary hover:text-primary/80"
+                      className="text-primary hover:text-primary/80 text-sm font-semibold"
                     >
                       Lihat Halaman Publik
                     </Link>
@@ -600,7 +594,7 @@ const AdminBeritaPage = () => {
                         )
                       }
                       disabled={statusUpdatingId === item.id}
-                      className="rounded-md border border-primary px-3 py-1 text-sm font-semibold text-primary hover:bg-primary/10 disabled:cursor-not-allowed disabled:border-primary/50 disabled:text-primary/50"
+                      className="border-primary text-primary hover:bg-primary/10 disabled:border-primary/50 disabled:text-primary/50 rounded-md border px-3 py-1 text-sm font-semibold disabled:cursor-not-allowed"
                     >
                       {statusUpdatingId === item.id
                         ? "Menyimpan..."

@@ -3,7 +3,9 @@ import SectionTitle from "@/components/Common/SectionTitle";
 
 const BosowaBandarIndonesia = () => {
   return (
-    <section className="dark:bg-gray-dark bg-gray-50 pt-20 md:pt-28 lg:pt-32">
+    <section className="dark:bg-gray-dark bg-gray-50 pt-24 md:pt-28 lg:pt-32">
+      {" "}
+      {/* Diubah pt-20 -> pt-24 */}
       <div className="container">
         <SectionTitle
           title="PT Bosowa Bandar Indonesia"
