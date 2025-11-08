@@ -153,6 +153,16 @@ export async function updateBeritaAdmin(
   });
 }
 
+export async function deleteBeritaAdmin(
+  token: string,
+  id: string,
+): Promise<void> {
+  await fetchJson(`/api/admin/berita/${id}`, {
+    method: "DELETE",
+    authToken: token,
+  });
+}
+
 export type UploadImageResponse = {
   imageUrl: string;
   filename?: string;
