@@ -10,6 +10,7 @@ const Header = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -23,6 +24,35 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyNavbar);
     return () => window.removeEventListener("scroll", handleStickyNavbar);
   }, []);
+
+  const syncAdminState = () => {
+    if (typeof window === "undefined") return;
+    const token = localStorage.getItem("bbi_admin_token");
+    setAdminLoggedIn(Boolean(token));
+  };
+
+  useEffect(() => {
+    syncAdminState();
+    const handleStorage = (event: StorageEvent) => {
+      if (
+        event.key === "bbi_admin_token" ||
+        event.key === "bbi_admin_profile"
+      ) {
+        syncAdminState();
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+    // Re-run whenever halaman berubah agar status admin terbarui setelah login.
+  }, [pathname]);
+
+  const handleAdminLogout = () => {
+    if (typeof window === "undefined") return;
+    localStorage.removeItem("bbi_admin_token");
+    setAdminLoggedIn(false);
+    localStorage.removeItem("bbi_admin_profile");
+    router.push("/signin");
+  };
 
   const handleSubmenu = (index) => {
     setOpenIndex(openIndex === index ? -1 : index);
@@ -184,17 +214,76 @@ const Header = () => {
                     )}
                   </li>
                 ))}
+                {adminLoggedIn && (
+                  <li className="group relative">
+                    <p
+                      onClick={() => handleSubmenu(menuData.length)}
+                      className="flex cursor-pointer items-center gap-1 text-white hover:text-gray-300"
+                    >
+                      Admin
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`transition-transform duration-300 ${
+                          openIndex === menuData.length ? "rotate-180" : ""
+                        }`}
+                      >
+                        <path
+                          d="M6 8L10 12L14 8"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </p>
+                    <div
+                      className={`transition-all duration-300 lg:absolute lg:top-full lg:left-0 lg:w-[200px] lg:rounded-md lg:bg-[#1E468C]/95 lg:shadow-lg ${
+                        openIndex === menuData.length
+                          ? "visible block opacity-100"
+                          : "invisible hidden opacity-0"
+                      }`}
+                    >
+                      <Link
+                        href="/admin/berita"
+                        className="block px-4 py-2 text-white hover:bg-white/10"
+                        onClick={() => {
+                          setNavbarOpen(false);
+                          setOpenIndex(-1);
+                        }}
+                      >
+                        Kelola Berita
+                      </Link>
+                      <button
+                        type="button"
+                        className="block w-full px-4 py-2 text-left text-white hover:bg-white/10"
+                        onClick={() => {
+                          handleAdminLogout();
+                          setNavbarOpen(false);
+                          setOpenIndex(-1);
+                        }}
+                      >
+                        Keluar
+                      </button>
+                    </div>
+                  </li>
+                )}
               </ul>
             </nav>
 
             {/* Kanan paling akhir */}
             <div className="hidden items-center gap-4 md:flex">
-              <Link
-                href="/signin"
-                className="text-base font-medium text-white hover:opacity-80"
-              >
-                Masuk
-              </Link>
+              {!adminLoggedIn && (
+                <Link
+                  href="/signin"
+                  className="text-base font-medium text-white hover:opacity-80"
+                >
+                  Masuk
+                </Link>
+              )}
               <ThemeToggler />
             </div>
           </div>

@@ -74,7 +74,7 @@ const Footer = () => {
                 aria-label="Facebook"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-Mitra fa-facebook-f text-2xl"></i>
+                <i className="fa-brands fa-facebook-f text-2xl"></i>
               </Link>
               <Link
                 href="https://instagram.com"
@@ -82,7 +82,7 @@ const Footer = () => {
                 aria-label="Instagram"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-Mitra fa-instagram text-2xl"></i>
+                <i className="fa-brands fa-instagram text-2xl"></i>
               </Link>
               <Link
                 href="https://linkedin.com"
@@ -90,7 +90,7 @@ const Footer = () => {
                 aria-label="LinkedIn"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-Mitra fa-linkedin-in text-2xl"></i>
+                <i className="fa-brands fa-linkedin-in text-2xl"></i>
               </Link>
               <Link
                 href="https://youtube.com"
@@ -98,7 +98,7 @@ const Footer = () => {
                 aria-label="YouTube"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
               >
-                <i className="fa-Mitra fa-youtube text-2xl"></i>
+                <i className="fa-brands fa-youtube text-2xl"></i>
               </Link>
             </div>
           </div>
