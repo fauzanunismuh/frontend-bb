@@ -21,7 +21,9 @@ const BeritaDetail = async ({ params }: BeritaDetailProps) => {
       : null;
 
     return (
-      <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
+      <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
+        {" "}
+        {/* Diubah mt-20 -> mt-24 */}
         <div className="container max-w-4xl">
           <p className="text-primary text-sm tracking-wide uppercase">
             Publikasi Bosowa Bandar Group

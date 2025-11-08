@@ -1,4 +1,5 @@
 "use client";
+import { useLanguage } from "@/app/providers"; // Import hook
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,6 +11,7 @@ const Header = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
+  const { language, setLanguage } = useLanguage(); // Gunakan context
   const pathname = usePathname();
   const router = useRouter();
 
@@ -32,7 +34,7 @@ const Header = () => {
     if (!href.startsWith("/#")) return;
 
     e.preventDefault();
-    setOpenIndex(-1); // 🔥 Tutup semua submenu
+    setOpenIndex(-1); // 櫨 Tutup semua submenu
 
     const targetId = href.split("#")[1];
     const element = document.getElementById(targetId);
@@ -47,6 +49,48 @@ const Header = () => {
       }, 500);
     }
   };
+
+  // Logika untuk mengubah teks berdasarkan state 'language'
+  const getMenuData = () => {
+    if (language === "en") {
+      return [
+        { id: 1, title: "Home", path: "/", newTab: false },
+        { id: 2, title: "About Us", path: "/about", newTab: false },
+        { id: 3, title: "Vision & Mission", path: "/visi-misi", newTab: false },
+        {
+          id: 4,
+          title: "Business Units",
+          newTab: false,
+          submenu: [
+            {
+              id: 41,
+              title: "PT Bosowa Bandar Agensi",
+              path: "/unit-bisnis/bosowa-bandar-agensi",
+              newTab: false,
+            },
+            {
+              id: 42,
+              title: "PT Bosowa Bandar Indonesia",
+              path: "/unit-bisnis/bosowa-bandar-indonesia",
+              newTab: false,
+            },
+            {
+              id: 43,
+              title: "PT Jasa Pelabuhan Indonesia",
+              path: "/unit-bisnis/jasa-pelabuhan-indonesia",
+              newTab: false,
+            },
+          ],
+        },
+        { id: 5, title: "Publications", path: "/berita", newTab: false },
+        { id: 6, title: "Contact", path: "/#Footer", newTab: false },
+      ];
+    }
+    // Default (ID)
+    return menuData;
+  };
+
+  const currentMenuData = getMenuData();
 
   return (
     <header
@@ -82,7 +126,8 @@ const Header = () => {
           </div>
 
           {/* Menu */}
-          <div className="flex items-center justify-end gap-6">
+          {/* MENGURANGI GAP DARI gap-6 MENJADI gap-4 */}
+          <div className="flex items-center justify-end gap-4">
             {/* Mobile Toggler */}
             <button
               onClick={navbarToggleHandler}
@@ -114,18 +159,20 @@ const Header = () => {
                 navbarOpen ? "block" : "hidden lg:block"
               }`}
             >
-              <ul className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-7">
-                {menuData.map((menuItem, index) => (
+              {/* MENGURANGI SPASI DARI lg:space-x-7 MENJADI lg:space-x-4 */}
+              <ul className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-4">
+                {currentMenuData.map((menuItem, index) => (
                   <li key={index} className="group relative">
                     {menuItem.path ? (
                       <Link
                         href={menuItem.path}
                         onClick={(e) => {
                           handleAnchorClick(e, menuItem.path);
-                          setNavbarOpen(false); // 🔥 Tutup hamburger menu
-                          setOpenIndex(-1); // 🔥 Tutup semua submenu
+                          setNavbarOpen(false); // 櫨 Tutup hamburger menu
+                          setOpenIndex(-1); // 櫨 Tutup semua submenu
                         }}
-                        className={`text-white transition ${
+                        className={`whitespace-nowrap text-white transition ${
+                          // Menambahkan whitespace-nowrap
                           pathname === menuItem.path
                             ? "font-semibold underline underline-offset-4"
                             : "hover:text-gray-300"
@@ -137,7 +184,7 @@ const Header = () => {
                       <>
                         <p
                           onClick={() => handleSubmenu(index)}
-                          className="flex cursor-pointer items-center gap-1 text-white hover:text-gray-300"
+                          className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-white hover:text-gray-300" // Menambahkan whitespace-nowrap
                         >
                           {menuItem.title}
                           <svg
@@ -172,8 +219,8 @@ const Header = () => {
                               key={idx}
                               className="block px-4 py-2 text-white hover:bg-white/10"
                               onClick={() => {
-                                setNavbarOpen(false); // 🔥 Tutup hamburger menu
-                                setOpenIndex(-1); // 🔥 Tutup submenu
+                                setNavbarOpen(false); // 櫨 Tutup hamburger menu
+                                setOpenIndex(-1); // 櫨 Tutup submenu
                               }}
                             >
                               {submenuItem.title}
@@ -185,16 +232,82 @@ const Header = () => {
                   </li>
                 ))}
               </ul>
+              {/* === Kontrol untuk Mobile (BARU) === */}
+              <div className="mt-5 flex flex-col items-start gap-4 lg:hidden">
+                <Link
+                  href="/signin"
+                  className="text-base font-medium text-white hover:opacity-80"
+                >
+                  {language === "id" ? "Masuk" : "Sign In"}
+                </Link>
+                {/* Language Switcher (Mobile) */}
+                <div className="flex items-center space-x-1 rounded-full bg-white/10 p-1">
+                  <button
+                    onClick={() => setLanguage("id")}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
+                      // Diubah
+                      language === "id"
+                        ? "bg-white" // Diubah
+                        : "hover:bg-white/20"
+                    }`}
+                    aria-label="Ganti ke Bahasa Indonesia"
+                  >
+                    🇮🇩 {/* Diubah */}
+                  </button>
+                  <button
+                    onClick={() => setLanguage("en")}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
+                      // Diubah
+                      language === "en"
+                        ? "bg-white" // Diubah
+                        : "hover:bg-white/20"
+                    }`}
+                    aria-label="Switch to English"
+                  >
+                    🇬🇧 {/* Diubah */}
+                  </button>
+                </div>
+                <ThemeToggler />
+              </div>
             </nav>
 
-            {/* Kanan paling akhir */}
-            <div className="hidden items-center gap-4 md:flex">
+            {/* === Kanan paling akhir (Desktop) === */}
+            <div className="hidden items-center gap-4 lg:flex">
+              {" "}
+              {/* Diubah dari md:flex */}
               <Link
                 href="/signin"
                 className="text-base font-medium text-white hover:opacity-80"
               >
-                Masuk
+                {language === "id" ? "Masuk" : "Sign In"}
               </Link>
+              {/* Language Switcher (Desktop) */}
+              <div className="flex items-center space-x-1 rounded-full bg-white/10 p-1">
+                <button
+                  onClick={() => setLanguage("id")}
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
+                    // Diubah
+                    language === "id"
+                      ? "bg-white" // Diubah
+                      : "hover:bg-white/20"
+                  }`}
+                  aria-label="Ganti ke Bahasa Indonesia"
+                >
+                  🇮🇩 {/* Diubah */}
+                </button>
+                <button
+                  onClick={() => setLanguage("en")}
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
+                    // Diubah
+                    language === "en"
+                      ? "bg-white" // Diubah
+                      : "hover:bg-white/20"
+                  }`}
+                  aria-label="Switch to English"
+                >
+                  🇬🇧 {/* Diubah */}
+                </button>
+              </div>
               <ThemeToggler />
             </div>
           </div>

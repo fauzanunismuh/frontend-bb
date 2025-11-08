@@ -6,7 +6,9 @@ const BeritaPage = async () => {
   const { data: newsList } = await getBeritaPublic({ limit: 9 });
 
   return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-20 py-16 md:py-20 lg:py-24">
+    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
+      {" "}
+      {/* Diubah mt-20 -> mt-24 */}
       <div className="container">
         <div className="mb-12 text-center">
           <h2 className="text-dark mb-3 text-3xl font-bold dark:text-white">

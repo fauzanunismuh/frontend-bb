@@ -10,7 +10,7 @@ const SingleBeritaSekilas = ({
   const { title, image, paragraph, id } = BeritaSekilas;
 
   return (
-    <div className="group shadow-one hover:shadow-two dark:bg-dark dark:hover:shadow-gray-dark relative overflow-hidden rounded-xs bg-white duration-300">
+    <div className="group shadow-one hover:shadow-two dark:bg-dark dark:hover:shadow-gray-dark relative flex h-full flex-col overflow-hidden rounded-xs bg-white duration-300">
       {/* Gambar utama */}
       <Link
         href={`/berita/${id}`}
@@ -20,7 +20,7 @@ const SingleBeritaSekilas = ({
       </Link>
 
       {/* Konten */}
-      <div className="p-6 sm:p-8 md:px-6 md:py-8 lg:p-8 xl:px-5 xl:py-8 2xl:p-8">
+      <div className="flex flex-grow flex-col p-6 sm:p-8 md:px-6 md:py-8 lg:p-8 xl:px-5 xl:py-8 2xl:p-8">
         <h3>
           <Link
             href={`/berita/${id}`}
@@ -29,7 +29,7 @@ const SingleBeritaSekilas = ({
             {title}
           </Link>
         </h3>
-        <p className="border-body-color/10 text-body-color mb-6 border-b pb-6 text-base font-medium dark:border-white/10">
+        <p className="border-body-color/10 text-body-color mb-6 flex-grow border-b pb-6 text-base font-medium dark:border-white/10">
           {paragraph}
         </p>
 
