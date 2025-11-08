@@ -84,9 +84,9 @@ const SigninForm = () => {
           />
         </div>
 
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex items-center justify-end">
           <Link
-            href="#"
+            href="/forgot-password"
             className="text-sm font-medium text-gray-800 hover:underline"
           >
             Lupa Password?

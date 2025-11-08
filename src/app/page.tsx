@@ -4,6 +4,7 @@ import Hero from "@/components/Hero";
 import Mitra from "@/components/Mitra";
 import UnitBisnis from "@/components/UnitBisnis";
 import Video from "@/components/Video";
+import { getBeritaPublic } from "@/lib/api";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,7 +13,15 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-export default function Home() {
+export default async function Home() {
+  let publikasi = null;
+  try {
+    const { data } = await getBeritaPublic({ limit: 3 });
+    publikasi = data;
+  } catch (error) {
+    console.error("Gagal memuat publikasi terbaru:", error);
+  }
+
   return (
     <>
       <ScrollUp />
@@ -24,8 +33,7 @@ export default function Home() {
       {/* <AboutSectionTwo /> */}
       {/* <Testimonials /> */}
       {/* <Pricing /> */}
-      {/* <BeritaSekilas /> */}
-      <BeritaSekilas />
+      <BeritaSekilas items={publikasi ?? undefined} />
       {/* <Contact /> */}
     </>
   );
