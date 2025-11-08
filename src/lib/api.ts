@@ -114,6 +114,23 @@ export async function loginAdmin(credentials: {
   });
 }
 
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type ForgotPasswordResponse = {
+  message: string;
+};
+
+export async function requestAdminPasswordReset(
+  payload: ForgotPasswordPayload,
+): Promise<ForgotPasswordResponse> {
+  return fetchJson<ForgotPasswordResponse>("/api/admin/forgot-password", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 export async function getBeritaAdmin(
   token: string,
 ): Promise<PublicBerita[]> {
@@ -149,6 +166,16 @@ export async function updateBeritaAdmin(
   return fetchJson<PublicBerita>(`/api/admin/berita/${id}`, {
     method: "PUT",
     body: JSON.stringify(payload),
+    authToken: token,
+  });
+}
+
+export async function deleteBeritaAdmin(
+  token: string,
+  id: string,
+): Promise<void> {
+  await fetchJson(`/api/admin/berita/${id}`, {
+    method: "DELETE",
     authToken: token,
   });
 }

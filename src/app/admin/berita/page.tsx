@@ -4,6 +4,7 @@ import {
   CreateBeritaPayload,
   PublicBerita,
   createBeritaAdmin,
+  deleteBeritaAdmin,
   getBeritaAdmin,
   updateBeritaAdmin,
   uploadImageRequest,
@@ -93,12 +94,20 @@ const AdminBeritaPage = () => {
 
   const [formState, setFormState] =
     useState<CreateBeritaPayload>(initialFormState);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageUploadError, setImageUploadError] = useState<string | null>(null);
   const [statusUpdatingId, setStatusUpdatingId] = useState<string | null>(null);
+  const [inlineImageError, setInlineImageError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const resetFormState = useCallback(() => {
+    setFormState({ ...initialFormState });
+    setInlineImageError(null);
+  }, []);
 
   const handleChange = (
     event: ChangeEvent<
@@ -153,10 +162,60 @@ const AdminBeritaPage = () => {
     }
   };
 
+  const handleInlineImageUpload = useCallback(
+    async (file: File) => {
+      if (!token) {
+        throw new Error("Anda belum login.");
+      }
+      const { imageUrl } = await uploadImageRequest(token, file);
+      return imageUrl;
+    },
+    [token],
+  );
+
+  const handleDelete = async (beritaId: string, title: string) => {
+    if (!token) {
+      setListError("Anda belum login.");
+      return;
+    }
+    const confirmed =
+      typeof window === "undefined"
+        ? true
+        : window.confirm(
+            `Hapus berita "${title}"? Tindakan ini tidak dapat dibatalkan.`,
+          );
+    if (!confirmed) return;
+    setDeletingId(beritaId);
+    setListError(null);
+    try {
+      await deleteBeritaAdmin(token, beritaId);
+      if (editingId === beritaId) {
+        resetFormState();
+        setEditingId(null);
+      }
+      await loadNews();
+    } catch (error) {
+      setListError(
+        error instanceof Error
+          ? error.message
+          : "Gagal menghapus berita. Coba lagi.",
+      );
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!token) {
       setSubmitError("Anda belum login.");
+      return;
+    }
+    const plainContent = formState.isi_konten
+      ?.replace(/<[^>]+>/g, "")
+      .trim();
+    if (!plainContent) {
+      setSubmitError("Isi konten tidak boleh kosong.");
       return;
     }
     if (!formState.gambar_utama_url) {
@@ -168,9 +227,15 @@ const AdminBeritaPage = () => {
     setSubmitError(null);
     setSubmitSuccess(null);
     try {
-      await createBeritaAdmin(token, formState);
+      if (editingId) {
+        await updateBeritaAdmin(token, editingId, formState);
+        setSubmitSuccess("Berita berhasil diperbarui.");
+      } else {
+        await createBeritaAdmin(token, formState);
       setSubmitSuccess("Berita berhasil disimpan.");
-      setFormState(initialFormState);
+      }
+      resetFormState();
+      setEditingId(null);
       await loadNews();
     } catch (error) {
       setSubmitError(
@@ -182,6 +247,43 @@ const AdminBeritaPage = () => {
       setSubmitting(false);
     }
   };
+
+  const handleEditStart = (berita: PublicBerita) => {
+    setFormState({
+      judul: berita.judul ?? "",
+      ringkasan: berita.ringkasan ?? "",
+      isi_konten: berita.isi_konten ?? "",
+      gambar_utama_url: berita.gambar_utama_url ?? "",
+      status: berita.status ?? "draft",
+    });
+    setEditingId(berita.id);
+    setSubmitError(null);
+    setSubmitSuccess(null);
+    setInlineImageError(null);
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    resetFormState();
+    setEditingId(null);
+    setSubmitError(null);
+    setSubmitSuccess(null);
+    setInlineImageError(null);
+  };
+
+  const isEditing = Boolean(editingId);
+  const editingNewsTitle = useMemo(() => {
+    if (!editingId) return null;
+    return news.find((item) => item.id === editingId)?.judul ?? null;
+  }, [editingId, news]);
+  const formTitle = isEditing ? "Edit Berita" : "Tambah Berita";
+  const formDescription = isEditing
+    ? "Perbarui konten berita yang sudah dipublikasikan atau masih draft."
+    : "Lengkapi formulir di bawah untuk mempublikasikan berita baru.";
+  const submitLabel = isEditing ? "Perbarui Berita" : "Simpan Berita";
+  const submitLoadingLabel = isEditing ? "Memperbarui..." : "Menyimpan...";
 
   const pageHeading = useMemo(
     () => (adminName ? `Halo, ${adminName}` : "Dashboard Admin"),
@@ -249,9 +351,26 @@ const AdminBeritaPage = () => {
             <h2 className="text-dark text-xl font-semibold dark:text-white">
               Tambah Berita
             </h2>
-            <p className="text-body-color mb-6 text-sm dark:text-gray-400">
-              Lengkapi formulir di bawah untuk mempublikasikan berita baru.
+            <p className="text-body-color mb-4 text-sm dark:text-gray-400">
+              {formDescription}
             </p>
+            {isEditing && (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm text-primary">
+                <span>
+                  Mengedit:{" "}
+                  <span className="font-semibold">
+                    {editingNewsTitle ?? "Berita terpilih"}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="text-xs font-semibold uppercase tracking-wide text-primary hover:text-primary/80"
+                >
+                  Batal Edit
+                </button>
+              </div>
+            )}
 
             {submitError && (
               <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -303,7 +422,7 @@ const AdminBeritaPage = () => {
                   htmlFor="isi_konten"
                   className="text-dark text-sm font-medium dark:text-gray-200"
                 >
-                  Isi Konten (HTML)
+                  Isi Konten
                 </label>
                 <textarea
                   id="isi_konten"
@@ -382,7 +501,7 @@ const AdminBeritaPage = () => {
                 disabled={submitting || uploadingImage}
                 className="bg-primary hover:bg-primary/90 disabled:bg-primary/50 w-full rounded-md px-6 py-3 text-sm font-semibold text-white"
               >
-                {submitting ? "Menyimpan..." : "Simpan Berita"}
+                {submitting ? submitLoadingLabel : submitLabel}
               </button>
             </form>
           </div>
@@ -451,6 +570,22 @@ const AdminBeritaPage = () => {
                     >
                       Lihat Halaman Publik
                     </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleEditStart(item)}
+                      disabled={editingId === item.id}
+                      className="rounded-md border border-gray-200 px-3 py-1 text-sm font-semibold text-dark transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+                    >
+                      {editingId === item.id ? "Sedang Diedit" : "Edit"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(item.id, item.judul)}
+                      disabled={deletingId === item.id}
+                      className="rounded-md border border-red-200 px-3 py-1 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-200/60 disabled:text-red-400 dark:border-red-400/40 dark:hover:bg-red-500/10"
+                    >
+                      {deletingId === item.id ? "Menghapus..." : "Hapus"}
+                    </button>
                     <button
                       onClick={() =>
                         handleStatusChange(
