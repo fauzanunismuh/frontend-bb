@@ -55,7 +55,7 @@ const BeritaDetail = async ({ params }: BeritaDetailProps) => {
           </p>
 
           <article
-            className="prose prose-lg dark:prose-invert max-w-none"
+            className="richtext-content"
             dangerouslySetInnerHTML={{ __html: berita.isi_konten }}
           />
 
