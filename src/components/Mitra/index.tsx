@@ -1,16 +1,43 @@
+"use client"; // Tambahkan ini
+
+import { useLanguage } from "@/app/providers"; // Impor hook
 import { Brand } from "@/types/brand";
 import Image from "next/image";
+import { useMemo } from "react"; // Impor hook
 import SectionTitle from "../Common/SectionTitle";
 import MitraData from "./MitraData";
 
+// Teks
+const texts = {
+  id: {
+    title: "Mitra dan Klien",
+    description:
+      "Bosowa Bandar Group menjalin kemitraan strategis dengan berbagai perusahaan dan lembaga untuk mendukung layanan pelabuhan yang profesional, efisien, dan terpercaya.",
+  },
+  en: {
+    title: "Partners and Clients",
+    description:
+      "Bosowa Bandar Group establishes strategic partnerships with various companies and institutions to support professional, efficient, and reliable port services.",
+  },
+};
+
 const Mitra = () => {
+  const { language } = useLanguage(); // Panggil hook
+  const t = language === "en" ? texts.en : texts.id; // Pilih teks
+
+  // Pilih data mitra berdasarkan bahasa
+  const mitraList = useMemo(
+    () => MitraData[language] || MitraData.id,
+    [language],
+  );
+
   return (
     <section className="py-16 md:py-20 lg:py-28">
       <div className="container">
         {/* ======== Judul & Deskripsi ======== */}
         <SectionTitle
-          title="Mitra dan Klien"
-          paragraph="Bosowa Bandar Group menjalin kemitraan strategis dengan berbagai perusahaan dan lembaga untuk mendukung layanan pelabuhan yang profesional, efisien, dan terpercaya."
+          title={t.title}
+          paragraph={t.description}
           center
           mb="80px"
         />
@@ -19,7 +46,7 @@ const Mitra = () => {
         <div className="-mx-4 flex flex-wrap justify-center">
           <div className="w-full px-4">
             <div className="bg-gray-light/70 dark:bg-gray-dark/80 flex flex-wrap items-center justify-center rounded-lg px-8 py-10 shadow-sm sm:px-10 md:px-[50px] md:py-[40px] xl:p-[50px] 2xl:px-[70px] 2xl:py-[60px]">
-              {MitraData.map((brand) => (
+              {mitraList.map((brand) => (
                 <SingleBrand key={brand.id} brand={brand} />
               ))}
             </div>

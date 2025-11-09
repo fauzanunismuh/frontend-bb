@@ -1,13 +1,28 @@
-import { Metadata } from "next";
+"use client"; // Tambahkan ini
+
+import { useLanguage } from "@/app/providers"; // Impor hook
+// import { Metadata } from "next"; // Hapus
 import Image from "next/image";
 import SigninForm from "./signin-form";
 
-export const metadata: Metadata = {
-  title: "Masuk | PT Bosowa Bandar Indonesia",
-  description: "Halaman masuk akun PT Bosowa Bandar Indonesia",
+// Hapus metadata
+// export const metadata: Metadata = { ... };
+
+const texts = {
+  id: {
+    title: "Admin Website \n Bosowa Bandar",
+    description: "Silakan masuk untuk mengelola website Bosowa Bandar",
+  },
+  en: {
+    title: "Bosowa Bandar \n Website Admin",
+    description: "Please sign in to manage the Bosowa Bandar website",
+  },
 };
 
 const SigninPage = () => {
+  const { language } = useLanguage();
+  const t = language === "en" ? texts.en : texts.id;
+
   return (
     <section className="mt-15 flex min-h-screen flex-col bg-[#F9FBFF] md:flex-row">
       {/* Kolom kiri */}
@@ -21,12 +36,10 @@ const SigninPage = () => {
             className="mb-10"
           />
 
-          <h1 className="mb-4 text-4xl leading-tight font-bold text-[#D90000]">
-            Admin Website <br /> Bosowa Bandar
+          <h1 className="mb-4 text-4xl leading-tight font-bold whitespace-pre-line text-[#D90000]">
+            {t.title}
           </h1>
-          <p className="mb-10 text-base text-gray-600">
-            Silakan masuk untuk mengelola website Bosowa Bandar
-          </p>
+          <p className="mb-10 text-base text-gray-600">{t.description}</p>
         </div>
       </div>
 

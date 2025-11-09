@@ -1,12 +1,42 @@
 "use client";
 
+import { useLanguage } from "@/app/providers"; // Impor hook
 import { loginAdmin } from "@/lib/api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+// Teks
+const texts = {
+  id: {
+    title: "Masuk",
+    errorMessage: "Gagal masuk. Silakan periksa kembali kredensial Anda.",
+    labelEmail: "Username / Email",
+    placeholderEmail: "Masukkan email Anda",
+    labelPassword: "Password",
+    placeholderPassword: "Masukkan password Anda",
+    forgotPassword: "Lupa Password?",
+    buttonSubmit: "Masuk",
+    buttonLoading: "Memproses...",
+  },
+  en: {
+    title: "Sign In",
+    errorMessage: "Login failed. Please check your credentials.",
+    labelEmail: "Username / Email",
+    placeholderEmail: "Enter your email",
+    labelPassword: "Password",
+    placeholderPassword: "Enter your password",
+    forgotPassword: "Forgot Password?",
+    buttonSubmit: "Sign In",
+    buttonLoading: "Processing...",
+  },
+};
+
 const SigninForm = () => {
   const router = useRouter();
+  const { language } = useLanguage(); // Panggil hook
+  const t = language === "en" ? texts.en : texts.id; // Pilih teks
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,11 +53,7 @@ const SigninForm = () => {
       localStorage.setItem("bbi_admin_profile", JSON.stringify(result.admin));
       router.push("/admin/berita");
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Gagal masuk. Silakan periksa kembali kredensial Anda.",
-      );
+      setError(err instanceof Error ? err.message : t.errorMessage);
     } finally {
       setLoading(false);
     }
@@ -36,7 +62,7 @@ const SigninForm = () => {
   return (
     <div className="mt-5 rounded-lg">
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-        Masuk
+        {t.title}
       </h2>
 
       {error && (
@@ -51,7 +77,7 @@ const SigninForm = () => {
             htmlFor="email"
             className="mb-2 block text-sm font-medium text-gray-700"
           >
-            Username / Email
+            {t.labelEmail}
           </label>
           <input
             type="text"
@@ -60,7 +86,7 @@ const SigninForm = () => {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             className="w-full rounded-md border border-gray-300 bg-gray-100 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-700 focus:outline-none"
-            placeholder="Masukkan email Anda"
+            placeholder={t.placeholderEmail}
             required
           />
         </div>
@@ -70,7 +96,7 @@ const SigninForm = () => {
             htmlFor="password"
             className="mb-2 block text-sm font-medium text-gray-700"
           >
-            Password
+            {t.labelPassword}
           </label>
           <input
             type="password"
@@ -79,7 +105,7 @@ const SigninForm = () => {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             className="w-full rounded-md border border-gray-300 bg-gray-100 px-4 py-3 text-gray-900 focus:ring-2 focus:ring-blue-700 focus:outline-none"
-            placeholder="Masukkan password Anda"
+            placeholder={t.placeholderPassword}
             required
           />
         </div>
@@ -89,7 +115,7 @@ const SigninForm = () => {
             href="/forgot-password"
             className="text-sm font-medium text-gray-800 hover:underline"
           >
-            Lupa Password?
+            {t.forgotPassword}
           </Link>
         </div>
 
@@ -98,7 +124,7 @@ const SigninForm = () => {
           disabled={loading}
           className="w-full rounded-md bg-[#000F68] py-3 font-semibold text-white transition-all duration-300 hover:bg-[#001A99]"
         >
-          {loading ? "Memproses..." : "Masuk"}
+          {loading ? t.buttonLoading : t.buttonSubmit}
         </button>
       </form>
     </div>

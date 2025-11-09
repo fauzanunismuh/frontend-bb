@@ -1,5 +1,18 @@
+"use client"; // Tambahkan ini
+
+import { useLanguage } from "@/app/providers"; // Impor hook
 import Image from "next/image";
 import Link from "next/link";
+
+// Teks
+const texts = {
+  id: {
+    readMore: "Baca Selengkapnya →",
+  },
+  en: {
+    readMore: "Read More →",
+  },
+};
 
 export type BeritaCard = {
   slug: string;
@@ -10,6 +23,9 @@ export type BeritaCard = {
 };
 
 const SingleBeritaSekilas = ({ data }: { data: BeritaCard }) => {
+  const { language } = useLanguage(); // Panggil hook
+  const t = language === "en" ? texts.en : texts.id; // Pilih teks
+
   const { title, imageUrl, summary = "", slug } = data;
   const excerpt =
     summary.length > 180 ? `${summary.slice(0, 177).trimEnd()}...` : summary;
@@ -44,7 +60,7 @@ const SingleBeritaSekilas = ({ data }: { data: BeritaCard }) => {
             href={`/berita/${slug}`}
             className="text-primary hover:text-primary/80 text-sm font-semibold"
           >
-            Baca Selengkapnya →
+            {t.readMore}
           </Link>
         </div>
       </div>

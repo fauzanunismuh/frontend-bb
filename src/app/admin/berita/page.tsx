@@ -1,5 +1,7 @@
 "use client";
 
+import { useLanguage } from "@/app/providers"; // Impor hook
+import RichTextEditor from "@/components/RichTextEditor";
 import {
   CreateBeritaPayload,
   PublicBerita,
@@ -27,7 +29,122 @@ const initialFormState: CreateBeritaPayload = {
   status: "draft",
 };
 
+// Objek Teks
+const texts = {
+  id: {
+    loading: "Memuat...",
+    adminDashboard: "Dashboard Admin",
+    loginFirst: "Harap",
+    loginLink: "login terlebih dahulu",
+    loginMessage: "untuk mengelola berita.",
+    contentAdmin: "Administrasi Konten",
+    pageHeadingDefault: "Dashboard Admin",
+    pageHeadingUser: "Halo, {name}",
+    pageDescription: "Atur berita Bosowa Bandar Indonesia dari satu tempat.",
+    logout: "Keluar",
+    addNews: "Tambah Berita",
+    addDesc: "Lengkapi formulir di bawah untuk mempublikasikan berita baru.",
+    editNews: "Edit Berita",
+    editDesc:
+      "Perbarui konten berita yang sudah dipublikasikan atau masih draft.",
+    editingLabel: "Mengedit:",
+    cancelEdit: "Batal Edit",
+    formTitle: "Judul",
+    formSummary: "Ringkasan",
+    formContent: "Isi Konten",
+    formContentHelp:
+      "Tulis konten lengkap beserta gambar/tautan menggunakan toolbar seperti Microsoft Word.",
+    formMainImage: "Gambar Utama (Upload)",
+    formMainImageHelp: "Maksimal 5MB. Format yang disarankan: JPG atau PNG.",
+    uploadingImage: "Mengunggah gambar...",
+    imagePreview: "Pratinjau Gambar:",
+    formStatus: "Status",
+    statusDraft: "Draft",
+    statusPublish: "Publikasikan",
+    saveButton: "Simpan Berita",
+    savingButton: "Menyimpan...",
+    updateButton: "Perbarui Berita",
+    updatingButton: "Memperbarui...",
+    allNews: "Semua Berita",
+    refresh: "Segarkan",
+    refreshing: "Menyegarkan...",
+    noNews: "Belum ada berita yang dibuat.",
+    statusPublished: "Published",
+    statusDraftLabel: "Draft",
+    viewPublicPage: "Lihat Halaman Publik",
+    edit: "Edit",
+    editing: "Sedang Diedit",
+    delete: "Hapus",
+    deleting: "Menghapus...",
+    setDraft: "Jadikan Draft",
+    publish: "Publikasikan",
+    savingStatus: "Menyimpan...",
+    deleteConfirm:
+      'Hapus berita "{title}"? Tindakan ini tidak dapat dibatalkan.',
+    uploadErrorNotLoggedIn: "Anda belum login.",
+    uploadErrorGeneral: "Gagal mengunggah gambar. Coba lagi.",
+    contentEmptyError: "Isi konten tidak boleh kosong.",
+    imageEmptyError: "Unggah gambar utama sebelum menyimpan berita.",
+  },
+  en: {
+    loading: "Loading...",
+    adminDashboard: "Admin Dashboard",
+    loginFirst: "Please",
+    loginLink: "login first",
+    loginMessage: "to manage news.",
+    contentAdmin: "Content Administration",
+    pageHeadingDefault: "Admin Dashboard",
+    pageHeadingUser: "Hello, {name}",
+    pageDescription: "Manage Bosowa Bandar Indonesia news from one place.",
+    logout: "Logout",
+    addNews: "Add News",
+    addDesc: "Complete the form below to publish new content.",
+    editNews: "Edit News",
+    editDesc: "Update published or draft news content.",
+    editingLabel: "Editing:",
+    cancelEdit: "Cancel Edit",
+    formTitle: "Title",
+    formSummary: "Summary",
+    formContent: "Content",
+    formContentHelp:
+      "Write the full content with images/links using the toolbar, similar to Microsoft Word.",
+    formMainImage: "Main Image (Upload)",
+    formMainImageHelp: "Max 5MB. Recommended formats: JPG or PNG.",
+    uploadingImage: "Uploading image...",
+    imagePreview: "Image Preview:",
+    formStatus: "Status",
+    statusDraft: "Draft",
+    statusPublish: "Publish",
+    saveButton: "Save News",
+    savingButton: "Saving...",
+    updateButton: "Update News",
+    updatingButton: "Updating...",
+    allNews: "All News",
+    refresh: "Refresh",
+    refreshing: "Refreshing...",
+    noNews: "No news has been created yet.",
+    statusPublished: "Published",
+    statusDraftLabel: "Draft",
+    viewPublicPage: "View Public Page",
+    edit: "Edit",
+    editing: "Editing",
+    delete: "Delete",
+    deleting: "Deleting...",
+    setDraft: "Set to Draft",
+    publish: "Publish",
+    savingStatus: "Saving...",
+    deleteConfirm: 'Delete news "{title}"? This action cannot be undone.',
+    uploadErrorNotLoggedIn: "You are not logged in.",
+    uploadErrorGeneral: "Failed to upload image. Please try again.",
+    contentEmptyError: "Content cannot be empty.",
+    imageEmptyError: "Upload a main image before saving.",
+  },
+};
+
 const AdminBeritaPage = () => {
+  const { language } = useLanguage();
+  const t = language === "en" ? texts.en : texts.id;
+
   const [token, setToken] = useState<string | null>(null);
   const [adminName, setAdminName] = useState<string | null>(null);
   const [initializing, setInitializing] = useState(true);
@@ -143,7 +260,7 @@ const AdminBeritaPage = () => {
     const file = event.target.files?.[0];
     if (!file) return;
     if (!token) {
-      setImageUploadError("Anda belum login.");
+      setImageUploadError(t.uploadErrorNotLoggedIn);
       return;
     }
     setImageUploadError(null);
@@ -153,9 +270,7 @@ const AdminBeritaPage = () => {
       setFormState((prev) => ({ ...prev, gambar_utama_url: imageUrl }));
     } catch (error) {
       setImageUploadError(
-        error instanceof Error
-          ? error.message
-          : "Gagal mengunggah gambar. Coba lagi.",
+        error instanceof Error ? error.message : t.uploadErrorGeneral,
       );
     } finally {
       setUploadingImage(false);
@@ -165,25 +280,23 @@ const AdminBeritaPage = () => {
   const handleInlineImageUpload = useCallback(
     async (file: File) => {
       if (!token) {
-        throw new Error("Anda belum login.");
+        throw new Error(t.uploadErrorNotLoggedIn);
       }
       const { imageUrl } = await uploadImageRequest(token, file);
       return imageUrl;
     },
-    [token],
+    [token, t.uploadErrorNotLoggedIn],
   );
 
   const handleDelete = async (beritaId: string, title: string) => {
     if (!token) {
-      setListError("Anda belum login.");
+      setListError(t.uploadErrorNotLoggedIn);
       return;
     }
     const confirmed =
       typeof window === "undefined"
         ? true
-        : window.confirm(
-            `Hapus berita "${title}"? Tindakan ini tidak dapat dibatalkan.`,
-          );
+        : window.confirm(t.deleteConfirm.replace("{title}", title));
     if (!confirmed) return;
     setDeletingId(beritaId);
     setListError(null);
@@ -208,18 +321,16 @@ const AdminBeritaPage = () => {
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!token) {
-      setSubmitError("Anda belum login.");
+      setSubmitError(t.uploadErrorNotLoggedIn);
       return;
     }
-    const plainContent = formState.isi_konten
-      ?.replace(/<[^>]+>/g, "")
-      .trim();
+    const plainContent = formState.isi_konten?.replace(/<[^>]+>/g, "").trim();
     if (!plainContent) {
-      setSubmitError("Isi konten tidak boleh kosong.");
+      setSubmitError(t.contentEmptyError);
       return;
     }
     if (!formState.gambar_utama_url) {
-      setSubmitError("Unggah gambar utama sebelum menyimpan berita.");
+      setSubmitError(t.imageEmptyError);
       return;
     }
 
@@ -232,7 +343,7 @@ const AdminBeritaPage = () => {
         setSubmitSuccess("Berita berhasil diperbarui.");
       } else {
         await createBeritaAdmin(token, formState);
-      setSubmitSuccess("Berita berhasil disimpan.");
+        setSubmitSuccess("Berita berhasil disimpan.");
       }
       resetFormState();
       setEditingId(null);
@@ -273,29 +384,33 @@ const AdminBeritaPage = () => {
     setInlineImageError(null);
   };
 
+  const handleRichTextChange = useCallback((html: string) => {
+    setFormState((prev) => ({ ...prev, isi_konten: html }));
+  }, []);
+
   const isEditing = Boolean(editingId);
   const editingNewsTitle = useMemo(() => {
     if (!editingId) return null;
     return news.find((item) => item.id === editingId)?.judul ?? null;
   }, [editingId, news]);
-  const formTitle = isEditing ? "Edit Berita" : "Tambah Berita";
-  const formDescription = isEditing
-    ? "Perbarui konten berita yang sudah dipublikasikan atau masih draft."
-    : "Lengkapi formulir di bawah untuk mempublikasikan berita baru.";
-  const submitLabel = isEditing ? "Perbarui Berita" : "Simpan Berita";
-  const submitLoadingLabel = isEditing ? "Memperbarui..." : "Menyimpan...";
+
+  const formTitle = isEditing ? t.editNews : t.addNews;
+  const formDescription = isEditing ? t.editDesc : t.addDesc;
+  const submitLabel = isEditing ? t.updateButton : t.saveButton;
+  const submitLoadingLabel = isEditing ? t.updatingButton : t.savingButton;
 
   const pageHeading = useMemo(
-    () => (adminName ? `Halo, ${adminName}` : "Dashboard Admin"),
-    [adminName],
+    () =>
+      adminName
+        ? t.pageHeadingUser.replace("{name}", adminName)
+        : t.pageHeadingDefault,
+    [adminName, t],
   );
 
   if (initializing) {
     return (
       <section className="container mt-24 py-20 text-center">
-        {" "}
-        {/* Ditambah mt-24 */}
-        <p className="text-body-color dark:text-gray-400">Memuat...</p>
+        <p className="text-body-color dark:text-gray-400">{t.loading}</p>
       </section>
     );
   }
@@ -303,18 +418,16 @@ const AdminBeritaPage = () => {
   if (!token) {
     return (
       <section className="bg-gray-light/30 dark:bg-gray-dark/40 mt-24 py-20">
-        {" "}
-        {/* Ditambah mt-24 */}
         <div className="container text-center">
           <h1 className="text-dark text-3xl font-bold dark:text-white">
-            Dashboard Admin
+            {t.adminDashboard}
           </h1>
           <p className="text-body-color mt-4">
-            Harap{" "}
+            {t.loginFirst}{" "}
             <Link href="/signin" className="text-primary font-semibold">
-              login terlebih dahulu
+              {t.loginLink}
             </Link>{" "}
-            untuk mengelola berita.
+            {t.loginMessage}
           </p>
         </div>
       </section>
@@ -323,41 +436,39 @@ const AdminBeritaPage = () => {
 
   return (
     <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
-      {" "}
-      {/* Ditambah mt-24 */}
       <div className="container">
         <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-primary text-sm tracking-wide uppercase">
-              Administrasi Konten
+              {t.contentAdmin}
             </p>
             <h1 className="text-dark text-3xl font-bold dark:text-white">
               {pageHeading}
             </h1>
             <p className="text-body-color dark:text-gray-400">
-              Atur berita Bosowa Bandar Indonesia dari satu tempat.
+              {t.pageDescription}
             </p>
           </div>
           <button
             onClick={logout}
             className="text-sm font-semibold text-red-500 hover:text-red-600"
           >
-            Keluar
+            {t.logout}
           </button>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2">
           <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
             <h2 className="text-dark text-xl font-semibold dark:text-white">
-              Tambah Berita
+              {formTitle}
             </h2>
             <p className="text-body-color mb-4 text-sm dark:text-gray-400">
               {formDescription}
             </p>
             {isEditing && (
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm text-primary">
+              <div className="border-primary/40 bg-primary/5 text-primary mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-dashed px-4 py-3 text-sm">
                 <span>
-                  Mengedit:{" "}
+                  {t.editingLabel}{" "}
                   <span className="font-semibold">
                     {editingNewsTitle ?? "Berita terpilih"}
                   </span>
@@ -365,9 +476,9 @@ const AdminBeritaPage = () => {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="text-xs font-semibold uppercase tracking-wide text-primary hover:text-primary/80"
+                  className="text-primary hover:text-primary/80 text-xs font-semibold tracking-wide uppercase"
                 >
-                  Batal Edit
+                  {t.cancelEdit}
                 </button>
               </div>
             )}
@@ -389,7 +500,7 @@ const AdminBeritaPage = () => {
                   htmlFor="judul"
                   className="text-dark text-sm font-medium dark:text-gray-200"
                 >
-                  Judul
+                  {t.formTitle}
                 </label>
                 <input
                   id="judul"
@@ -405,7 +516,7 @@ const AdminBeritaPage = () => {
                   htmlFor="ringkasan"
                   className="text-dark text-sm font-medium dark:text-gray-200"
                 >
-                  Ringkasan
+                  {t.formSummary}
                 </label>
                 <textarea
                   id="ringkasan"
@@ -422,24 +533,32 @@ const AdminBeritaPage = () => {
                   htmlFor="isi_konten"
                   className="text-dark text-sm font-medium dark:text-gray-200"
                 >
-                  Isi Konten
+                  {t.formContent}
                 </label>
-                <textarea
-                  id="isi_konten"
-                  name="isi_konten"
-                  value={formState.isi_konten}
-                  onChange={handleChange}
-                  rows={6}
-                  required
-                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                />
+                <div className="mt-2">
+                  <RichTextEditor
+                    id="isi_konten"
+                    value={formState.isi_konten}
+                    onChange={handleRichTextChange}
+                    onUploadImage={handleInlineImageUpload}
+                    onUploadError={setInlineImageError}
+                  />
+                </div>
+                <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+                  {t.formContentHelp}
+                </p>
+                {inlineImageError && (
+                  <p className="mt-2 text-sm text-red-500">
+                    {inlineImageError}
+                  </p>
+                )}
               </div>
               <div>
                 <label
                   htmlFor="gambar_utama_url"
                   className="text-dark text-sm font-medium dark:text-gray-200"
                 >
-                  Gambar Utama (Upload)
+                  {t.formMainImage}
                 </label>
                 <input
                   id="gambar_utama_url"
@@ -449,7 +568,7 @@ const AdminBeritaPage = () => {
                   className="border-stroke file:bg-primary hover:file:bg-primary/90 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white dark:border-gray-700 dark:bg-gray-800"
                 />
                 <p className="text-body-color mt-2 text-xs">
-                  Maksimal 5MB. Format yang disarankan: JPG atau PNG.
+                  {t.formMainImageHelp}
                 </p>
                 {imageUploadError && (
                   <p className="mt-2 text-sm text-red-500">
@@ -458,13 +577,13 @@ const AdminBeritaPage = () => {
                 )}
                 {uploadingImage && (
                   <p className="text-body-color mt-2 text-sm">
-                    Mengunggah gambar...
+                    {t.uploadingImage}
                   </p>
                 )}
                 {formState.gambar_utama_url && (
                   <div className="mt-4">
                     <p className="text-dark text-xs font-medium dark:text-gray-200">
-                      Pratinjau Gambar:
+                      {t.imagePreview}
                     </p>
                     <div className="relative mt-2 h-40 w-full overflow-hidden rounded-md border border-dashed border-gray-300 dark:border-gray-700">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -482,7 +601,7 @@ const AdminBeritaPage = () => {
                   htmlFor="status"
                   className="text-dark text-sm font-medium dark:text-gray-200"
                 >
-                  Status
+                  {t.formStatus}
                 </label>
                 <select
                   id="status"
@@ -491,8 +610,8 @@ const AdminBeritaPage = () => {
                   onChange={handleChange}
                   className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
                 >
-                  <option value="draft">Draft</option>
-                  <option value="published">Publikasikan</option>
+                  <option value="draft">{t.statusDraft}</option>
+                  <option value="published">{t.statusPublish}</option>
                 </select>
               </div>
 
@@ -509,14 +628,14 @@ const AdminBeritaPage = () => {
           <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-dark text-xl font-semibold dark:text-white">
-                Semua Berita
+                {t.allNews}
               </h2>
               <button
                 onClick={loadNews}
                 disabled={listLoading}
                 className="text-primary hover:text-primary/80 disabled:text-primary/40 text-sm font-semibold"
               >
-                {listLoading ? "Menyegarkan..." : "Segarkan"}
+                {listLoading ? t.refreshing : t.refresh}
               </button>
             </div>
             {listError && (
@@ -528,7 +647,7 @@ const AdminBeritaPage = () => {
             <div className="space-y-4">
               {news.length === 0 && !listLoading && (
                 <p className="text-body-color text-sm dark:text-gray-400">
-                  Belum ada berita yang dibuat.
+                  {t.noNews}
                 </p>
               )}
 
@@ -543,13 +662,15 @@ const AdminBeritaPage = () => {
                         {item.judul}
                       </h3>
                       <p className="text-primary text-xs tracking-wide uppercase">
-                        {item.status === "published" ? "Published" : "Draft"}
+                        {item.status === "published"
+                          ? t.statusPublished
+                          : t.statusDraftLabel}
                       </p>
                     </div>
                     <span className="text-body-color text-sm dark:text-gray-400">
                       {item.published_at
                         ? new Date(item.published_at).toLocaleDateString(
-                            "id-ID",
+                            language === "en" ? "en-US" : "id-ID",
                             {
                               day: "2-digit",
                               month: "short",
@@ -568,15 +689,15 @@ const AdminBeritaPage = () => {
                       target="_blank"
                       className="text-primary hover:text-primary/80 text-sm font-semibold"
                     >
-                      Lihat Halaman Publik
+                      {t.viewPublicPage}
                     </Link>
                     <button
                       type="button"
                       onClick={() => handleEditStart(item)}
                       disabled={editingId === item.id}
-                      className="rounded-md border border-gray-200 px-3 py-1 text-sm font-semibold text-dark transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+                      className="text-dark rounded-md border border-gray-200 px-3 py-1 text-sm font-semibold transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
                     >
-                      {editingId === item.id ? "Sedang Diedit" : "Edit"}
+                      {editingId === item.id ? t.editing : t.edit}
                     </button>
                     <button
                       type="button"
@@ -584,7 +705,7 @@ const AdminBeritaPage = () => {
                       disabled={deletingId === item.id}
                       className="rounded-md border border-red-200 px-3 py-1 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-200/60 disabled:text-red-400 dark:border-red-400/40 dark:hover:bg-red-500/10"
                     >
-                      {deletingId === item.id ? "Menghapus..." : "Hapus"}
+                      {deletingId === item.id ? t.deleting : t.delete}
                     </button>
                     <button
                       onClick={() =>
@@ -597,10 +718,10 @@ const AdminBeritaPage = () => {
                       className="border-primary text-primary hover:bg-primary/10 disabled:border-primary/50 disabled:text-primary/50 rounded-md border px-3 py-1 text-sm font-semibold disabled:cursor-not-allowed"
                     >
                       {statusUpdatingId === item.id
-                        ? "Menyimpan..."
+                        ? t.savingStatus
                         : item.status === "published"
-                          ? "Jadikan Draft"
-                          : "Publikasikan"}
+                          ? t.setDraft
+                          : t.publish}
                     </button>
                   </div>
                 </article>

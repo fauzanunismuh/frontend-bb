@@ -1,19 +1,36 @@
 "use client";
 
+import { useLanguage } from "@/app/providers"; // Impor hook
 import Image from "next/image";
 import { useState } from "react";
 import SectionTitle from "../Common/SectionTitle";
 
+// Teks
+const texts = {
+  id: {
+    title: "Bosowa Bandar Group",
+    description:
+      "Perusahaan swasta nasional berdiri membawa sejarah lokal Indonesia Timur. Bosowa Bandar Group merupakan Badan Usaha Pelabuhan (BUP) yang merupakan bagian dari Bosowa Corporindo.",
+  },
+  en: {
+    title: "Bosowa Bandar Group",
+    description:
+      "A national private company established with the local history of Eastern Indonesia. Bosowa Bandar Group is a Port Business Entity (BUP) which is part of Bosowa Corporindo.",
+  },
+};
+
 export default function Video() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const { language } = useLanguage(); // Panggil hook
+  const t = language === "en" ? texts.en : texts.id; // Pilih teks
 
   return (
     <>
       <section className="relative z-10 py-16 md:py-20 lg:py-28">
         <div className="container">
           <SectionTitle
-            title="Bosowa Bandar Group"
-            paragraph="Perusahaan swasta nasional berdiri membawa sejarah lokal Indonesia Timur. Bosowa Bandar Group merupakan Badan Usaha Pelabuhan (BUP) yang merupakan bagian dari Bosowa Corporindo."
+            title={t.title}
+            paragraph={t.description}
             center
             mb="80px"
           />
