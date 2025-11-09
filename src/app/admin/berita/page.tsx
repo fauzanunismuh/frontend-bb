@@ -1,5 +1,6 @@
 "use client";
 
+import RichTextEditor from "@/components/RichTextEditor";
 import {
   CreateBeritaPayload,
   PublicBerita,
@@ -273,6 +274,10 @@ const AdminBeritaPage = () => {
     setInlineImageError(null);
   };
 
+  const handleRichTextChange = useCallback((html: string) => {
+    setFormState((prev) => ({ ...prev, isi_konten: html }));
+  }, []);
+
   const isEditing = Boolean(editingId);
   const editingNewsTitle = useMemo(() => {
     if (!editingId) return null;
@@ -424,15 +429,21 @@ const AdminBeritaPage = () => {
                 >
                   Isi Konten
                 </label>
-                <textarea
-                  id="isi_konten"
-                  name="isi_konten"
-                  value={formState.isi_konten}
-                  onChange={handleChange}
-                  rows={6}
-                  required
-                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                />
+                <div className="mt-2">
+                  <RichTextEditor
+                    id="isi_konten"
+                    value={formState.isi_konten}
+                    onChange={handleRichTextChange}
+                    onUploadImage={handleInlineImageUpload}
+                    onUploadError={setInlineImageError}
+                  />
+                </div>
+                <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+                  Tulis konten lengkap beserta gambar/tautan menggunakan toolbar seperti Microsoft Word.
+                </p>
+                {inlineImageError && (
+                  <p className="mt-2 text-sm text-red-500">{inlineImageError}</p>
+                )}
               </div>
               <div>
                 <label
