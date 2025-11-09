@@ -11,6 +11,7 @@ const Header = () => {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
   const { language, setLanguage } = useLanguage(); // Gunakan context
   const pathname = usePathname();
   const router = useRouter();
