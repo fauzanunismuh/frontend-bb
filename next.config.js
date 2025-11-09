@@ -14,6 +14,13 @@ const nextConfig = {
         port: "3001",
         pathname: "/**",
       },
+      // TAMBAHKAN BLOK INI
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
 };
