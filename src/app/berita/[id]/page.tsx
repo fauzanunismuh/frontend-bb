@@ -2,8 +2,12 @@ import { getBeritaDetail } from "@/lib/api";
 import { notFound } from "next/navigation";
 import BeritaDetailClient from "./berita-detail-client"; // Impor komponen klien
 
+type BeritaDetailParams = {
+  id: string;
+};
+
 type BeritaDetailProps = {
-  params: { id: string };
+  params: BeritaDetailParams | Promise<BeritaDetailParams>;
 };
 
 export const dynamic = "force-dynamic";
