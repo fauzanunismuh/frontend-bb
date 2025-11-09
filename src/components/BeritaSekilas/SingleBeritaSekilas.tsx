@@ -10,7 +10,9 @@ export type BeritaCard = {
 };
 
 const SingleBeritaSekilas = ({ data }: { data: BeritaCard }) => {
-  const { title, imageUrl, summary, slug } = data;
+  const { title, imageUrl, summary = "", slug } = data;
+  const excerpt =
+    summary.length > 180 ? `${summary.slice(0, 177).trimEnd()}...` : summary;
 
   return (
     <div className="group shadow-one hover:shadow-two dark:bg-dark dark:hover:shadow-gray-dark relative flex h-full flex-col overflow-hidden rounded-xs bg-white duration-300">
@@ -33,7 +35,7 @@ const SingleBeritaSekilas = ({ data }: { data: BeritaCard }) => {
           </Link>
         </h3>
         <p className="border-body-color/10 text-body-color mb-6 flex-grow border-b pb-6 text-base font-medium dark:border-white/10">
-          {paragraph}
+          {excerpt}
         </p>
 
         {/* Tombol baca selengkapnya */}
