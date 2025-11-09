@@ -3,15 +3,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+type BeritaDetailParams = {
+  id: string;
+};
+
 type BeritaDetailProps = {
-  params: { id: string };
+  params: BeritaDetailParams | Promise<BeritaDetailParams>;
 };
 
 export const dynamic = "force-dynamic";
 
 const BeritaDetail = async ({ params }: BeritaDetailProps) => {
   try {
-    const berita = await getBeritaDetail(params.id);
+    const { id } = await params;
+    const berita = await getBeritaDetail(id);
     const publishedDate = berita.published_at
       ? new Date(berita.published_at).toLocaleDateString("id-ID", {
           day: "2-digit",
