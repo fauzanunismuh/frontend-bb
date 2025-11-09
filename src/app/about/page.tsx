@@ -129,7 +129,7 @@ const AboutPage = () => {
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {/* === 1. Bosowa Bandar Agensi === */}
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
-              <div className="relative mb-4 h-24 w-full overflow-hidden rounded-lg">
+              <div className="relative mb-8 h-18 w-full overflow-hidden rounded-lg">
                 <Image
                   src="/images/about/bosowa-agensi.png"
                   alt="Bosowa Bandar Agensi"
@@ -147,7 +147,7 @@ const AboutPage = () => {
 
             {/* === 2. Bosowa Bandar Indonesia === */}
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
-              <div className="relative mb-4 h-24 w-full overflow-hidden rounded-lg">
+              <div className="relative mb-0 h-35 w-full overflow-hidden rounded-lg">
                 <Image
                   src="/images/about/bosowa-bandar-dark.png"
                   alt="Bosowa Bandar Indonesia"

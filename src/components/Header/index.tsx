@@ -139,14 +139,14 @@ const Header = () => {
               className={`header-logo block ${sticky ? "py-4" : "py-6"}`}
             >
               <Image
-                src="/images/logo/Bosowa-Bosowa-Bandar-Indonesia-tulisan-putih-scaled.png"
+                src="/images/logo/logo-light.png"
                 alt="logo"
                 width={140}
                 height={30}
                 className="block dark:hidden"
               />
               <Image
-                src="/images/logo/Bosowa-Bosowa-Bandar-Indonesia-tulisan-putih-scaled.png"
+                src="/images/logo/logo-light.png"
                 alt="logo"
                 width={140}
                 height={30}

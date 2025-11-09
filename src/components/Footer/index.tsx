@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer
       id="Footer"
-      className="dark:bg-gray-dark lg:pt-15 relative z-10 mt-20 bg-white pt-16 md:pt-20"
+      className="dark:bg-gray-dark relative z-10 mt-20 bg-white pt-16 md:pt-20 lg:pt-15"
     >
       <div className="container">
         <div className="-mx-4 flex flex-wrap justify-between">
@@ -77,7 +77,7 @@ const Footer = () => {
                 <i className="fa-brands fa-facebook-f text-2xl"></i>
               </Link>
               <Link
-                href="https://instagram.com"
+                href="https://www.instagram.com/bosowabandarindonesia/"
                 target="_blank"
                 aria-label="Instagram"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
@@ -85,15 +85,7 @@ const Footer = () => {
                 <i className="fa-brands fa-instagram text-2xl"></i>
               </Link>
               <Link
-                href="https://linkedin.com"
-                target="_blank"
-                aria-label="LinkedIn"
-                className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
-              >
-                <i className="fa-brands fa-linkedin-in text-2xl"></i>
-              </Link>
-              <Link
-                href="https://youtube.com"
+                href="https://youtube.com/@bosowabandarindonesia?si=OgBMG842l-u3dne2"
                 target="_blank"
                 aria-label="YouTube"
                 className="text-body-color hover:text-primary dark:text-body-color-dark dark:hover:text-primary transition"
