@@ -1,44 +1,82 @@
 "use client";
+import { useLanguage } from "@/app/providers"; // Impor hook
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-const slides = [
-  {
-    title: "Temukan Layanan Terbaik Untuk Armada Anda",
-    description:
-      "PT Bosowa Bandar Indonesia adalah Badan Usaha Pelabuhan (BUP) yang memberikan layanan pengelolaan pelabuhan, keagenan kapal, jasa bongkar muat dan layanan kapal tunda.",
-    image: "/images/hero/slide1.jpg",
-    primaryLink: "#",
-    secondaryLink: "#",
-  },
-  {
-    title: "Pelayanan Bongkar Muat Cepat, Aman, dan Profesional",
-    description:
-      "Didukung oleh tenaga kerja berpengalaman dan peralatan modern, Bosowa Bandar Indonesia memastikan proses bongkar muat berjalan efisien dan tepat waktu untuk setiap kapal yang berlabuh.",
-    image: "/images/hero/slide2.jpeg",
-    primaryLink: "#",
-    secondaryLink: "#",
-  },
-  {
-    title: "Solusi Terpadu untuk Keagenan dan Tunda Kapal",
-    description:
-      "Sebagai mitra strategis industri maritim, kami menyediakan layanan keagenan dan kapal tunda dengan standar keselamatan tinggi, mendukung kelancaran operasional pelabuhan di seluruh wilayah kerja Bosowa.",
-    image: "/images/hero/slide3.jpg",
-    primaryLink: "#",
-    secondaryLink: "#",
-  },
-];
+// Pindahkan data slide ke luar atau buat fungsi untuk mengambilnya
+const getSlidesData = (language: string) => {
+  if (language === "en") {
+    return [
+      {
+        title: "Find the Best Service For Your Fleet",
+        description:
+          "PT Bosowa Bandar Indonesia is a Port Business Entity (BUP) providing port management, ship agency, stevedoring, and tugboat services.",
+        image: "/images/hero/slide1.jpg",
+        primaryLink: "#",
+        contactUs: "Contact Us",
+      },
+      {
+        title: "Fast, Safe, and Professional Stevedoring Services",
+        description:
+          "Supported by experienced personnel and modern equipment, Bosowa Bandar Indonesia ensures efficient and timely loading/unloading processes for every vessel.",
+        image: "/images/hero/slide2.jpeg",
+        primaryLink: "#",
+        contactUs: "Contact Us",
+      },
+      {
+        title: "Integrated Solutions for Agency and Tugboat Services",
+        description:
+          "As a strategic partner in the maritime industry, we provide agency and tugboat services with high safety standards, supporting port operational smoothness.",
+        image: "/images/hero/slide3.jpg",
+        primaryLink: "#",
+        contactUs: "Contact Us",
+      },
+    ];
+  }
+
+  // Default (id)
+  return [
+    {
+      title: "Temukan Layanan Terbaik Untuk Armada Anda",
+      description:
+        "PT Bosowa Bandar Indonesia adalah Badan Usaha Pelabuhan (BUP) yang memberikan layanan pengelolaan pelabuhan, keagenan kapal, jasa bongkar muat dan layanan kapal tunda.",
+      image: "/images/hero/slide1.jpg",
+      primaryLink: "#",
+      contactUs: "Hubungi Kami",
+    },
+    {
+      title: "Pelayanan Bongkar Muat Cepat, Aman, dan Profesional",
+      description:
+        "Didukung oleh tenaga kerja berpengalaman dan peralatan modern, Bosowa Bandar Indonesia memastikan proses bongkar muat berjalan efisien dan tepat waktu untuk setiap kapal yang berlabuh.",
+      image: "/images/hero/slide2.jpeg",
+      primaryLink: "#",
+      contactUs: "Hubungi Kami",
+    },
+    {
+      title: "Solusi Terpadu untuk Keagenan dan Tunda Kapal",
+      description:
+        "Sebagai mitra strategis industri maritim, kami menyediakan layanan keagenan dan kapal tunda dengan standar keselamatan tinggi, mendukung kelancaran operasional pelabuhan di seluruh wilayah kerja Bosowa.",
+      image: "/images/hero/slide3.jpg",
+      primaryLink: "#",
+      contactUs: "Hubungi Kami",
+    },
+  ];
+};
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { language } = useLanguage(); // Gunakan hook
+
+  // Gunakan useMemo agar data slides diperbarui saat bahasa berubah
+  const slides = useMemo(() => getSlidesData(language), [language]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]); // Tambahkan slides.length sebagai dependensi
 
   return (
     <section
@@ -87,7 +125,7 @@ const Hero = () => {
                   rel="noopener noreferrer"
                   className="inline-block rounded-xs bg-white/20 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm duration-300 ease-in-out hover:bg-white/30"
                 >
-                  Contact Us
+                  {slide.contactUs}
                 </Link>
               </div>
             </div>

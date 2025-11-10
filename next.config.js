@@ -14,12 +14,14 @@ const nextConfig = {
         port: "3001",
         pathname: "/**",
       },
+      // PASTIKAN BLOK INI ADA SETELAH ANDA MERGE
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
         pathname: "/**",
       },
+      // Mungkin ada domain lain dari 'origin/main', biarkan saja
     ],
   },
 };

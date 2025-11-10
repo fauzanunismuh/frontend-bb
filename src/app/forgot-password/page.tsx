@@ -1,13 +1,29 @@
-import { Metadata } from "next";
+"use client"; // Tambahkan ini
+
+import { useLanguage } from "@/app/providers"; // Impor hook
+// import { Metadata } from "next"; // Hapus
 import Image from "next/image";
 import ForgotPasswordForm from "./forgot-password-form";
 
-export const metadata: Metadata = {
-  title: "Lupa Password | PT Bosowa Bandar Indonesia",
-  description: "Minta tautan reset password untuk admin Bosowa Bandar.",
+// Hapus metadata
+// export const metadata: Metadata = { ... };
+
+const texts = {
+  id: {
+    title: "Reset Password Admin",
+    description:
+      "Kami akan mengirim tautan reset melalui email yang terdaftar.",
+  },
+  en: {
+    title: "Admin Password Reset",
+    description: "We will send a reset link via the registered email.",
+  },
 };
 
 const ForgotPasswordPage = () => {
+  const { language } = useLanguage();
+  const t = language === "en" ? texts.en : texts.id;
+
   return (
     <section className="mt-15 flex min-h-screen flex-col bg-[#F9FBFF] md:flex-row">
       <div className="flex w-full flex-col items-start justify-center bg-white px-10 py-16 md:w-1/2 md:px-20">
@@ -21,11 +37,9 @@ const ForgotPasswordPage = () => {
           />
 
           <h1 className="mb-4 text-4xl leading-tight font-bold text-[#D90000]">
-            Reset Password Admin
+            {t.title}
           </h1>
-          <p className="mb-10 text-base text-gray-600">
-            Kami akan mengirim tautan reset melalui email yang terdaftar.
-          </p>
+          <p className="mb-10 text-base text-gray-600">{t.description}</p>
         </div>
       </div>
 
