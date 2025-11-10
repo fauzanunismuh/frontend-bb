@@ -53,7 +53,8 @@ const BosowaBandarAgensi = () => {
 
   return (
     // 5. JARAK ATAS SUDAH DIPERBARUI DI SINI
-    <section className="dark:bg-gray-dark bg-gray-50 pt-24 md:pt-28 lg:pt-32">
+    <section className="dark:bg-gray-dark bg-gray-50 pt-16 md:pt-20 lg:py-24">
+      {" "}
       <div className="container">
         {/* 6. Ganti semua teks statis dengan variabel 't' */}
         <SectionTitle title={t.title} paragraph={t.paragraph} mb="40px" />

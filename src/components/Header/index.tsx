@@ -127,7 +127,7 @@ const Header = () => {
       className={`header top-0 left-0 z-40 flex w-full items-center transition-all duration-300 ${
         sticky
           ? "fixed bg-[#1E468C] py-0 shadow-md"
-          : "absolute bg-[#1E468C]/90 py-0"
+          : "relative bg-[#1E468C]/90 py-0" // <--- SUDAH DIPERBAIKI
       }`}
     >
       <div className="container">
