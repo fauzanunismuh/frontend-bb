@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ReactCountryFlag from "react-country-flag"; // [BARU] Impor library bendera
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
 
@@ -16,6 +17,7 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
 
+  // ... (Semua fungsi helper Anda tetap sama: navbarToggleHandler, handleStickyNavbar, syncAdminState, ...)
   const navbarToggleHandler = () => setNavbarOpen(!navbarOpen);
 
   const handleStickyNavbar = () => {
@@ -45,7 +47,6 @@ const Header = () => {
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-    // Re-run whenever halaman berubah agar status admin terbarui setelah login.
   }, [pathname]);
 
   const handleAdminLogout = () => {
@@ -80,7 +81,6 @@ const Header = () => {
     }
   };
 
-  // Logika untuk mengubah teks berdasarkan state 'language'
   const getMenuData = () => {
     if (language === "en") {
       return [
@@ -156,9 +156,8 @@ const Header = () => {
           </div>
 
           {/* Menu */}
-          {/* MENGURANGI GAP DARI gap-6 MENJADI gap-4 */}
           <div className="flex items-center justify-end gap-4">
-            {/* Mobile Toggler */}
+            {/* ... (Tombol Mobile Toggler) ... */}
             <button
               onClick={navbarToggleHandler}
               id="navbarToggler"
@@ -189,7 +188,12 @@ const Header = () => {
                 navbarOpen ? "block" : "hidden lg:block"
               }`}
             >
-              {/* MENGURANGI SPASI DARI lg:space-x-7 MENJADI lg:space-x-4 */}
+              {/* ... (Menu items ...
+                ... (kode <ul ...> ... <li> ... </ul> Anda tetap sama)
+              ...
+              ... (Menu Admin juga tetap sama) ...
+              ... (Saya memendekkan bagian ini agar fokus pada perubahan)
+              */}
               <ul className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-4">
                 {currentMenuData.map((menuItem, index) => (
                   <li key={index} className="group relative">
@@ -327,31 +331,39 @@ const Header = () => {
                 >
                   {language === "id" ? "Masuk" : "Sign In"}
                 </Link>
-                {/* Language Switcher (Mobile) */}
+                {/* [PERUBAHAN] Language Switcher (Mobile) */}
                 <div className="flex items-center space-x-1 rounded-full bg-white/10 p-1">
                   <button
                     onClick={() => setLanguage("id")}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
-                      // Diubah
-                      language === "id"
-                        ? "bg-white" // Diubah
-                        : "hover:bg-white/20"
+                    className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                      language === "id" ? "bg-white" : "hover:bg-white/20"
                     }`}
                     aria-label="Ganti ke Bahasa Indonesia"
                   >
-                    🇮🇩 {/* Diubah */}
+                    <ReactCountryFlag
+                      countryCode="ID"
+                      svg
+                      style={{
+                        width: "1.5rem",
+                        height: "1.5rem",
+                      }}
+                    />
                   </button>
                   <button
                     onClick={() => setLanguage("en")}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
-                      // Diubah
-                      language === "en"
-                        ? "bg-white" // Diubah
-                        : "hover:bg-white/20"
+                    className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                      language === "en" ? "bg-white" : "hover:bg-white/20"
                     }`}
                     aria-label="Switch to English"
                   >
-                    🇬🇧 {/* Diubah */}
+                    <ReactCountryFlag
+                      countryCode="GB"
+                      svg
+                      style={{
+                        width: "1.5rem",
+                        height: "1.5rem",
+                      }}
+                    />
                   </button>
                 </div>
                 <ThemeToggler />
@@ -360,39 +372,45 @@ const Header = () => {
 
             {/* === Kanan paling akhir (Desktop) === */}
             <div className="hidden items-center gap-4 lg:flex">
-              {" "}
-              {/* Diubah dari md:flex */}
               <Link
                 href="/signin"
                 className="text-base font-medium text-white hover:opacity-80"
               >
                 {language === "id" ? "Masuk" : "Sign In"}
               </Link>
-              {/* Language Switcher (Desktop) */}
+              {/* [PERUBAHAN] Language Switcher (Desktop) */}
               <div className="flex items-center space-x-1 rounded-full bg-white/10 p-1">
                 <button
                   onClick={() => setLanguage("id")}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
-                    // Diubah
-                    language === "id"
-                      ? "bg-white" // Diubah
-                      : "hover:bg-white/20"
+                  className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                    language === "id" ? "bg-white" : "hover:bg-white/20"
                   }`}
                   aria-label="Ganti ke Bahasa Indonesia"
                 >
-                  🇮🇩 {/* Diubah */}
+                  <ReactCountryFlag
+                    countryCode="ID"
+                    svg
+                    style={{
+                      width: "1.5rem", // 24px
+                      height: "1.5rem", // 24px
+                    }}
+                  />
                 </button>
                 <button
                   onClick={() => setLanguage("en")}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xl ${
-                    // Diubah
-                    language === "en"
-                      ? "bg-white" // Diubah
-                      : "hover:bg-white/20"
+                  className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                    language === "en" ? "bg-white" : "hover:bg-white/20"
                   }`}
                   aria-label="Switch to English"
                 >
-                  🇬🇧 {/* Diubah */}
+                  <ReactCountryFlag
+                    countryCode="GB"
+                    svg
+                    style={{
+                      width: "1.5rem", // 24px
+                      height: "1.5rem", // 24px
+                    }}
+                  />
                 </button>
               </div>
               <ThemeToggler />
