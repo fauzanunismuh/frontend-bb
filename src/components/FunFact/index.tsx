@@ -10,7 +10,7 @@ const texts = {
       "Kami telah memberikan pelayanan terpercaya selama 13 tahun di Indonesia",
     stats: [
       { label: "Kapal", value: "10.000+" },
-      { label: "Cabang", value: "5 Branch" },
+      { label: "Cabang", value: "9 Branch" },
       { label: "Mitra", value: "100+" },
     ],
   },
@@ -19,7 +19,7 @@ const texts = {
     paragraph: "We have provided trusted services for 13 years in Indonesia",
     stats: [
       { label: "Vessels", value: "10.000+" },
-      { label: "Branches", value: "5 Branch" },
+      { label: "Branches", value: "9 Branch" },
       { label: "Partners", value: "100+" },
     ],
   },

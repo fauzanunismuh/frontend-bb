@@ -7,7 +7,7 @@ import Link from "next/link";
 const texts = {
   id: {
     description:
-      "Bosowa Bandar Group merupakan bagian dari Bosowa Corporindo yang bergerak di bidang pengelolaan pelabuhan, keagenan kapal, bongkar muat, dan kapal tunda secara profesional dan terpercaya. Kami berkomitmen memberikan layanan terbaik bagi mitra industri maritim di Indonesia Timur.",
+      "Perusahaan swasta nasional berdiri membawa sejarah lokal Indonesia Timur. Bosowa Bandar Indonesia merupakan Badan Usaha Pelabuhan (BUP) yang merupakan bagian dari Bosowa Corporindo. Kami memberikan pelayanan pengelolaan pelabuhan, keagenan kapal, jasa bongkar muat (PBM) dan layanan kapal tunda.",
     contactTitle: "Hubungi Kami",
     addressLabel: "Alamat:",
     addressValue:

@@ -1,12 +1,11 @@
 "use client";
 
-import { useLanguage } from "@/app/providers"; // 1. Import hook
+import { useLanguage } from "@/app/providers";
 import SectionTitle from "@/components/Common/SectionTitle";
 
 const VisiMisiPage = () => {
-  const { language } = useLanguage(); // 2. Panggil hook
+  const { language } = useLanguage();
 
-  // 3. Buat objek terjemahan
   const texts = {
     id: {
       title: "Visi & Misi",
@@ -70,7 +69,7 @@ const VisiMisiPage = () => {
     },
   };
 
-  const t = language === "en" ? texts.en : texts.id; // Pilih bahasa
+  const t = language === "en" ? texts.en : texts.id;
 
   return (
     <section
@@ -78,10 +77,9 @@ const VisiMisiPage = () => {
       className="dark:bg-gray-dark bg-gray-50 pt-10 md:pt-28 lg:pt-32"
     >
       <div className="container">
-        {/* 4. Ganti semua teks hardcode dengan variabel */}
         <SectionTitle title={t.title} paragraph={t.paragraph} mb="60px" />
 
-        {/* Visi */}
+        {/* VISI */}
         <div className="mb-16">
           <h3 className="mb-4 text-3xl font-bold text-[#1E468C] dark:text-white">
             {t.visiTitle}
@@ -91,58 +89,53 @@ const VisiMisiPage = () => {
           </p>
         </div>
 
-        {/* Misi */}
+        {/* MISI */}
         <div>
           <h3 className="mb-4 text-3xl font-bold text-[#1E468C] dark:text-white">
             {t.misiTitle}
           </h3>
           <ul className="text-body-color list-inside list-decimal space-y-4 text-lg leading-relaxed">
-            <li>{t.misiList[0]}</li>
-            <li>{t.misiList[1]}</li>
-            <li>{t.misiList[2]}</li>
+            {t.misiList.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
           </ul>
         </div>
 
-        {/* Nilai Perusahaan */}
+        {/* NILAI PERUSAHAAN */}
         <div className="mt-20">
           <h3 className="mb-8 text-2xl font-bold text-[#1E468C] dark:text-white">
-            {t.filosofiTitle}
+            {/* PRIMA di judul utama juga merah */}
+            {t.filosofiTitle.replace(/PRIMA/gi, "")}
+            <span className="text-red-600">PRIMA</span>
           </h3>
+
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
-              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                {t.prima1Title}
-              </h4>
-              <p className="text-body-color text-base">{t.prima1Paragraph}</p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
-              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                {t.prima2Title}
-              </h4>
-              <p className="text-body-color text-base">{t.prima2Paragraph}</p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
-              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                {t.prima3Title}
-              </h4>
-              <p className="text-body-color text-base">{t.prima3Paragraph}</p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
-              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                {t.prima4Title}
-              </h4>
-              <p className="text-body-color text-base">{t.prima4Paragraph}</p>
-            </div>
-
-            <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800">
-              <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
-                {t.prima5Title}
-              </h4>
-              <p className="text-body-color text-base">{t.prima5Paragraph}</p>
-            </div>
+            {[
+              { title: t.prima1Title, paragraph: t.prima1Paragraph },
+              { title: t.prima2Title, paragraph: t.prima2Paragraph },
+              { title: t.prima3Title, paragraph: t.prima3Paragraph },
+              { title: t.prima4Title, paragraph: t.prima4Paragraph },
+              { title: t.prima5Title, paragraph: t.prima5Paragraph },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800"
+              >
+                <h4 className="mb-2 text-xl font-semibold text-[#1E468C] first-letter:text-red-600 dark:text-white">
+                  {/* Tampilkan PRIMA merah di sini juga jika ada */}
+                  {item.title.includes("PRIMA") ? (
+                    <>
+                      {item.title.split("PRIMA")[0]}
+                      <span className="text-red-600">PRIMA</span>
+                      {item.title.split("PRIMA")[1]}
+                    </>
+                  ) : (
+                    item.title
+                  )}
+                </h4>
+                <p className="text-body-color text-base">{item.paragraph}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
