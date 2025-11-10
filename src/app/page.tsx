@@ -1,5 +1,6 @@
 import BeritaSekilas from "@/components/BeritaSekilas";
 import ScrollUp from "@/components/Common/ScrollUp";
+import FunFact from "@/components/FunFact";
 import Hero from "@/components/Hero";
 import Mitra from "@/components/Mitra";
 import UnitBisnis from "@/components/UnitBisnis";
@@ -28,6 +29,7 @@ export default async function Home() {
       <Hero />
       <UnitBisnis />
       <Video />
+      <FunFact />
       <Mitra />
       {/* <AboutSectionOne /> */}
       {/* <AboutSectionTwo /> */}
