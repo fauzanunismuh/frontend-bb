@@ -73,7 +73,7 @@ const AboutPage = () => {
   return (
     <section
       id="about"
-      className="dark:bg-gray-dark mt-15 bg-gray-50 pt-24 md:pt-28 lg:pt-32"
+      className="dark:bg-gray-dark mt-0 bg-gray-50 pt-15 lg:pt-32"
     >
       <div className="container">
         {/* ========== Bagian 1: Tentang Bosowa Group ========== */}

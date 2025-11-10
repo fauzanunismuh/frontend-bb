@@ -25,7 +25,7 @@ const BosowaBandarAgensi = () => {
   const t = language === "en" ? texts.en : texts.id; // Pilih teks
 
   return (
-    <section className="dark:bg-gray-dark bg-gray-50 pt-24 md:pt-28 lg:pt-32">
+    <section className="dark:bg-gray-dark bg-gray-50 pt-16 md:pt-20 lg:py-24">
       {" "}
       {/* Diubah pt-20 -> pt-24 */}
       <div className="container">

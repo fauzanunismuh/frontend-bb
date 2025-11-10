@@ -24,7 +24,7 @@ const SigninPage = () => {
   const t = language === "en" ? texts.en : texts.id;
 
   return (
-    <section className="mt-15 flex min-h-screen flex-col bg-[#F9FBFF] md:flex-row">
+    <section className="flex min-h-screen flex-col bg-[#F9FBFF] md:flex-row">
       {/* Kolom kiri */}
       <div className="flex w-full flex-col items-start justify-center bg-white px-10 py-16 md:w-1/2 md:px-20">
         <div className="max-w-md">

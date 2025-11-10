@@ -75,7 +75,7 @@ const VisiMisiPage = () => {
   return (
     <section
       id="visi-misi"
-      className="dark:bg-gray-dark mt-15 bg-gray-50 pt-24 md:pt-28 lg:pt-32"
+      className="dark:bg-gray-dark bg-gray-50 pt-10 md:pt-28 lg:pt-32"
     >
       <div className="container">
         {/* 4. Ganti semua teks hardcode dengan variabel */}

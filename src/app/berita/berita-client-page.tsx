@@ -33,7 +33,7 @@ export default function BeritaClientPage({ newsList }: BeritaClientPageProps) {
   const t = language === "en" ? texts.en : texts.id;
 
   return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
+    <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
       <div className="container">
         <div className="mb-12 text-center">
           {/* 4. Ganti teks statis */}

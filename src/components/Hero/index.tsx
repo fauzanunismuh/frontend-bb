@@ -20,7 +20,7 @@ const getSlidesData = (language: string) => {
         title: "Fast, Safe, and Professional Stevedoring Services",
         description:
           "Supported by experienced personnel and modern equipment, Bosowa Bandar Indonesia ensures efficient and timely loading/unloading processes for every vessel.",
-        image: "/images/hero/slide2.jpeg",
+        image: "/images/hero/slide2.jpg",
         primaryLink: "#",
         contactUs: "Contact Us",
       },
@@ -49,7 +49,7 @@ const getSlidesData = (language: string) => {
       title: "Pelayanan Bongkar Muat Cepat, Aman, dan Profesional",
       description:
         "Didukung oleh tenaga kerja berpengalaman dan peralatan modern, Bosowa Bandar Indonesia memastikan proses bongkar muat berjalan efisien dan tepat waktu untuk setiap kapal yang berlabuh.",
-      image: "/images/hero/slide2.jpeg",
+      image: "/images/hero/slide2.jpg",
       primaryLink: "#",
       contactUs: "Hubungi Kami",
     },
@@ -81,7 +81,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="dark:bg-gray-dark relative z-10 overflow-hidden bg-white pt-[80px]"
+      className="dark:bg-gray-dark relative z-10 overflow-hidden bg-white"
     >
       <div className="relative flex min-h-[calc(100vh-80px)] items-center justify-center">
         {/* Slides */}
@@ -114,11 +114,14 @@ const Hero = () => {
               </p>
               <div className="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <Link
-                  href={slide.primaryLink}
+                  href="https://system.bosowabandar.com/auth/login"
                   className="bg-primary hover:bg-primary/80 rounded-xs px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out"
+                  target="_blank" // opsional: buka di tab baru
+                  rel="noopener noreferrer" // keamanan tambahan bila pakai target="_blank"
                 >
                   Bosowa Bandar System
                 </Link>
+
                 <Link
                   href="https://wa.me/628988821777"
                   target="_blank"
