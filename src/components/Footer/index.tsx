@@ -1,7 +1,7 @@
 "use client";
 import { useLanguage } from "@/app/providers"; // Impor hook
+import Image from "next/image";
 import Link from "next/link";
-
 // Teks
 const texts = {
   id: {
@@ -49,7 +49,21 @@ const Footer = () => {
           <div className="w-full px-4 md:w-1/2 lg:w-4/12">
             <div className="mb-5 max-w-[360px] lg:mb-16">
               <Link href="/" className="mb-8 inline-block">
-                {/* ... (Logo images) ... */}
+                <Image
+                  src="/images/logo/logo-light.png"
+                  alt="logo"
+                  width={150} // Sesuaikan width jika perlu
+                  height={50} // Sesuaikan height jika perlu
+                  className="hidden w-full dark:block" // Ini dari kode Anda sebelumnya, untuk mode gelap
+                />
+                {/* Anda mungkin juga ingin logo mode terang di sini */}
+                <Image
+                  src="/images/logo/logo-dark.png"
+                  alt="logo"
+                  width={150}
+                  height={50}
+                  className="w-full dark:hidden" // Ini untuk mode terang
+                />
               </Link>
 
               <p className="text-body-color dark:text-body-color-dark mt-0 text-base leading-relaxed">
