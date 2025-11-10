@@ -11,7 +11,7 @@ const getSlidesData = (language: string) => {
       {
         title: "Find the Best Service For Your Fleet",
         description:
-          "PT Bosowa Bandar Indonesia is a Port Business Entity (BUP) providing port management, ship agency, stevedoring, and tugboat services.",
+          "Bosowa Bandar Group is a Port Business Entity (BUP) providing port management, ship agency, stevedoring, and tugboat services.",
         image: "/images/hero/slide1.jpg",
         primaryLink: "#",
         contactUs: "Contact Us",
@@ -19,7 +19,7 @@ const getSlidesData = (language: string) => {
       {
         title: "Fast, Safe, and Professional Stevedoring Services",
         description:
-          "Supported by experienced personnel and modern equipment, Bosowa Bandar Indonesia ensures efficient and timely loading/unloading processes for every vessel.",
+          "Supported by experienced personnel and modern equipment, Bosowa Bandar Group ensures efficient and timely loading/unloading processes for every vessel.",
         image: "/images/hero/slide2.jpg",
         primaryLink: "#",
         contactUs: "Contact Us",
@@ -40,7 +40,7 @@ const getSlidesData = (language: string) => {
     {
       title: "Temukan Layanan Terbaik Untuk Armada Anda",
       description:
-        "PT Bosowa Bandar Indonesia adalah Badan Usaha Pelabuhan (BUP) yang memberikan layanan pengelolaan pelabuhan, keagenan kapal, jasa bongkar muat dan layanan kapal tunda.",
+        "Bosowa Bandar Group adalah Badan Usaha Pelabuhan (BUP) yang memberikan layanan pengelolaan pelabuhan, keagenan kapal, jasa bongkar muat dan layanan kapal tunda.",
       image: "/images/hero/slide1.jpg",
       primaryLink: "#",
       contactUs: "Hubungi Kami",
@@ -48,7 +48,7 @@ const getSlidesData = (language: string) => {
     {
       title: "Pelayanan Bongkar Muat Cepat, Aman, dan Profesional",
       description:
-        "Didukung oleh tenaga kerja berpengalaman dan peralatan modern, Bosowa Bandar Indonesia memastikan proses bongkar muat berjalan efisien dan tepat waktu untuk setiap kapal yang berlabuh.",
+        "Didukung oleh tenaga kerja berpengalaman dan peralatan modern, Bosowa Bandar Group memastikan proses bongkar muat berjalan efisien dan tepat waktu untuk setiap kapal yang berlabuh.",
       image: "/images/hero/slide2.jpg",
       primaryLink: "#",
       contactUs: "Hubungi Kami",
