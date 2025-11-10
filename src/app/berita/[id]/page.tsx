@@ -14,7 +14,8 @@ export const dynamic = "force-dynamic";
 
 const BeritaDetail = async ({ params }: BeritaDetailProps) => {
   try {
-    const berita = await getBeritaDetail(params.id);
+    const { id } = await params;
+    const berita = await getBeritaDetail(id);
 
     // Teruskan data ke komponen klien
     return <BeritaDetailClient berita={berita} />;
