@@ -31,6 +31,20 @@ export default function BeritaClientPage({ newsList }: BeritaClientPageProps) {
   // 3. Gunakan hook bahasa
   const { language } = useLanguage();
   const t = language === "en" ? texts.en : texts.id;
+  const localizedNews = newsList.map((news) => {
+    const localizedTitle =
+      language === "en" ? news.judul_en ?? news.judul : news.judul;
+    const localizedSummary =
+      language === "en"
+        ? news.ringkasan_en ?? news.ringkasan
+        : news.ringkasan;
+
+    return {
+      ...news,
+      localizedTitle,
+      localizedSummary,
+    };
+  });
 
   return (
     <section className="bg-gray-light/30 dark:bg-gray-dark/30 py-16 md:py-20 lg:py-24">
@@ -50,7 +64,7 @@ export default function BeritaClientPage({ newsList }: BeritaClientPageProps) {
             </p>
           )}
 
-          {newsList.map((news) => (
+          {localizedNews.map((news) => (
             <div
               key={news.id}
               className="flex flex-col items-start overflow-hidden rounded-lg bg-white shadow duration-300 hover:shadow-lg md:flex-row dark:bg-gray-800"
@@ -58,7 +72,7 @@ export default function BeritaClientPage({ newsList }: BeritaClientPageProps) {
               <div className="relative h-64 w-full md:w-1/3">
                 <Image
                   src={news.gambar_utama_url}
-                  alt={news.judul}
+                  alt={news.localizedTitle}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 33vw"
@@ -71,11 +85,11 @@ export default function BeritaClientPage({ newsList }: BeritaClientPageProps) {
                     href={`/berita/${news.slug}`}
                     className="hover:text-primary dark:hover:text-primary"
                   >
-                    {news.judul}
+                    {news.localizedTitle}
                   </Link>
                 </h3>
                 <p className="text-body-color mb-4 line-clamp-3 dark:text-gray-400">
-                  {news.ringkasan}
+                  {news.localizedSummary}
                 </p>
                 <Link
                   href={`/berita/${news.slug}`}

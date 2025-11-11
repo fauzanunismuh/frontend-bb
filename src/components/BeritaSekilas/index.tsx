@@ -6,8 +6,9 @@ import SingleBeritaSekilas, {
   type BeritaCard,
 } from "@/components/BeritaSekilas/SingleBeritaSekilas";
 import { PublicBerita } from "@/lib/api";
+import { translateText } from "@/lib/translate";
 import Link from "next/link";
-import { useMemo } from "react"; // Impor useMemo
+import { useEffect, useMemo, useState } from "react"; // Impor hook
 
 type BeritaSekilasProps = {
   items?: PublicBerita[] | null;
@@ -29,14 +30,6 @@ const texts = {
   },
 };
 
-const normalizeToCard = (item: PublicBerita): BeritaCard => ({
-  slug: item.slug,
-  title: item.judul,
-  summary: item.ringkasan,
-  imageUrl: item.gambar_utama_url,
-  publishedAt: item.published_at,
-});
-
 // Fallback sekarang perlu bilingual
 const getFallbackCards = (language: string): BeritaCard[] => {
   const data = language === "en" ? BeritaSekilasData.en : BeritaSekilasData.id;
@@ -51,13 +44,68 @@ const getFallbackCards = (language: string): BeritaCard[] => {
 const BeritaSekilas = ({ items }: BeritaSekilasProps) => {
   const { language } = useLanguage(); // Panggil hook
   const t = language === "en" ? texts.en : texts.id; // Pilih teks
+  const [autoTranslations, setAutoTranslations] = useState<
+    Record<string, { title?: string; summary?: string }>
+  >({});
 
   // Gunakan useMemo untuk fallback
   const fallbackCards = useMemo(() => getFallbackCards(language), [language]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function translateMissing() {
+      if (language !== "en" || !items || items.length === 0) {
+        setAutoTranslations({});
+        return;
+      }
+
+      const entries = await Promise.all(
+        items.slice(0, 3).map(async (item) => {
+          if (item.judul_en && item.ringkasan_en) {
+            return [item.slug, { title: item.judul_en, summary: item.ringkasan_en }] as const;
+          }
+
+          const [title, summary] = await Promise.all([
+            item.judul_en ? item.judul_en : translateText(item.judul, "en"),
+            item.ringkasan_en ? item.ringkasan_en : translateText(item.ringkasan, "en"),
+          ]);
+
+          return [item.slug, { title, summary }] as const;
+        }),
+      );
+
+      if (!cancelled) {
+        setAutoTranslations(Object.fromEntries(entries));
+      }
+    }
+
+    translateMissing();
+    return () => {
+      cancelled = true;
+    };
+  }, [items, language]);
+
   const cards =
     items && items.length > 0
-      ? items.slice(0, 3).map(normalizeToCard)
+      ? items.slice(0, 3).map((item) => {
+          const auto = autoTranslations[item.slug];
+          const localizedTitle =
+            language === "en"
+              ? item.judul_en ?? auto?.title ?? item.judul
+              : item.judul;
+          const localizedSummary =
+            language === "en"
+              ? item.ringkasan_en ?? auto?.summary ?? item.ringkasan
+              : item.ringkasan;
+          return {
+            slug: item.slug,
+            title: localizedTitle ?? "",
+            summary: localizedSummary ?? "",
+            imageUrl: item.gambar_utama_url,
+            publishedAt: item.published_at,
+          };
+        })
       : fallbackCards;
 
   return (

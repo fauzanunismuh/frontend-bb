@@ -52,9 +52,12 @@ export type PaginationMeta = {
 export type PublicBerita = {
   id: string;
   judul: string;
+  judul_en?: string | null;
   slug: string;
   ringkasan: string;
+  ringkasan_en?: string | null;
   isi_konten: string;
+  isi_konten_en?: string | null;
   gambar_utama_url: string;
   status: "draft" | "published";
   published_at: string | null;
