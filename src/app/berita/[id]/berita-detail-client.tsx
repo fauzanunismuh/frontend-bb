@@ -27,6 +27,16 @@ type BeritaDetailClientProps = {
 const BeritaDetailClient = ({ berita }: BeritaDetailClientProps) => {
   const { language } = useLanguage();
   const t = language === "en" ? texts.en : texts.id;
+  const localizedTitle =
+    language === "en" ? berita.judul_en ?? berita.judul : berita.judul;
+  const localizedSummary =
+    language === "en"
+      ? berita.ringkasan_en ?? berita.ringkasan
+      : berita.ringkasan;
+  const localizedContent =
+    language === "en"
+      ? berita.isi_konten_en ?? berita.isi_konten
+      : berita.isi_konten;
 
   const publishedDate = berita.published_at
     ? new Date(berita.published_at).toLocaleDateString(
@@ -46,7 +56,7 @@ const BeritaDetailClient = ({ berita }: BeritaDetailClientProps) => {
           {t.pageTitle}
         </p>
         <h1 className="text-dark mt-2 mb-3 text-3xl font-bold dark:text-white">
-          {berita.judul}
+          {localizedTitle}
         </h1>
         {publishedDate && (
           <p className="text-body-color mb-6 text-sm dark:text-gray-400">
@@ -60,7 +70,7 @@ const BeritaDetailClient = ({ berita }: BeritaDetailClientProps) => {
         <div className="relative mb-8 h-96 w-full overflow-hidden rounded-lg">
           <Image
             src={berita.gambar_utama_url}
-            alt={berita.judul}
+            alt={localizedTitle}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 768px"
@@ -68,19 +78,16 @@ const BeritaDetailClient = ({ berita }: BeritaDetailClientProps) => {
         </div>
 
         <p className="text-body-color mb-8 text-lg dark:text-gray-200">
-          {berita.ringkasan}
+          {localizedSummary}
         </p>
 
         <article
           className="richtext-content"
-          dangerouslySetInnerHTML={{ __html: berita.isi_konten }}
+          dangerouslySetInnerHTML={{ __html: localizedContent }}
         />
 
         <div className="mt-10">
-          <Link
-            href="/berita"
-            className="text-primary font-semibold hover:underline"
-          >
+          <Link href="/berita" className="text-primary font-semibold hover:underline">
             {t.backLink}
           </Link>
         </div>
