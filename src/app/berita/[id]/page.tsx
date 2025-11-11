@@ -1,23 +1,17 @@
 import { getBeritaDetail } from "@/lib/api";
 import { notFound } from "next/navigation";
-import BeritaDetailClient from "./berita-detail-client"; // Impor komponen klien
-
-type BeritaDetailParams = {
-  id: string;
-};
-
-type BeritaDetailProps = {
-  params: BeritaDetailParams | Promise<BeritaDetailParams>;
-};
+import BeritaDetailClient from "./berita-detail-client";
 
 export const dynamic = "force-dynamic";
 
-const BeritaDetail = async ({ params }: BeritaDetailProps) => {
+const BeritaDetail = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   try {
-    const { id } = await params;
+    const { id } = await params; // ✅ harus di-await
     const berita = await getBeritaDetail(id);
-
-    // Teruskan data ke komponen klien
     return <BeritaDetailClient berita={berita} />;
   } catch (error) {
     notFound();
