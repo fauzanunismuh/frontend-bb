@@ -43,7 +43,7 @@ export function useLanguage() {
 // 4. Gabungkan dengan Provider yang ada
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ThemeProvider attribute="class" enableSystem={false} defaultTheme="dark">
+    <ThemeProvider attribute="class" enableSystem={false} defaultTheme="light">
       <LanguageProvider>
         {" "}
         {/* Membungkus semua children */}
