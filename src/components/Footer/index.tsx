@@ -1,7 +1,9 @@
 "use client";
 import { useLanguage } from "@/app/providers"; // Impor hook
+import { getKontakInfo, KontakInfo } from "@/lib/api";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 // Teks
 const texts = {
@@ -35,9 +37,35 @@ const texts = {
   },
 };
 
+const defaultMapEmbed =
+  '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.8071451177057!2d119.41418780000001!3d-5.1347348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbf030020151c7f%3A0x91f6cbbf1acbc877!2sPT.%20Bosowa%20Bandar%20Indonesia!5e0!3m2!1sid!2sid!4v1762738404067!5m2!1sid!2sid" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+
 const Footer = () => {
   const { language } = useLanguage(); // Panggil hook
   const t = language === "en" ? texts.en : texts.id; // Pilih teks
+  const [kontak, setKontak] = useState<KontakInfo | null>(null);
+  const fallbackEmail = "bosowa.bandar@bosowa.co.id";
+  const fallbackPhone = "+62 898 8821 777";
+  const email = kontak?.email ?? fallbackEmail;
+  const phone = kontak?.no_hp ?? fallbackPhone;
+  const phoneLinkTarget = phone.replace(/[^0-9]/g, "");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await getKontakInfo();
+        if (!cancelled) {
+          setKontak(data);
+        }
+      } catch (error) {
+        console.warn("Gagal memuat info perusahaan:", error);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <footer
@@ -79,9 +107,22 @@ const Footer = () => {
                   {t.contactTitle}
                 </h2>
                 <p className="text-body-color dark:text-body-color-dark text-base">
-                  <b>{t.addressLabel}</b> {t.addressValue} <br />
-                  <b>{t.emailLabel}</b> bosowa.bandar@bosowa.co.id <br />
-                  <b>{t.whatsappLabel}</b> +62 898 8821 777 <br />
+                  <b>{t.addressLabel}</b> {kontak?.alamat_kantor ?? t.addressValue} <br />
+                  <b>{t.emailLabel}</b>{" "}
+                  <a href={`mailto:${email}`} className="hover:text-primary">
+                    {email}
+                  </a>
+                  <br />
+                  <b>{t.whatsappLabel}</b>{" "}
+                  <a
+                    href={`https://wa.me/${phoneLinkTarget}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-primary"
+                  >
+                    {phone}
+                  </a>
+                  <br />
                   <b>{t.websiteLabel}</b>{" "}
                   <a
                     href="https://bosowabandar.com/"
@@ -126,17 +167,14 @@ const Footer = () => {
                 {t.locationTitle}
               </h2>
 
-              {/* [PERBAIKAN] Menggunakan sintaks JSX dan URL yang benar */}
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.8071451177057!2d119.41418780000001!3d-5.1347348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbf030020151c7f%3A0x91f6cbbf1acbc877!2sPT.%20Bosowa%20Bandar%20Indonesia!5e0!3m2!1sid!2sid!4v1762738404067!5m2!1sid!2sid"
-                width="100%"
-                height="250"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="rounded-lg shadow-md"
-              />
+              <div className="rounded-lg shadow-md mx-auto max-w-[420px] overflow-hidden lg:mx-0">
+                <div
+                  className="h-[220px] w-full [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                  dangerouslySetInnerHTML={{
+                    __html: kontak?.google_maps_embed ?? defaultMapEmbed,
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

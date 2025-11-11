@@ -4,11 +4,14 @@ import { useLanguage } from "@/app/providers"; // Impor hook
 import RichTextEditor from "@/components/RichTextEditor";
 import {
   CreateBeritaPayload,
+  KontakInfo,
   PublicBerita,
   createBeritaAdmin,
   deleteBeritaAdmin,
   getBeritaAdmin,
+  getKontakInfo,
   updateBeritaAdmin,
+  updateKontakAdmin,
   uploadImageRequest,
 } from "@/lib/api";
 import Link from "next/link";
@@ -27,6 +30,15 @@ const initialFormState: CreateBeritaPayload = {
   isi_konten: "",
   gambar_utama_url: "",
   status: "draft",
+};
+
+const initialInfoState: KontakInfo = {
+  alamat_kantor:
+    "Menara Bosowa Lt. 8 Unit J Jl. Jend. Sudirman No.5 Kel. Pisang Utara, Kec. Ujung Pandang Kota Makassar, Sulawesi Selatan Indonesia 90115",
+  no_hp: "+62 898 8821 777",
+  email: "bosowa.bandar@bosowa.co.id",
+  google_maps_embed:
+    '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.8071451177057!2d119.41418780000001!3d-5.1347348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbf030020151c7f%3A0x91f6cbbf1acbc877!2sPT.%20Bosowa%20Bandar%20Indonesia!5e0!3m2!1sid!2sid!4v1762738404067!5m2!1sid!2sid" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
 };
 
 // Objek Teks
@@ -85,6 +97,20 @@ const texts = {
     uploadErrorGeneral: "Gagal mengunggah gambar. Coba lagi.",
     contentEmptyError: "Isi konten tidak boleh kosong.",
     imageEmptyError: "Unggah gambar utama sebelum menyimpan berita.",
+    manageNewsTab: "Kelola Berita",
+    manageInfoTab: "Info Perusahaan",
+    infoSectionTitle: "Informasi Perusahaan",
+    infoSectionDesc:
+      "Perbarui data alamat, kontak, dan embed Google Maps yang muncul di footer situs.",
+    infoAddressField: "Alamat Kantor",
+    infoPhoneField: "Nomor WhatsApp",
+    infoEmailField: "Email",
+    infoMapsField: "Google Maps Embed (iframe)",
+    infoMapsHelp: "Tempel kode embed <iframe> dari Google Maps.",
+    infoSaveButton: "Simpan Informasi",
+    infoSavingButton: "Menyimpan...",
+    infoSuccessMessage: "Informasi perusahaan berhasil diperbarui.",
+    infoLoading: "Memuat informasi perusahaan...",
   },
   en: {
     loading: "Loading...",
@@ -138,6 +164,20 @@ const texts = {
     uploadErrorGeneral: "Failed to upload image. Please try again.",
     contentEmptyError: "Content cannot be empty.",
     imageEmptyError: "Upload a main image before saving.",
+    manageNewsTab: "Manage News",
+    manageInfoTab: "Company Info",
+    infoSectionTitle: "Company Information",
+    infoSectionDesc:
+      "Update the address, contact, and Google Maps embed shown in the site footer.",
+    infoAddressField: "Office Address",
+    infoPhoneField: "WhatsApp / Phone",
+    infoEmailField: "Email",
+    infoMapsField: "Google Maps Embed (iframe)",
+    infoMapsHelp: "Paste the <iframe> embed code from Google Maps.",
+    infoSaveButton: "Save Information",
+    infoSavingButton: "Saving...",
+    infoSuccessMessage: "Company information updated successfully.",
+    infoLoading: "Loading company information...",
   },
 };
 
@@ -168,6 +208,9 @@ const AdminBeritaPage = () => {
     setInitializing(false);
   }, []);
 
+  const [activeSection, setActiveSection] = useState<"berita" | "info">(
+    "berita",
+  );
   const [news, setNews] = useState<PublicBerita[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
@@ -209,6 +252,25 @@ const AdminBeritaPage = () => {
     }
   }, [loadNews, token]);
 
+  const loadInfo = useCallback(async () => {
+    setInfoLoading(true);
+    setInfoError(null);
+    try {
+      const data = await getKontakInfo();
+      setInfoForm(data);
+    } catch (error) {
+      setInfoError(
+        error instanceof Error ? error.message : t.uploadErrorGeneral,
+      );
+    } finally {
+      setInfoLoading(false);
+    }
+  }, [t.uploadErrorGeneral]);
+
+  useEffect(() => {
+    loadInfo();
+  }, [loadInfo]);
+
   const [formState, setFormState] =
     useState<CreateBeritaPayload>(initialFormState);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -220,6 +282,11 @@ const AdminBeritaPage = () => {
   const [statusUpdatingId, setStatusUpdatingId] = useState<string | null>(null);
   const [inlineImageError, setInlineImageError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [infoForm, setInfoForm] = useState<KontakInfo>(initialInfoState);
+  const [infoLoading, setInfoLoading] = useState(false);
+  const [infoError, setInfoError] = useState<string | null>(null);
+  const [infoSuccess, setInfoSuccess] = useState<string | null>(null);
+  const [infoSubmitting, setInfoSubmitting] = useState(false);
 
   const resetFormState = useCallback(() => {
     setFormState({ ...initialFormState });
@@ -233,6 +300,35 @@ const AdminBeritaPage = () => {
   ) => {
     const { name, value } = event.target;
     setFormState((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleInfoChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+    setInfoForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleInfoSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!token) {
+      setInfoError(t.uploadErrorNotLoggedIn);
+      return;
+    }
+    setInfoSubmitting(true);
+    setInfoError(null);
+    setInfoSuccess(null);
+    try {
+      const updated = await updateKontakAdmin(token, infoForm);
+      setInfoForm(updated);
+      setInfoSuccess(t.infoSuccessMessage);
+    } catch (error) {
+      setInfoError(
+        error instanceof Error ? error.message : t.uploadErrorGeneral,
+      );
+    } finally {
+      setInfoSubmitting(false);
+    }
   };
 
   const handleStatusChange = async (
@@ -398,6 +494,385 @@ const AdminBeritaPage = () => {
   const formDescription = isEditing ? t.editDesc : t.addDesc;
   const submitLabel = isEditing ? t.updateButton : t.saveButton;
   const submitLoadingLabel = isEditing ? t.updatingButton : t.savingButton;
+  const infoDisabled = infoLoading || infoSubmitting;
+
+  const renderNewsSection = () => (
+    <div className="grid gap-8 lg:grid-cols-2">
+      <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+        <h2 className="text-dark text-xl font-semibold dark:text-white">
+          {formTitle}
+        </h2>
+        <p className="text-body-color mb-4 text-sm dark:text-gray-400">
+          {formDescription}
+        </p>
+        {isEditing && (
+          <div className="border-primary/40 bg-primary/5 text-primary mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-dashed px-4 py-3 text-sm">
+            <span>
+              {t.editingLabel}{" "}
+              <span className="font-semibold">
+                {editingNewsTitle ?? "Berita terpilih"}
+              </span>
+            </span>
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className="text-primary hover:text-primary/80 text-xs font-semibold tracking-wide uppercase"
+            >
+              {t.cancelEdit}
+            </button>
+          </div>
+        )}
+
+        {submitError && (
+          <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+            {submitError}
+          </div>
+        )}
+        {submitSuccess && (
+          <div className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">
+            {submitSuccess}
+          </div>
+        )}
+
+        <form onSubmit={handleCreate} className="space-y-5">
+          <div>
+            <label
+              htmlFor="judul"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formTitle}
+            </label>
+            <input
+              id="judul"
+              name="judul"
+              value={formState.judul}
+              onChange={handleChange}
+              required
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="ringkasan"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formSummary}
+            </label>
+            <textarea
+              id="ringkasan"
+              name="ringkasan"
+              value={formState.ringkasan}
+              onChange={handleChange}
+              rows={3}
+              required
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="isi_konten"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formContent}
+            </label>
+            <div className="mt-2">
+              <RichTextEditor
+                id="isi_konten"
+                value={formState.isi_konten}
+                onChange={handleRichTextChange}
+                onUploadImage={handleInlineImageUpload}
+                onUploadError={setInlineImageError}
+              />
+            </div>
+            <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+              {t.formContentHelp}
+            </p>
+            {inlineImageError && (
+              <p className="mt-2 text-sm text-red-500">{inlineImageError}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="gambar_utama_url"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formMainImage}
+            </label>
+            <input
+              id="gambar_utama_url"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="border-stroke file:bg-primary hover:file:bg-primary/90 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white dark:border-gray-700 dark:bg-gray-800"
+            />
+            <p className="text-body-color mt-2 text-xs">
+              {t.formMainImageHelp}
+            </p>
+            {imageUploadError && (
+              <p className="mt-2 text-sm text-red-500">{imageUploadError}</p>
+            )}
+            {uploadingImage && (
+              <p className="text-body-color mt-2 text-sm">
+                {t.uploadingImage}
+              </p>
+            )}
+            {formState.gambar_utama_url && (
+              <div className="mt-4">
+                <p className="text-dark text-xs font-medium dark:text-gray-200">
+                  {t.imagePreview}
+                </p>
+                <div className="relative mt-2 h-40 w-full overflow-hidden rounded-md border border-dashed border-gray-300 dark:border-gray-700">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={formState.gambar_utama_url}
+                    alt="Pratinjau gambar utama"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="status"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formStatus}
+            </label>
+            <select
+              id="status"
+              name="status"
+              value={formState.status ?? "draft"}
+              onChange={handleChange}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            >
+              <option value="draft">{t.statusDraft}</option>
+              <option value="published">{t.statusPublish}</option>
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting || uploadingImage}
+            className="bg-primary hover:bg-primary/90 disabled:bg-primary/50 w-full rounded-md px-6 py-3 text-sm font-semibold text-white"
+          >
+            {submitting ? submitLoadingLabel : submitLabel}
+          </button>
+        </form>
+      </div>
+
+      <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-dark text-xl font-semibold dark:text-white">
+            {t.allNews}
+          </h2>
+          <button
+            onClick={loadNews}
+            disabled={listLoading}
+            className="text-primary hover:text-primary/80 disabled:text-primary/40 text-sm font-semibold"
+          >
+            {listLoading ? t.refreshing : t.refresh}
+          </button>
+        </div>
+        {listError && (
+          <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+            {listError}
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {news.length === 0 && !listLoading && (
+            <p className="text-body-color text-sm dark:text-gray-400">
+              {t.noNews}
+            </p>
+          )}
+
+          {news.map((item) => (
+            <article
+              key={item.id}
+              className="rounded-lg border border-gray-100 p-4 dark:border-gray-800"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-dark text-lg font-semibold dark:text-white">
+                    {item.judul}
+                  </h3>
+                  <p className="text-primary text-xs tracking-wide uppercase">
+                    {item.status === "published"
+                      ? t.statusPublished
+                      : t.statusDraftLabel}
+                  </p>
+                </div>
+                <span className="text-body-color text-sm dark:text-gray-400">
+                  {item.published_at
+                    ? new Date(item.published_at).toLocaleDateString(
+                        language === "en" ? "en-US" : "id-ID",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        },
+                      )
+                    : "-"}
+                </span>
+              </div>
+              <p className="text-body-color line-clamp-2 text-sm dark:text-gray-400">
+                {item.ringkasan}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={`/berita/${item.slug}`}
+                  target="_blank"
+                  className="text-primary hover:text-primary/80 text-sm font-semibold"
+                >
+                  {t.viewPublicPage}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => handleEditStart(item)}
+                  disabled={editingId === item.id}
+                  className="text-dark rounded-md border border-gray-200 px-3 py-1 text-sm font-semibold transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+                >
+                  {editingId === item.id ? t.editing : t.edit}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(item.id, item.judul)}
+                  disabled={deletingId === item.id}
+                  className="rounded-md border border-red-200 px-3 py-1 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-200/60 disabled:text-red-400 dark:border-red-400/40 dark:hover:bg-red-500/10"
+                >
+                  {deletingId === item.id ? t.deleting : t.delete}
+                </button>
+                <button
+                  onClick={() =>
+                    handleStatusChange(
+                      item.id,
+                      item.status === "published" ? "draft" : "published",
+                    )
+                  }
+                  disabled={statusUpdatingId === item.id}
+                  className="border-primary text-primary hover:bg-primary/10 disabled:border-primary/50 disabled:text-primary/50 rounded-md border px-3 py-1 text-sm font-semibold disabled:cursor-not-allowed"
+                >
+                  {statusUpdatingId === item.id
+                    ? t.savingStatus
+                    : item.status === "published"
+                      ? t.setDraft
+                      : t.publish}
+                </button>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderInfoSection = () => (
+    <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+      <h2 className="text-dark text-xl font-semibold dark:text-white">
+        {t.infoSectionTitle}
+      </h2>
+      <p className="text-body-color mb-4 text-sm dark:text-gray-400">
+        {t.infoSectionDesc}
+      </p>
+      {infoError && (
+        <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+          {infoError}
+        </div>
+      )}
+      {infoSuccess && (
+        <div className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">
+          {infoSuccess}
+        </div>
+      )}
+      {infoLoading && (
+        <p className="text-body-color mb-4 text-sm dark:text-gray-400">
+          {t.infoLoading}
+        </p>
+      )}
+      <form onSubmit={handleInfoSubmit} className="space-y-5">
+        <div>
+          <label
+            htmlFor="alamat_kantor"
+            className="text-dark text-sm font-medium dark:text-gray-200"
+          >
+            {t.infoAddressField}
+          </label>
+          <textarea
+            id="alamat_kantor"
+            name="alamat_kantor"
+            value={infoForm.alamat_kantor}
+            onChange={handleInfoChange}
+            rows={3}
+            disabled={infoDisabled}
+            className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
+          />
+        </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          <div>
+            <label
+              htmlFor="email"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.infoEmailField}
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={infoForm.email}
+              onChange={handleInfoChange}
+              disabled={infoDisabled}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="no_hp"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.infoPhoneField}
+            </label>
+            <input
+              id="no_hp"
+              name="no_hp"
+              value={infoForm.no_hp}
+              onChange={handleInfoChange}
+              disabled={infoDisabled}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+        </div>
+        <div>
+          <label
+            htmlFor="google_maps_embed"
+            className="text-dark text-sm font-medium dark:text-gray-200"
+          >
+            {t.infoMapsField}
+          </label>
+          <textarea
+            id="google_maps_embed"
+            name="google_maps_embed"
+            value={infoForm.google_maps_embed}
+            onChange={handleInfoChange}
+            rows={6}
+            disabled={infoDisabled}
+            className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:bg-gray-800"
+          />
+          <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+            {t.infoMapsHelp}
+          </p>
+        </div>
+        <button
+          type="submit"
+          disabled={infoDisabled}
+          className="bg-primary hover:bg-primary/90 disabled:bg-primary/50 w-full rounded-md px-6 py-3 text-sm font-semibold text-white"
+        >
+          {infoSubmitting ? t.infoSavingButton : t.infoSaveButton}
+        </button>
+      </form>
+    </div>
+  );
 
   const pageHeading = useMemo(
     () =>
@@ -457,278 +932,34 @@ const AdminBeritaPage = () => {
           </button>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
-            <h2 className="text-dark text-xl font-semibold dark:text-white">
-              {formTitle}
-            </h2>
-            <p className="text-body-color mb-4 text-sm dark:text-gray-400">
-              {formDescription}
-            </p>
-            {isEditing && (
-              <div className="border-primary/40 bg-primary/5 text-primary mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-dashed px-4 py-3 text-sm">
-                <span>
-                  {t.editingLabel}{" "}
-                  <span className="font-semibold">
-                    {editingNewsTitle ?? "Berita terpilih"}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  onClick={handleCancelEdit}
-                  className="text-primary hover:text-primary/80 text-xs font-semibold tracking-wide uppercase"
-                >
-                  {t.cancelEdit}
-                </button>
-              </div>
-            )}
-
-            {submitError && (
-              <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
-                {submitError}
-              </div>
-            )}
-            {submitSuccess && (
-              <div className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">
-                {submitSuccess}
-              </div>
-            )}
-
-            <form onSubmit={handleCreate} className="space-y-5">
-              <div>
-                <label
-                  htmlFor="judul"
-                  className="text-dark text-sm font-medium dark:text-gray-200"
-                >
-                  {t.formTitle}
-                </label>
-                <input
-                  id="judul"
-                  name="judul"
-                  value={formState.judul}
-                  onChange={handleChange}
-                  required
-                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="ringkasan"
-                  className="text-dark text-sm font-medium dark:text-gray-200"
-                >
-                  {t.formSummary}
-                </label>
-                <textarea
-                  id="ringkasan"
-                  name="ringkasan"
-                  value={formState.ringkasan}
-                  onChange={handleChange}
-                  rows={3}
-                  required
-                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="isi_konten"
-                  className="text-dark text-sm font-medium dark:text-gray-200"
-                >
-                  {t.formContent}
-                </label>
-                <div className="mt-2">
-                  <RichTextEditor
-                    id="isi_konten"
-                    value={formState.isi_konten}
-                    onChange={handleRichTextChange}
-                    onUploadImage={handleInlineImageUpload}
-                    onUploadError={setInlineImageError}
-                  />
-                </div>
-                <p className="text-body-color mt-2 text-xs dark:text-gray-400">
-                  {t.formContentHelp}
-                </p>
-                {inlineImageError && (
-                  <p className="mt-2 text-sm text-red-500">
-                    {inlineImageError}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="gambar_utama_url"
-                  className="text-dark text-sm font-medium dark:text-gray-200"
-                >
-                  {t.formMainImage}
-                </label>
-                <input
-                  id="gambar_utama_url"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="border-stroke file:bg-primary hover:file:bg-primary/90 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white dark:border-gray-700 dark:bg-gray-800"
-                />
-                <p className="text-body-color mt-2 text-xs">
-                  {t.formMainImageHelp}
-                </p>
-                {imageUploadError && (
-                  <p className="mt-2 text-sm text-red-500">
-                    {imageUploadError}
-                  </p>
-                )}
-                {uploadingImage && (
-                  <p className="text-body-color mt-2 text-sm">
-                    {t.uploadingImage}
-                  </p>
-                )}
-                {formState.gambar_utama_url && (
-                  <div className="mt-4">
-                    <p className="text-dark text-xs font-medium dark:text-gray-200">
-                      {t.imagePreview}
-                    </p>
-                    <div className="relative mt-2 h-40 w-full overflow-hidden rounded-md border border-dashed border-gray-300 dark:border-gray-700">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={formState.gambar_utama_url}
-                        alt="Pratinjau gambar utama"
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="status"
-                  className="text-dark text-sm font-medium dark:text-gray-200"
-                >
-                  {t.formStatus}
-                </label>
-                <select
-                  id="status"
-                  name="status"
-                  value={formState.status ?? "draft"}
-                  onChange={handleChange}
-                  className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
-                >
-                  <option value="draft">{t.statusDraft}</option>
-                  <option value="published">{t.statusPublish}</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                disabled={submitting || uploadingImage}
-                className="bg-primary hover:bg-primary/90 disabled:bg-primary/50 w-full rounded-md px-6 py-3 text-sm font-semibold text-white"
-              >
-                {submitting ? submitLoadingLabel : submitLabel}
-              </button>
-            </form>
-          </div>
-
-          <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-dark text-xl font-semibold dark:text-white">
-                {t.allNews}
-              </h2>
-              <button
-                onClick={loadNews}
-                disabled={listLoading}
-                className="text-primary hover:text-primary/80 disabled:text-primary/40 text-sm font-semibold"
-              >
-                {listLoading ? t.refreshing : t.refresh}
-              </button>
-            </div>
-            {listError && (
-              <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
-                {listError}
-              </div>
-            )}
-
-            <div className="space-y-4">
-              {news.length === 0 && !listLoading && (
-                <p className="text-body-color text-sm dark:text-gray-400">
-                  {t.noNews}
-                </p>
-              )}
-
-              {news.map((item) => (
-                <article
-                  key={item.id}
-                  className="rounded-lg border border-gray-100 p-4 dark:border-gray-800"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <h3 className="text-dark text-lg font-semibold dark:text-white">
-                        {item.judul}
-                      </h3>
-                      <p className="text-primary text-xs tracking-wide uppercase">
-                        {item.status === "published"
-                          ? t.statusPublished
-                          : t.statusDraftLabel}
-                      </p>
-                    </div>
-                    <span className="text-body-color text-sm dark:text-gray-400">
-                      {item.published_at
-                        ? new Date(item.published_at).toLocaleDateString(
-                            language === "en" ? "en-US" : "id-ID",
-                            {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            },
-                          )
-                        : "-"}
-                    </span>
-                  </div>
-                  <p className="text-body-color line-clamp-2 text-sm dark:text-gray-400">
-                    {item.ringkasan}
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <Link
-                      href={`/berita/${item.slug}`}
-                      target="_blank"
-                      className="text-primary hover:text-primary/80 text-sm font-semibold"
-                    >
-                      {t.viewPublicPage}
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => handleEditStart(item)}
-                      disabled={editingId === item.id}
-                      className="text-dark rounded-md border border-gray-200 px-3 py-1 text-sm font-semibold transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
-                    >
-                      {editingId === item.id ? t.editing : t.edit}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(item.id, item.judul)}
-                      disabled={deletingId === item.id}
-                      className="rounded-md border border-red-200 px-3 py-1 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-200/60 disabled:text-red-400 dark:border-red-400/40 dark:hover:bg-red-500/10"
-                    >
-                      {deletingId === item.id ? t.deleting : t.delete}
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleStatusChange(
-                          item.id,
-                          item.status === "published" ? "draft" : "published",
-                        )
-                      }
-                      disabled={statusUpdatingId === item.id}
-                      className="border-primary text-primary hover:bg-primary/10 disabled:border-primary/50 disabled:text-primary/50 rounded-md border px-3 py-1 text-sm font-semibold disabled:cursor-not-allowed"
-                    >
-                      {statusUpdatingId === item.id
-                        ? t.savingStatus
-                        : item.status === "published"
-                          ? t.setDraft
-                          : t.publish}
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
+        <div className="mb-8 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => setActiveSection("berita")}
+            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+              activeSection === "berita"
+                ? "bg-primary text-white shadow"
+                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+            }`}
+          >
+            {t.manageNewsTab}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveSection("info")}
+            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+              activeSection === "info"
+                ? "bg-primary text-white shadow"
+                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+            }`}
+          >
+            {t.manageInfoTab}
+          </button>
         </div>
+
+        {activeSection === "berita"
+          ? renderNewsSection()
+          : renderInfoSection()}
       </div>
     </section>
   );
