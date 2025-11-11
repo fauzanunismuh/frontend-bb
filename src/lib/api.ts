@@ -95,6 +95,17 @@ export async function getKontakInfo(): Promise<KontakInfo> {
   return fetchJson<KontakInfo>("/api/kontak");
 }
 
+export async function updateKontakAdmin(
+  token: string,
+  payload: KontakInfo,
+): Promise<KontakInfo> {
+  return fetchJson<KontakInfo>("/api/admin/kontak", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    authToken: token,
+  });
+}
+
 export type AdminLoginResponse = {
   access_token: string;
   admin: {
