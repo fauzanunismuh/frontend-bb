@@ -4,18 +4,13 @@ import BeritaDetailClient from "./berita-detail-client";
 
 export const dynamic = "force-dynamic";
 
-// ✅ Definisi props yang benar
-interface BeritaDetailProps {
-  params: {
-    id: string;
-  };
-}
-
-// ✅ Komponen server yang benar
-const BeritaDetail = async ({ params }: BeritaDetailProps) => {
-  const { id } = await params; // ⬅️ ini kuncinya!
-
+const BeritaDetail = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   try {
+    const { id } = await params; // ✅ harus di-await
     const berita = await getBeritaDetail(id);
     return <BeritaDetailClient berita={berita} />;
   } catch (error) {
