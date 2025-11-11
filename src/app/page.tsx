@@ -9,8 +9,8 @@ import { getBeritaPublic } from "@/lib/api";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Bosowa Bandar",
-  description: "This is Home for Startup Nextjs Template",
+  title: "Bosowa Bandar Group",
+  description: "",
   // other metadata
 };
 
