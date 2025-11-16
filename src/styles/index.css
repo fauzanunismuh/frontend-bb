@@ -194,8 +194,12 @@
   }
 
   .richtext-content img {
-    max-width: 100%;
+    width: min(100%, 720px); /* jangan melebihi konten dan batasi ukuran maksimum */
+    max-height: 480px;
     height: auto;
+    display: block;
+    margin: 1.5rem auto;
+    object-fit: contain;
     border-radius: 0.5rem;
   }
 

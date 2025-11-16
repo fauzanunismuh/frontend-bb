@@ -28,6 +28,9 @@ const initialFormState: CreateBeritaPayload = {
   judul: "",
   ringkasan: "",
   isi_konten: "",
+  judul_en: "",
+  ringkasan_en: "",
+  isi_konten_en: "",
   gambar_utama_url: "",
   status: "draft",
 };
@@ -62,10 +65,15 @@ const texts = {
     editingLabel: "Mengedit:",
     cancelEdit: "Batal Edit",
     formTitle: "Judul",
+    formTitleEn: "Judul (Bahasa Inggris)",
     formSummary: "Ringkasan",
+    formSummaryEn: "Ringkasan (Bahasa Inggris)",
     formContent: "Isi Konten",
+    formContentEn: "Isi Konten (Bahasa Inggris)",
     formContentHelp:
       "Tulis konten lengkap beserta gambar/tautan menggunakan toolbar seperti Microsoft Word.",
+    formContentEnHelp:
+      "Opsional: tulis versi bahasa Inggris secara manual jika hasil terjemahan otomatis kurang tepat.",
     formMainImage: "Gambar Utama (Upload)",
     formMainImageHelp: "Maksimal 5MB. Format yang disarankan: JPG atau PNG.",
     uploadingImage: "Mengunggah gambar...",
@@ -130,10 +138,15 @@ const texts = {
     editingLabel: "Editing:",
     cancelEdit: "Cancel Edit",
     formTitle: "Title",
+    formTitleEn: "Title (English)",
     formSummary: "Summary",
+    formSummaryEn: "Summary (English)",
     formContent: "Content",
+    formContentEn: "Content (English)",
     formContentHelp:
       "Write the full content with images/links using the toolbar, similar to Microsoft Word.",
+    formContentEnHelp:
+      "Optional: manually provide the English version if the automatic translation is inaccurate.",
     formMainImage: "Main Image (Upload)",
     formMainImageHelp: "Max 5MB. Recommended formats: JPG or PNG.",
     uploadingImage: "Uploading image...",
@@ -460,6 +473,9 @@ const AdminBeritaPage = () => {
       judul: berita.judul ?? "",
       ringkasan: berita.ringkasan ?? "",
       isi_konten: berita.isi_konten ?? "",
+      judul_en: berita.judul_en ?? "",
+      ringkasan_en: berita.ringkasan_en ?? "",
+      isi_konten_en: berita.isi_konten_en ?? "",
       gambar_utama_url: berita.gambar_utama_url ?? "",
       status: berita.status ?? "draft",
     });
@@ -482,6 +498,10 @@ const AdminBeritaPage = () => {
 
   const handleRichTextChange = useCallback((html: string) => {
     setFormState((prev) => ({ ...prev, isi_konten: html }));
+  }, []);
+
+  const handleRichTextChangeEn = useCallback((html: string) => {
+    setFormState((prev) => ({ ...prev, isi_konten_en: html }));
   }, []);
 
   const isEditing = Boolean(editingId);
@@ -553,6 +573,22 @@ const AdminBeritaPage = () => {
           </div>
           <div>
             <label
+              htmlFor="judul_en"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formTitleEn}
+            </label>
+            <input
+              id="judul_en"
+              name="judul_en"
+              value={formState.judul_en ?? ""}
+              onChange={handleChange}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              placeholder="Optional"
+            />
+          </div>
+          <div>
+            <label
               htmlFor="ringkasan"
               className="text-dark text-sm font-medium dark:text-gray-200"
             >
@@ -566,6 +602,23 @@ const AdminBeritaPage = () => {
               rows={3}
               required
               className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="ringkasan_en"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formSummaryEn}
+            </label>
+            <textarea
+              id="ringkasan_en"
+              name="ringkasan_en"
+              value={formState.ringkasan_en ?? ""}
+              onChange={handleChange}
+              rows={3}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              placeholder="Optional"
             />
           </div>
           <div>
@@ -586,6 +639,26 @@ const AdminBeritaPage = () => {
             </div>
             <p className="text-body-color mt-2 text-xs dark:text-gray-400">
               {t.formContentHelp}
+            </p>
+          </div>
+          <div>
+            <label
+              htmlFor="isi_konten_en"
+              className="text-dark text-sm font-medium dark:text-gray-200"
+            >
+              {t.formContentEn}
+            </label>
+            <div className="mt-2">
+              <RichTextEditor
+                id="isi_konten_en"
+                value={formState.isi_konten_en ?? ""}
+                onChange={handleRichTextChangeEn}
+                onUploadImage={handleInlineImageUpload}
+                onUploadError={setInlineImageError}
+              />
+            </div>
+            <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+              {t.formContentEnHelp}
             </p>
             {inlineImageError && (
               <p className="mt-2 text-sm text-red-500">{inlineImageError}</p>

@@ -125,15 +125,13 @@ const Header = () => {
   return (
     <header
       className={`header top-0 left-0 z-40 flex w-full items-center transition-all duration-300 ${
-        sticky
-          ? "fixed bg-[#1E468C] py-0 shadow-md"
-          : "relative bg-[#1E468C]/90 py-0" // <--- SUDAH DIPERBAIKI
+        sticky ? "fixed bg-primary py-0 shadow-md" : "relative bg-primary/90 py-0"
       }`}
     >
       <div className="container">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <Link
               href="/"
               className={`header-logo block ${sticky ? "py-4" : "py-6"}`}
@@ -162,11 +160,11 @@ const Header = () => {
               onClick={navbarToggleHandler}
               id="navbarToggler"
               aria-label="Mobile Menu"
-              className="block rounded-lg px-3 py-[6px] ring-white focus:ring-2 lg:hidden"
+              className="block rounded-lg px-3 py-1.5 ring-white focus:ring-2 lg:hidden"
             >
               <span
                 className={`my-1.5 block h-0.5 w-[30px] bg-white transition-all duration-300 ${
-                  navbarOpen ? "translate-y-[8px] rotate-45" : ""
+                  navbarOpen ? "translate-y-2 rotate-45" : ""
                 }`}
               />
               <span
@@ -176,7 +174,7 @@ const Header = () => {
               />
               <span
                 className={`my-1.5 block h-0.5 w-[30px] bg-white transition-all duration-300 ${
-                  navbarOpen ? "-translate-y-[8px] -rotate-45" : ""
+                  navbarOpen ? "-translate-y-2 -rotate-45" : ""
                 }`}
               />
             </button>
@@ -184,7 +182,7 @@ const Header = () => {
             {/* Navigasi */}
             <nav
               id="navbarCollapse"
-              className={`navbar absolute top-full right-0 z-30 w-[250px] rounded border border-white/20 bg-[#1E468C] px-6 py-4 duration-300 lg:static lg:block lg:w-auto lg:border-none lg:bg-transparent ${
+              className={`navbar absolute top-full right-0 z-30 w-[250px] rounded border border-white/20 bg-primary px-6 py-4 duration-300 lg:static lg:block lg:w-auto lg:border-none lg:bg-transparent ${
                 navbarOpen ? "block" : "hidden lg:block"
               }`}
             >
@@ -241,7 +239,7 @@ const Header = () => {
                           </svg>
                         </p>
                         <div
-                          className={`transition-all duration-300 lg:absolute lg:top-full lg:left-0 lg:w-[200px] lg:rounded-md lg:bg-[#1E468C]/95 lg:shadow-lg ${
+                          className={`transition-all duration-300 lg:absolute lg:top-full lg:left-0 lg:w-[200px] lg:rounded-md lg:bg-primary/95 lg:shadow-lg ${
                             openIndex === index
                               ? "visible block opacity-100"
                               : "invisible hidden opacity-0"
@@ -292,7 +290,7 @@ const Header = () => {
                       </svg>
                     </p>
                     <div
-                      className={`transition-all duration-300 lg:absolute lg:top-full lg:left-0 lg:w-[200px] lg:rounded-md lg:bg-[#1E468C]/95 lg:shadow-lg ${
+                      className={`transition-all duration-300 lg:absolute lg:top-full lg:left-0 lg:w-[200px] lg:rounded-md lg:bg-primary/95 lg:shadow-lg ${
                         openIndex === menuData.length
                           ? "visible block opacity-100"
                           : "invisible hidden opacity-0"
@@ -306,7 +304,7 @@ const Header = () => {
                           setOpenIndex(-1);
                         }}
                       >
-                        Kelola Berita
+                        Kelola
                       </Link>
                       <button
                         type="button"

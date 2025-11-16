@@ -157,6 +157,9 @@ export type CreateBeritaPayload = {
   judul: string;
   ringkasan: string;
   isi_konten: string;
+  judul_en?: string | null;
+  ringkasan_en?: string | null;
+  isi_konten_en?: string | null;
   gambar_utama_url: string;
   status?: "draft" | "published";
 };
