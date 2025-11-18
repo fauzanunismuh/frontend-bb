@@ -3,14 +3,18 @@
 import { useLanguage } from "@/app/providers"; // Impor hook
 import RichTextEditor from "@/components/RichTextEditor";
 import {
+  AdminKomentar,
   CreateBeritaPayload,
+  KomentarStatus,
   KontakInfo,
   PublicBerita,
   createBeritaAdmin,
   deleteBeritaAdmin,
   getBeritaAdmin,
+  getKomentarAdmin,
   getKontakInfo,
   updateBeritaAdmin,
+  updateKomentarStatusAdmin,
   updateKontakAdmin,
   uploadImageRequest,
 } from "@/lib/api";
@@ -43,6 +47,8 @@ const initialInfoState: KontakInfo = {
   google_maps_embed:
     '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.8071451177057!2d119.41418780000001!3d-5.1347348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbf030020151c7f%3A0x91f6cbbf1acbc877!2sPT.%20Bosowa%20Bandar%20Indonesia!5e0!3m2!1sid!2sid!4v1762738404067!5m2!1sid!2sid" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
 };
+
+type CommentFilter = "all" | KomentarStatus;
 
 // Objek Teks
 const texts = {
@@ -107,6 +113,29 @@ const texts = {
     imageEmptyError: "Unggah gambar utama sebelum menyimpan berita.",
     manageNewsTab: "Kelola Berita",
     manageInfoTab: "Info Perusahaan",
+    manageCommentsTab: "Moderasi Komentar",
+    commentsSectionTitle: "Komentar Publik",
+    commentsSectionDesc:
+      "Tinjau komentar dari pembaca sebelum ditampilkan di situs.",
+    commentsFilterLabel: "Filter Status",
+    commentsFilterAll: "Semua",
+    commentsFilterPending: "Menunggu",
+    commentsFilterApproved: "Disetujui",
+    commentsFilterRejected: "Ditolak",
+    commentsRefresh: "Segarkan",
+    commentsRefreshing: "Menyegarkan...",
+    commentsEmpty: "Tidak ada komentar untuk filter ini.",
+    commentsLoadError: "Gagal memuat komentar.",
+    commentStatusPending: "Menunggu",
+    commentStatusApproved: "Disetujui",
+    commentStatusRejected: "Ditolak",
+    commentApprove: "Setujui",
+    commentReject: "Tolak",
+    commentMarkPending: "Tunda",
+    commentUpdating: "Memproses...",
+    commentActionError: "Gagal memperbarui status komentar.",
+    commentNewsLabel: "Untuk berita:",
+    commentEmailLabel: "Email",
     infoSectionTitle: "Informasi Perusahaan",
     infoSectionDesc:
       "Perbarui data alamat, kontak, dan embed Google Maps yang muncul di footer situs.",
@@ -179,6 +208,29 @@ const texts = {
     imageEmptyError: "Upload a main image before saving.",
     manageNewsTab: "Manage News",
     manageInfoTab: "Company Info",
+    manageCommentsTab: "Moderate Comments",
+    commentsSectionTitle: "Public Comments",
+    commentsSectionDesc:
+      "Review comments submitted by readers before they appear on the site.",
+    commentsFilterLabel: "Filter Status",
+    commentsFilterAll: "All",
+    commentsFilterPending: "Pending",
+    commentsFilterApproved: "Approved",
+    commentsFilterRejected: "Rejected",
+    commentsRefresh: "Refresh",
+    commentsRefreshing: "Refreshing...",
+    commentsEmpty: "No comments match this filter.",
+    commentsLoadError: "Failed to load comments.",
+    commentStatusPending: "Pending",
+    commentStatusApproved: "Approved",
+    commentStatusRejected: "Rejected",
+    commentApprove: "Approve",
+    commentReject: "Reject",
+    commentMarkPending: "Mark Pending",
+    commentUpdating: "Updating...",
+    commentActionError: "Failed to update the comment status.",
+    commentNewsLabel: "For article:",
+    commentEmailLabel: "Email",
     infoSectionTitle: "Company Information",
     infoSectionDesc:
       "Update the address, contact, and Google Maps embed shown in the site footer.",
@@ -221,12 +273,19 @@ const AdminBeritaPage = () => {
     setInitializing(false);
   }, []);
 
-  const [activeSection, setActiveSection] = useState<"berita" | "info">(
-    "berita",
-  );
+  const [activeSection, setActiveSection] = useState<
+    "berita" | "info" | "komentar"
+  >("berita");
   const [news, setNews] = useState<PublicBerita[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
+  const [comments, setComments] = useState<AdminKomentar[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
+  const [commentActionId, setCommentActionId] = useState<string | null>(null);
+  const [commentsFilter, setCommentsFilter] = useState<CommentFilter>(
+    "pending",
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem("bbi_admin_token");
@@ -264,6 +323,37 @@ const AdminBeritaPage = () => {
       loadNews();
     }
   }, [loadNews, token]);
+
+  const loadComments = useCallback(async () => {
+    if (!token) return;
+    setCommentsLoading(true);
+    setCommentsError(null);
+    try {
+      const status = commentsFilter === "all" ? undefined : commentsFilter;
+      const data = await getKomentarAdmin(token, { status });
+      setComments(data);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t.commentsLoadError;
+      setCommentsError(message);
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        (error as { status?: number }).status === 401
+      ) {
+        logout();
+      }
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [commentsFilter, logout, t.commentsLoadError, token]);
+
+  useEffect(() => {
+    if (token) {
+      loadComments();
+    }
+  }, [loadComments, token]);
 
   const loadInfo = useCallback(async () => {
     setInfoLoading(true);
@@ -341,6 +431,39 @@ const AdminBeritaPage = () => {
       );
     } finally {
       setInfoSubmitting(false);
+    }
+  };
+
+  const handleCommentFilterChange = (
+    event: ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setCommentsFilter(event.target.value as CommentFilter);
+  };
+
+  const handleCommentStatusChange = async (
+    komentarId: string,
+    status: KomentarStatus,
+  ) => {
+    if (!token) return;
+    setCommentActionId(komentarId);
+    setCommentsError(null);
+    try {
+      await updateKomentarStatusAdmin(token, komentarId, status);
+      await loadComments();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t.commentActionError;
+      setCommentsError(message);
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        (error as { status?: number }).status === 401
+      ) {
+        logout();
+      }
+    } finally {
+      setCommentActionId(null);
     }
   };
 
@@ -840,6 +963,178 @@ const AdminBeritaPage = () => {
     </div>
   );
 
+  const renderCommentsSection = () => {
+    const formatCommentDate = (value: string) =>
+      new Date(value).toLocaleString(language === "en" ? "en-US" : "id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+    return (
+      <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-dark text-xl font-semibold dark:text-white">
+              {t.commentsSectionTitle}
+            </h2>
+            <p className="text-body-color text-sm dark:text-gray-400">
+              {t.commentsSectionDesc}
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div>
+              <label
+                htmlFor="comment-filter"
+                className="text-dark block text-sm font-medium dark:text-gray-200"
+              >
+                {t.commentsFilterLabel}
+              </label>
+              <select
+                id="comment-filter"
+                value={commentsFilter}
+                onChange={handleCommentFilterChange}
+                className="border-stroke focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              >
+                <option value="all">{t.commentsFilterAll}</option>
+                <option value="pending">{t.commentsFilterPending}</option>
+                <option value="approved">{t.commentsFilterApproved}</option>
+                <option value="rejected">{t.commentsFilterRejected}</option>
+              </select>
+            </div>
+            <button
+              onClick={loadComments}
+              disabled={commentsLoading}
+              className="text-primary hover:text-primary/80 disabled:text-primary/40 text-sm font-semibold"
+            >
+              {commentsLoading ? t.commentsRefreshing : t.commentsRefresh}
+            </button>
+          </div>
+        </div>
+        {commentsError && (
+          <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+            {commentsError}
+          </div>
+        )}
+        {commentsLoading && comments.length === 0 && (
+          <p className="text-body-color text-sm dark:text-gray-400">
+            {t.loading}
+          </p>
+        )}
+        {!commentsLoading && comments.length === 0 && (
+          <p className="text-body-color text-sm dark:text-gray-400">
+            {t.commentsEmpty}
+          </p>
+        )}
+        <div className="space-y-4">
+          {comments.map((comment) => {
+            const isPending = comment.status === "pending";
+            const isApproved = comment.status === "approved";
+            const statusLabel = isApproved
+              ? t.commentStatusApproved
+              : comment.status === "rejected"
+                ? t.commentStatusRejected
+                : t.commentStatusPending;
+            const statusClass = isApproved
+              ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-100"
+              : comment.status === "rejected"
+                ? "bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100"
+                : "bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-100";
+
+            return (
+              <article
+                key={comment.id}
+                className="rounded-lg border border-gray-100 p-4 dark:border-gray-800"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-dark font-semibold dark:text-white">
+                      {comment.nama}
+                    </p>
+                    <p className="text-body-color text-sm dark:text-gray-400">
+                      {t.commentEmailLabel}: {comment.email}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span
+                      className={`mb-1 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusClass}`}
+                    >
+                      {statusLabel}
+                    </span>
+                    <p className="text-body-color text-xs dark:text-gray-400">
+                      {formatCommentDate(comment.created_at)}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-body-color mt-3 text-sm dark:text-gray-300">
+                  <span className="font-semibold text-dark dark:text-gray-100">
+                    {t.commentNewsLabel}
+                  </span>{" "}
+                  <Link
+                    href={`/berita/${comment.berita.slug}`}
+                    target="_blank"
+                    className="text-primary font-semibold hover:underline"
+                  >
+                    {comment.berita.judul}
+                  </Link>
+                </p>
+                <p className="text-body-color mt-3 text-sm dark:text-gray-100 wrap-break-word">
+                  {comment.isi}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {!isApproved && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCommentStatusChange(comment.id, "approved")
+                      }
+                      disabled={commentActionId === comment.id}
+                      className="bg-green-600 hover:bg-green-700 disabled:bg-green-500/60 rounded-md px-4 py-2 text-sm font-semibold text-white"
+                    >
+                      {commentActionId === comment.id
+                        ? t.commentUpdating
+                        : t.commentApprove}
+                    </button>
+                  )}
+                  {comment.status !== "rejected" && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCommentStatusChange(comment.id, "rejected")
+                      }
+                      disabled={commentActionId === comment.id}
+                      className="rounded-md border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-200/60 disabled:text-red-400 dark:border-red-400/40 dark:hover:bg-red-500/10"
+                    >
+                      {commentActionId === comment.id
+                        ? t.commentUpdating
+                        : t.commentReject}
+                    </button>
+                  )}
+                  {!isPending && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCommentStatusChange(comment.id, "pending")
+                      }
+                      disabled={commentActionId === comment.id}
+                      className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-200/60 disabled:text-gray-400 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                      {commentActionId === comment.id
+                        ? t.commentUpdating
+                        : t.commentMarkPending}
+                    </button>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const renderInfoSection = () => (
     <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
       <h2 className="text-dark text-xl font-semibold dark:text-white">
@@ -1028,11 +1323,24 @@ const AdminBeritaPage = () => {
           >
             {t.manageInfoTab}
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveSection("komentar")}
+            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+              activeSection === "komentar"
+                ? "bg-primary text-white shadow"
+                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+            }`}
+          >
+            {t.manageCommentsTab}
+          </button>
         </div>
 
         {activeSection === "berita"
           ? renderNewsSection()
-          : renderInfoSection()}
+          : activeSection === "info"
+            ? renderInfoSection()
+            : renderCommentsSection()}
       </div>
     </section>
   );

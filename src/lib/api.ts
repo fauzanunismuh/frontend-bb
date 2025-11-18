@@ -49,6 +49,15 @@ export type PaginationMeta = {
   lastPage: number;
 };
 
+export type KomentarStatus = "pending" | "approved" | "rejected";
+
+export type PublicKomentar = {
+  id: string;
+  nama: string;
+  isi: string;
+  created_at: string;
+};
+
 export type PublicBerita = {
   id: string;
   judul: string;
@@ -62,6 +71,21 @@ export type PublicBerita = {
   status: "draft" | "published";
   published_at: string | null;
   penulis?: { nama_lengkap: string | null };
+  komentar?: PublicKomentar[];
+};
+
+export type AdminKomentar = {
+  id: string;
+  nama: string;
+  email: string;
+  isi: string;
+  status: KomentarStatus;
+  created_at: string;
+  berita: {
+    id: string;
+    judul: string;
+    slug: string;
+  };
 };
 
 type BeritaListResponse = {
@@ -85,6 +109,22 @@ export async function getBeritaPublic(params?: {
 
 export async function getBeritaDetail(slug: string): Promise<PublicBerita> {
   return fetchJson<PublicBerita>(`/api/berita/${slug}`);
+}
+
+export type CreateKomentarPayload = {
+  nama: string;
+  email: string;
+  isi: string;
+};
+
+export async function postKomentarBerita(
+  slug: string,
+  payload: CreateKomentarPayload,
+): Promise<{ message: string }> {
+  return fetchJson<{ message: string }>(`/api/berita/${slug}/komentar`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export type KontakInfo = {
@@ -194,6 +234,35 @@ export async function deleteBeritaAdmin(
   await fetchJson(`/api/admin/berita/${id}`, {
     method: "DELETE",
     authToken: token,
+  });
+}
+
+export async function getKomentarAdmin(
+  token: string,
+  params?: { status?: KomentarStatus },
+): Promise<AdminKomentar[]> {
+  const search = new URLSearchParams();
+  if (params?.status) {
+    search.set("status", params.status);
+  }
+  const query = search.toString();
+  return fetchJson<AdminKomentar[]>(
+    `/api/admin/komentar${query ? `?${query}` : ""}`,
+    {
+      authToken: token,
+    },
+  );
+}
+
+export async function updateKomentarStatusAdmin(
+  token: string,
+  id: string,
+  status: KomentarStatus,
+): Promise<AdminKomentar> {
+  return fetchJson<AdminKomentar>(`/api/admin/komentar/${id}/status`, {
+    method: "PUT",
+    authToken: token,
+    body: JSON.stringify({ status }),
   });
 }
 
