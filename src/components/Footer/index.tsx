@@ -171,7 +171,13 @@ const Footer = () => {
                 <div
                   className="h-[220px] w-full [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
                   dangerouslySetInnerHTML={{
-                    __html: kontak?.google_maps_embed ?? defaultMapEmbed,
+                    __html:
+                      kontak?.google_maps_embed &&
+                      kontak.google_maps_embed.trim() !== "" &&
+                      (kontak.google_maps_embed.includes("google.com/maps") ||
+                        kontak.google_maps_embed.includes("maps.google.com"))
+                        ? kontak.google_maps_embed
+                        : defaultMapEmbed,
                   }}
                 />
               </div>

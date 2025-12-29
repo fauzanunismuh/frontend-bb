@@ -134,7 +134,7 @@ const BeritaDetailClient = ({ berita }: BeritaDetailClientProps) => {
   return (
     <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
       <div className="container max-w-4xl">
-        <p className="text-primary text-sm tracking-wide uppercase">
+        <p className="text-primary dark:text-white text-sm tracking-wide uppercase">
           {t.pageTitle}
         </p>
         <h1 className="text-dark mt-2 mb-3 text-3xl font-bold dark:text-white">
@@ -286,7 +286,7 @@ const BeritaDetailClient = ({ berita }: BeritaDetailClientProps) => {
         <div className="mt-10">
           <Link
             href="/berita"
-            className="text-primary font-semibold hover:underline"
+            className="text-primary dark:text-gray-300 font-semibold hover:underline"
           >
             {t.backLink}
           </Link>

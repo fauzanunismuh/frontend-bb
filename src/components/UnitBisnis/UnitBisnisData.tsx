@@ -3,7 +3,7 @@ import { Feature } from "@/types/feature";
 // Definisikan ikon di luar agar bisa dipakai ulang
 const iconKeagenan = (
   <img
-    src="images/unit-bisnis/iconKeagenan.svg"
+    src="/images/unit-bisnis/iconKeagenan.svg"
     alt="Keagenan Kapal"
     width="44"
     height="44"
@@ -13,7 +13,7 @@ const iconKeagenan = (
 
 const iconBongkar = (
   <img
-    src="images/unit-bisnis/iconBongkar.svg"
+    src="/images/unit-bisnis/iconBongkar.svg"
     alt="Keagenan Kapal"
     width="44"
     height="44"
@@ -23,7 +23,7 @@ const iconBongkar = (
 
 const iconTunda = (
   <img
-    src="images/unit-bisnis/iconTunda.svg"
+    src="/images/unit-bisnis/iconTunda.svg"
     alt="Keagenan Kapal"
     width="44"
     height="44"
