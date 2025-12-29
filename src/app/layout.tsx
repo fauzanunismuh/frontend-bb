@@ -27,7 +27,7 @@ export default function RootLayout({
       */}
       <head />
 
-      <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
+      <body suppressHydrationWarning className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
         <Providers>
           {/* Header selalu muncul (termasuk di halaman signin) */}
           <Header />

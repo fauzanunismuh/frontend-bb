@@ -25,6 +25,7 @@ import {
   uploadImageRequest,
 } from "@/lib/api";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
   FormEvent,
@@ -535,6 +536,10 @@ const AdminBeritaPage = () => {
   const handleCabangSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!token) return;
+    
+    // Debug: log form values
+    console.log("Submitting cabang form:", cabangForm);
+    
     setCabangSubmitting(true);
     setCabangError(null);
     setCabangSuccess(null);
@@ -547,6 +552,7 @@ const AdminBeritaPage = () => {
       resetCabangForm();
       await loadCabang();
     } catch (error) {
+      console.error("Cabang submit error:", error);
       setCabangError(
         error instanceof Error ? error.message : "Gagal menyimpan cabang.",
       );
@@ -1442,7 +1448,7 @@ const AdminBeritaPage = () => {
               value={cabangForm.nama_cabang}
               onChange={handleCabangFormChange}
               required
-              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -1456,7 +1462,7 @@ const AdminBeritaPage = () => {
               onChange={handleCabangFormChange}
               required
               rows={3}
-              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
             />
           </div>
           <div>
@@ -1469,7 +1475,7 @@ const AdminBeritaPage = () => {
               type="tel"
               value={cabangForm.no_telepon ?? ""}
               onChange={handleCabangFormChange}
-              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
               placeholder="+62..."
             />
           </div>
@@ -1484,7 +1490,7 @@ const AdminBeritaPage = () => {
               onChange={handleCabangFormChange}
               required
               rows={4}
-              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
             />
             <p className="text-body-color mt-2 text-xs dark:text-gray-400">
               {t.cabangMapsHelp}
@@ -1574,62 +1580,73 @@ const AdminBeritaPage = () => {
 
   if (initializing) {
     return (
-      <section className="container mt-24 py-20 text-center">
-        <p className="text-body-color dark:text-gray-400">{t.loading}</p>
-      </section>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e2836]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#1E468C] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">{t.loading}</p>
+        </div>
+      </div>
     );
   }
 
   if (!token) {
     return (
-      <section className="bg-gray-light/30 dark:bg-gray-dark/40 mt-24 py-20">
-        <div className="container text-center">
-          <h1 className="text-dark text-3xl font-bold dark:text-white">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e2836]">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="w-16 h-16 bg-[#1E468C]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-[#1E468C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {t.adminDashboard}
           </h1>
-          <p className="text-body-color mt-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             {t.loginFirst}{" "}
-            <Link href="/signin" className="text-primary font-semibold">
+            <Link href="/signin" className="text-[#1E468C] font-semibold hover:underline">
               {t.loginLink}
             </Link>{" "}
             {t.loginMessage}
           </p>
+          <Link
+            href="/signin"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#1E468C] text-white font-semibold rounded-lg hover:bg-[#163663] transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            {language === "id" ? "Masuk ke Dashboard" : "Login to Dashboard"}
+          </Link>
         </div>
-      </section>
+      </div>
     );
   }
 
   return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
-      <div className="container">
-        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-primary text-sm tracking-wide uppercase">
-              {t.contentAdmin}
-            </p>
-            <h1 className="text-dark text-3xl font-bold dark:text-white">
-              {pageHeading}
-            </h1>
-            <p className="text-body-color dark:text-gray-400">
-              {t.pageDescription}
-            </p>
-          </div>
-          <button
-            onClick={logout}
-            className="text-sm font-semibold text-red-500 hover:text-red-600"
-          >
-            {t.logout}
-          </button>
+    <section className="min-h-screen bg-gray-50 dark:bg-[#1e2836] pt-24 pb-16">
+      <div className="container mx-auto px-4">
+        {/* Page Header */}
+        <div className="mb-8">
+          <p className="text-[#1E468C] text-sm font-medium tracking-wide uppercase mb-1">
+            {t.contentAdmin}
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            {pageHeading}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {t.pageDescription}
+          </p>
         </div>
 
-        <div className="mb-8 flex flex-wrap gap-3">
+        {/* Tab Navigation */}
+        <div className="mb-8 flex flex-wrap gap-2 p-1 bg-white dark:bg-[#2a3444] rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={() => setActiveSection("berita")}
-            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeSection === "berita"
-                ? "bg-primary text-white shadow"
-                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {t.manageNewsTab}
@@ -1637,10 +1654,10 @@ const AdminBeritaPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection("info")}
-            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeSection === "info"
-                ? "bg-primary text-white shadow"
-                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {t.manageInfoTab}
@@ -1648,10 +1665,10 @@ const AdminBeritaPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection("komentar")}
-            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeSection === "komentar"
-                ? "bg-primary text-white shadow"
-                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {t.manageCommentsTab}
@@ -1659,16 +1676,17 @@ const AdminBeritaPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection("cabang")}
-            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeSection === "cabang"
-                ? "bg-primary text-white shadow"
-                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {t.manageCabangTab}
           </button>
         </div>
 
+        {/* Content Sections */}
         {activeSection === "berita"
           ? renderNewsSection()
           : activeSection === "info"

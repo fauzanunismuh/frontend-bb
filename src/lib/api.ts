@@ -201,6 +201,7 @@ export async function getBeritaAdmin(
 ): Promise<PublicBerita[]> {
   return fetchJson<PublicBerita[]>("/api/admin/berita", {
     authToken: token,
+    cache: 'no-store',
   });
 }
 
@@ -261,6 +262,7 @@ export async function getKomentarAdmin(
     `/api/admin/komentar${query ? `?${query}` : ""}`,
     {
       authToken: token,
+      cache: 'no-store',
     },
   );
 }
@@ -337,13 +339,14 @@ export type CreateCabangPayload = {
 
 export async function getCabangPublic(): Promise<InfoCabang[]> {
   return fetchJson<InfoCabang[]>("/api/cabang", {
-    next: { revalidate: 1800 }, // Revalidate every 30 minutes
+    cache: 'no-store',
   });
 }
 
 export async function getCabangAdmin(token: string): Promise<InfoCabang[]> {
   return fetchJson<InfoCabang[]>("/api/admin/cabang", {
     authToken: token,
+    cache: 'no-store',
   });
 }
 

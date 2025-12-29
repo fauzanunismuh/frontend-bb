@@ -50,7 +50,6 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange={false}
     >
       <LanguageProvider>
-        {" "}
         {/* Membungkus semua children */}
         {children}
       </LanguageProvider>
