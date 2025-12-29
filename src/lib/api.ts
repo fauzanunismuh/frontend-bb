@@ -311,6 +311,7 @@ export type InfoCabang = {
   id: string;
   nama_cabang: string;
   alamat: string;
+  no_telepon?: string;
   google_maps_embed: string;
   created_at?: string;
   updated_at?: string;
@@ -319,6 +320,7 @@ export type InfoCabang = {
 export type CreateCabangPayload = {
   nama_cabang: string;
   alamat: string;
+  no_telepon?: string;
   google_maps_embed: string;
 };
 

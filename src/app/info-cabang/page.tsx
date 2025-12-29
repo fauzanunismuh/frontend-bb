@@ -11,6 +11,7 @@ const texts = {
     empty: "Belum ada informasi cabang.",
     loading: "Memuat...",
     address: "Alamat:",
+    phone: "Telepon:",
   },
   en: {
     heading: "Branch Information",
@@ -18,6 +19,7 @@ const texts = {
     empty: "No branch information yet.",
     loading: "Loading...",
     address: "Address:",
+    phone: "Phone:",
   },
 };
 
@@ -78,7 +80,7 @@ export default function InfoCabangPage() {
             {t.empty}
           </p>
         ) : (
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-auto max-w-3xl space-y-6">
             {branches.map((branch) => (
               <div
                 key={branch.id}
@@ -87,10 +89,18 @@ export default function InfoCabangPage() {
                 <h3 className="text-dark mb-2 text-xl font-semibold dark:text-white">
                   {branch.nama_cabang}
                 </h3>
-                <p className="text-body-color mb-4 text-sm dark:text-gray-400">
+                <p className="text-body-color mb-2 text-sm dark:text-gray-400">
                   <span className="font-semibold">{t.address}</span>{" "}
                   {branch.alamat}
                 </p>
+                {branch.no_telepon && (
+                  <p className="text-body-color mb-4 text-sm dark:text-gray-400">
+                    <span className="font-semibold">{t.phone}</span>{" "}
+                    <a href={`tel:${branch.no_telepon}`} className="text-primary hover:underline">
+                      {branch.no_telepon}
+                    </a>
+                  </p>
+                )}
                 {branch.google_maps_embed && (
                   <div
                     className="h-[200px] w-full overflow-hidden rounded-lg [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"

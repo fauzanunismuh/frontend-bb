@@ -161,6 +161,7 @@ const texts = {
     cabangAddButton: "Tambah Cabang",
     cabangNameField: "Nama Cabang",
     cabangAddressField: "Alamat",
+    cabangPhoneField: "No. Telepon / WhatsApp",
     cabangMapsField: "Google Maps Embed (iframe)",
     cabangMapsHelp: "Tempel kode embed <iframe> dari Google Maps.",
     cabangSaveButton: "Simpan Cabang",
@@ -274,6 +275,7 @@ const texts = {
     cabangAddButton: "Add Branch",
     cabangNameField: "Branch Name",
     cabangAddressField: "Address",
+    cabangPhoneField: "Phone / WhatsApp",
     cabangMapsField: "Google Maps Embed (iframe)",
     cabangMapsHelp: "Paste the <iframe> embed code from Google Maps.",
     cabangSaveButton: "Save Branch",
@@ -444,6 +446,7 @@ const AdminBeritaPage = () => {
   const [cabangForm, setCabangForm] = useState<CreateCabangPayload>({
     nama_cabang: "",
     alamat: "",
+    no_telepon: "",
     google_maps_embed: "",
   });
   const [showCabangForm, setShowCabangForm] = useState(false);
@@ -522,7 +525,7 @@ const AdminBeritaPage = () => {
   };
 
   const resetCabangForm = () => {
-    setCabangForm({ nama_cabang: "", alamat: "", google_maps_embed: "" });
+    setCabangForm({ nama_cabang: "", alamat: "", no_telepon: "", google_maps_embed: "" });
     setCabangEditingId(null);
     setShowCabangForm(false);
     setCabangError(null);
@@ -556,6 +559,7 @@ const AdminBeritaPage = () => {
     setCabangForm({
       nama_cabang: cabang.nama_cabang,
       alamat: cabang.alamat,
+      no_telepon: cabang.no_telepon ?? "",
       google_maps_embed: cabang.google_maps_embed,
     });
     setCabangEditingId(cabang.id);
@@ -1453,6 +1457,20 @@ const AdminBeritaPage = () => {
               required
               rows={3}
               className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label htmlFor="no_telepon" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangPhoneField}
+            </label>
+            <input
+              id="no_telepon"
+              name="no_telepon"
+              type="tel"
+              value={cabangForm.no_telepon ?? ""}
+              onChange={handleCabangFormChange}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              placeholder="+62..."
             />
           </div>
           <div>
