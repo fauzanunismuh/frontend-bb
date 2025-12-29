@@ -27,7 +27,7 @@ type BeritaClientPageProps = {
   newsList: PublicBerita[];
 };
 
-export default function BeritaClientPage({ newsList }: BeritaClientPageProps) {
+export default function BeritaClient({ newsList }: BeritaClientPageProps) {
   // 3. Gunakan hook bahasa
   const { language } = useLanguage();
   const t = language === "en" ? texts.en : texts.id;

@@ -1,15 +1,15 @@
 "use client";
 
 import { useLanguage } from "@/app/providers";
-import InfoCabangClient from "@/components/InfoCabang/InfoCabangClient";
+import VisiMisiClient from "@/components/VisiMisi/VisiMisiClient";
 import { useEffect } from "react";
 
-export default function InfoCabangPage() {
+export default function VisionMissionPage() {
   const { setLanguage } = useLanguage();
 
   useEffect(() => {
-    setLanguage("id");
+    setLanguage("en");
   }, [setLanguage]);
 
-  return <InfoCabangClient />;
+  return <VisiMisiClient />;
 }

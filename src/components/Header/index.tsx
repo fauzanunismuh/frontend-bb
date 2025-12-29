@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import ReactCountryFlag from "react-country-flag"; // [BARU] Impor library bendera
+// import ReactCountryFlag from "react-country-flag"; // Temporarily commented out
+import { FlagGB, FlagID } from "./FlagIcons";
 import ThemeToggler from "./ThemeToggler";
 import menuData from "./menuData";
 
@@ -17,7 +18,6 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  // ... (Semua fungsi helper Anda tetap sama: navbarToggleHandler, handleStickyNavbar, syncAdminState, ...)
   const navbarToggleHandler = () => setNavbarOpen(!navbarOpen);
 
   const handleStickyNavbar = () => {
@@ -65,7 +65,7 @@ const Header = () => {
     if (!href.startsWith("/#")) return;
 
     e.preventDefault();
-    setOpenIndex(-1); // 櫨 Tutup semua submenu
+    setOpenIndex(-1); // Tutup semua submenu
 
     const targetId = href.split("#")[1];
     const element = document.getElementById(targetId);
@@ -85,8 +85,8 @@ const Header = () => {
     if (language === "en") {
       return [
         { id: 1, title: "Home", path: "/", newTab: false },
-        { id: 2, title: "About Us", path: "/about", newTab: false },
-        { id: 3, title: "Vision & Mission", path: "/visi-misi", newTab: false },
+        { id: 2, title: "About Us", path: "/about-us", newTab: false },
+        { id: 3, title: "Vision & Mission", path: "/vision-mission", newTab: false },
         {
           id: 4,
           title: "Business Units",
@@ -112,12 +112,40 @@ const Header = () => {
             },
           ],
         },
-        { id: 5, title: "Publications", path: "/berita", newTab: false },
-        { id: 6, title: "Contact", path: "/#Footer", newTab: false },
+        { id: 5, title: "Branch Info", path: "/branch-info", newTab: false },
+        { id: 6, title: "Publications", path: "/publications", newTab: false },
+        { id: 7, title: "Contact", path: "/#Footer", newTab: false },
       ];
     }
     // Default (ID)
     return menuData;
+  };
+
+  const handleLanguageChange = (lang: "id" | "en") => {
+    setLanguage(lang);
+    
+    // Mapping route ID <-> EN
+    const routeMap: Record<string, { en: string; id: string }> = {
+      about: { en: "/about-us", id: "/about" },
+      "visi-misi": { en: "/vision-mission", id: "/visi-misi" },
+      berita: { en: "/publications", id: "/berita" },
+      "info-cabang": { en: "/branch-info", id: "/info-cabang" },
+      // Reverse mapping keys for easier lookup
+      "about-us": { en: "/about-us", id: "/about" },
+      "vision-mission": { en: "/vision-mission", id: "/visi-misi" },
+      publications: { en: "/publications", id: "/berita" },
+      "branch-info": { en: "/branch-info", id: "/info-cabang" },
+    };
+
+    // Find current path segment (simplified)
+    const currentPath = pathname.split("/")[1] || "/"; // e.g. "about" or "branch-info"
+
+    if (routeMap[currentPath]) {
+      const target = routeMap[currentPath][lang];
+      if (target && target !== pathname) {
+        router.push(target);
+      }
+    }
   };
 
   const currentMenuData = getMenuData();
@@ -141,21 +169,21 @@ const Header = () => {
                 alt="logo"
                 width={140}
                 height={30}
-                className="block dark:hidden"
+                className="block w-[140px] h-auto dark:hidden"
               />
               <Image
                 src="/images/logo/logo-light.png"
                 alt="logo"
                 width={140}
                 height={30}
-                className="hidden dark:block"
+                className="hidden w-[140px] h-auto dark:block"
               />
             </Link>
           </div>
 
           {/* Menu */}
           <div className="flex items-center justify-end gap-4">
-            {/* ... (Tombol Mobile Toggler) ... */}
+            {/* Tombol Mobile Toggler */}
             <button
               onClick={navbarToggleHandler}
               id="navbarToggler"
@@ -186,12 +214,6 @@ const Header = () => {
                 navbarOpen ? "block" : "hidden lg:block"
               }`}
             >
-              {/* ... (Menu items ...
-                ... (kode <ul ...> ... <li> ... </ul> Anda tetap sama)
-              ...
-              ... (Menu Admin juga tetap sama) ...
-              ... (Saya memendekkan bagian ini agar fokus pada perubahan)
-              */}
               <ul className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-4">
                 {currentMenuData.map((menuItem, index) => (
                   <li key={index} className="group relative">
@@ -200,11 +222,10 @@ const Header = () => {
                         href={menuItem.path}
                         onClick={(e) => {
                           handleAnchorClick(e, menuItem.path);
-                          setNavbarOpen(false); // 櫨 Tutup hamburger menu
-                          setOpenIndex(-1); // 櫨 Tutup semua submenu
+                          setNavbarOpen(false); // Tutup hamburger menu
+                          setOpenIndex(-1); // Tutup semua submenu
                         }}
                         className={`whitespace-nowrap text-white transition ${
-                          // Menambahkan whitespace-nowrap
                           pathname === menuItem.path
                             ? "font-semibold underline underline-offset-4"
                             : "hover:text-gray-300"
@@ -216,7 +237,7 @@ const Header = () => {
                       <>
                         <p
                           onClick={() => handleSubmenu(index)}
-                          className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-white hover:text-gray-300" // Menambahkan whitespace-nowrap
+                          className="flex cursor-pointer items-center gap-1 whitespace-nowrap text-white hover:text-gray-300"
                         >
                           {menuItem.title}
                           <svg
@@ -251,8 +272,8 @@ const Header = () => {
                               key={idx}
                               className="block px-4 py-2 text-white hover:bg-white/10"
                               onClick={() => {
-                                setNavbarOpen(false); // 櫨 Tutup hamburger menu
-                                setOpenIndex(-1); // 櫨 Tutup submenu
+                                setNavbarOpen(false); // Tutup hamburger menu
+                                setOpenIndex(-1); // Tutup submenu
                               }}
                             >
                               {submenuItem.title}
@@ -332,36 +353,22 @@ const Header = () => {
                 {/* [PERUBAHAN] Language Switcher (Mobile) */}
                 <div className="flex items-center space-x-1 rounded-full bg-white/10 p-1">
                   <button
-                    onClick={() => setLanguage("id")}
+                    onClick={() => handleLanguageChange("id")}
                     className={`flex h-8 w-8 items-center justify-center rounded-full ${
                       language === "id" ? "bg-white" : "hover:bg-white/20"
                     }`}
                     aria-label="Ganti ke Bahasa Indonesia"
                   >
-                    <ReactCountryFlag
-                      countryCode="ID"
-                      svg
-                      style={{
-                        width: "1.5rem",
-                        height: "1.5rem",
-                      }}
-                    />
+                    <FlagID className="h-4 w-4 rounded-sm shadow-sm" />
                   </button>
                   <button
-                    onClick={() => setLanguage("en")}
+                    onClick={() => handleLanguageChange("en")}
                     className={`flex h-8 w-8 items-center justify-center rounded-full ${
                       language === "en" ? "bg-white" : "hover:bg-white/20"
                     }`}
                     aria-label="Switch to English"
                   >
-                    <ReactCountryFlag
-                      countryCode="GB"
-                      svg
-                      style={{
-                        width: "1.5rem",
-                        height: "1.5rem",
-                      }}
-                    />
+                   <FlagGB className="h-4 w-4 rounded-sm shadow-sm" />
                   </button>
                 </div>
                 <ThemeToggler />
@@ -379,36 +386,22 @@ const Header = () => {
               {/* [PERUBAHAN] Language Switcher (Desktop) */}
               <div className="flex items-center space-x-1 rounded-full bg-white/10 p-1">
                 <button
-                  onClick={() => setLanguage("id")}
+                  onClick={() => handleLanguageChange("id")}
                   className={`flex h-8 w-8 items-center justify-center rounded-full ${
                     language === "id" ? "bg-white" : "hover:bg-white/20"
                   }`}
                   aria-label="Ganti ke Bahasa Indonesia"
                 >
-                  <ReactCountryFlag
-                    countryCode="ID"
-                    svg
-                    style={{
-                      width: "1.5rem", // 24px
-                      height: "1.5rem", // 24px
-                    }}
-                  />
+                  <FlagID className="h-4 w-4 rounded-sm shadow-sm" />
                 </button>
                 <button
-                  onClick={() => setLanguage("en")}
+                  onClick={() => handleLanguageChange("en")}
                   className={`flex h-8 w-8 items-center justify-center rounded-full ${
                     language === "en" ? "bg-white" : "hover:bg-white/20"
                   }`}
                   aria-label="Switch to English"
                 >
-                  <ReactCountryFlag
-                    countryCode="GB"
-                    svg
-                    style={{
-                      width: "1.5rem", // 24px
-                      height: "1.5rem", // 24px
-                    }}
-                  />
+                  <FlagGB className="h-4 w-4 rounded-sm shadow-sm" />
                 </button>
               </div>
               <ThemeToggler />
