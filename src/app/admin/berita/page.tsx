@@ -5,15 +5,21 @@ import RichTextEditor from "@/components/RichTextEditor";
 import {
   AdminKomentar,
   CreateBeritaPayload,
+  CreateCabangPayload,
+  InfoCabang,
   KomentarStatus,
   KontakInfo,
   PublicBerita,
   createBeritaAdmin,
+  createCabangAdmin,
   deleteBeritaAdmin,
+  deleteCabangAdmin,
   getBeritaAdmin,
+  getCabangAdmin,
   getKomentarAdmin,
   getKontakInfo,
   updateBeritaAdmin,
+  updateCabangAdmin,
   updateKomentarStatusAdmin,
   updateKontakAdmin,
   uploadImageRequest,
@@ -148,6 +154,24 @@ const texts = {
     infoSavingButton: "Menyimpan...",
     infoSuccessMessage: "Informasi perusahaan berhasil diperbarui.",
     infoLoading: "Memuat informasi perusahaan...",
+    // Info Cabang
+    manageCabangTab: "Info Cabang",
+    cabangSectionTitle: "Kelola Informasi Cabang",
+    cabangSectionDesc: "Tambah, edit, atau hapus informasi kantor cabang.",
+    cabangAddButton: "Tambah Cabang",
+    cabangNameField: "Nama Cabang",
+    cabangAddressField: "Alamat",
+    cabangMapsField: "Google Maps Embed (iframe)",
+    cabangMapsHelp: "Tempel kode embed <iframe> dari Google Maps.",
+    cabangSaveButton: "Simpan Cabang",
+    cabangUpdateButton: "Perbarui Cabang",
+    cabangCancelButton: "Batal",
+    cabangSavingButton: "Menyimpan...",
+    cabangEmpty: "Belum ada data cabang.",
+    cabangDeleteConfirm: 'Hapus cabang "{name}"? Tindakan ini tidak dapat dibatalkan.',
+    cabangEdit: "Edit",
+    cabangDelete: "Hapus",
+    cabangDeleting: "Menghapus...",
   },
   en: {
     loading: "Loading...",
@@ -243,6 +267,24 @@ const texts = {
     infoSavingButton: "Saving...",
     infoSuccessMessage: "Company information updated successfully.",
     infoLoading: "Loading company information...",
+    // Info Cabang
+    manageCabangTab: "Branch Info",
+    cabangSectionTitle: "Manage Branch Information",
+    cabangSectionDesc: "Add, edit, or delete branch office information.",
+    cabangAddButton: "Add Branch",
+    cabangNameField: "Branch Name",
+    cabangAddressField: "Address",
+    cabangMapsField: "Google Maps Embed (iframe)",
+    cabangMapsHelp: "Paste the <iframe> embed code from Google Maps.",
+    cabangSaveButton: "Save Branch",
+    cabangUpdateButton: "Update Branch",
+    cabangCancelButton: "Cancel",
+    cabangSavingButton: "Saving...",
+    cabangEmpty: "No branch data yet.",
+    cabangDeleteConfirm: 'Delete branch "{name}"? This action cannot be undone.',
+    cabangEdit: "Edit",
+    cabangDelete: "Delete",
+    cabangDeleting: "Deleting...",
   },
 };
 
@@ -274,7 +316,7 @@ const AdminBeritaPage = () => {
   }, []);
 
   const [activeSection, setActiveSection] = useState<
-    "berita" | "info" | "komentar"
+    "berita" | "info" | "komentar" | "cabang"
   >("berita");
   const [news, setNews] = useState<PublicBerita[]>([]);
   const [listLoading, setListLoading] = useState(false);
@@ -391,6 +433,21 @@ const AdminBeritaPage = () => {
   const [infoSuccess, setInfoSuccess] = useState<string | null>(null);
   const [infoSubmitting, setInfoSubmitting] = useState(false);
 
+  // Cabang state
+  const [cabangList, setCabangList] = useState<InfoCabang[]>([]);
+  const [cabangLoading, setCabangLoading] = useState(false);
+  const [cabangError, setCabangError] = useState<string | null>(null);
+  const [cabangSuccess, setCabangSuccess] = useState<string | null>(null);
+  const [cabangSubmitting, setCabangSubmitting] = useState(false);
+  const [cabangEditingId, setCabangEditingId] = useState<string | null>(null);
+  const [cabangDeletingId, setCabangDeletingId] = useState<string | null>(null);
+  const [cabangForm, setCabangForm] = useState<CreateCabangPayload>({
+    nama_cabang: "",
+    alamat: "",
+    google_maps_embed: "",
+  });
+  const [showCabangForm, setShowCabangForm] = useState(false);
+
   const resetFormState = useCallback(() => {
     setFormState({ ...initialFormState });
     setInlineImageError(null);
@@ -431,6 +488,100 @@ const AdminBeritaPage = () => {
       );
     } finally {
       setInfoSubmitting(false);
+    }
+  };
+
+  // Cabang handlers
+  const loadCabang = useCallback(async () => {
+    if (!token) return;
+    setCabangLoading(true);
+    setCabangError(null);
+    try {
+      const data = await getCabangAdmin(token);
+      setCabangList(data);
+    } catch (error) {
+      setCabangError(
+        error instanceof Error ? error.message : "Gagal memuat data cabang.",
+      );
+    } finally {
+      setCabangLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      loadCabang();
+    }
+  }, [loadCabang, token]);
+
+  const handleCabangFormChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+    setCabangForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetCabangForm = () => {
+    setCabangForm({ nama_cabang: "", alamat: "", google_maps_embed: "" });
+    setCabangEditingId(null);
+    setShowCabangForm(false);
+    setCabangError(null);
+    setCabangSuccess(null);
+  };
+
+  const handleCabangSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!token) return;
+    setCabangSubmitting(true);
+    setCabangError(null);
+    setCabangSuccess(null);
+    try {
+      if (cabangEditingId) {
+        await updateCabangAdmin(token, cabangEditingId, cabangForm);
+      } else {
+        await createCabangAdmin(token, cabangForm);
+      }
+      resetCabangForm();
+      await loadCabang();
+    } catch (error) {
+      setCabangError(
+        error instanceof Error ? error.message : "Gagal menyimpan cabang.",
+      );
+    } finally {
+      setCabangSubmitting(false);
+    }
+  };
+
+  const handleCabangEdit = (cabang: InfoCabang) => {
+    setCabangForm({
+      nama_cabang: cabang.nama_cabang,
+      alamat: cabang.alamat,
+      google_maps_embed: cabang.google_maps_embed,
+    });
+    setCabangEditingId(cabang.id);
+    setShowCabangForm(true);
+    setCabangError(null);
+    setCabangSuccess(null);
+  };
+
+  const handleCabangDelete = async (cabang: InfoCabang) => {
+    if (!token) return;
+    const confirmed =
+      typeof window === "undefined"
+        ? true
+        : window.confirm(t.cabangDeleteConfirm.replace("{name}", cabang.nama_cabang));
+    if (!confirmed) return;
+    setCabangDeletingId(cabang.id);
+    setCabangError(null);
+    try {
+      await deleteCabangAdmin(token, cabang.id);
+      await loadCabang();
+    } catch (error) {
+      setCabangError(
+        error instanceof Error ? error.message : "Gagal menghapus cabang.",
+      );
+    } finally {
+      setCabangDeletingId(null);
     }
   };
 
@@ -1242,6 +1393,159 @@ const AdminBeritaPage = () => {
     </div>
   );
 
+  const renderCabangSection = () => (
+    <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-dark text-xl font-semibold dark:text-white">
+            {t.cabangSectionTitle}
+          </h2>
+          <p className="text-body-color text-sm dark:text-gray-400">
+            {t.cabangSectionDesc}
+          </p>
+        </div>
+        {!showCabangForm && (
+          <button
+            type="button"
+            onClick={() => setShowCabangForm(true)}
+            className="bg-primary hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-semibold text-white"
+          >
+            {t.cabangAddButton}
+          </button>
+        )}
+      </div>
+
+      {cabangError && (
+        <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+          {cabangError}
+        </div>
+      )}
+      {cabangSuccess && (
+        <div className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">
+          {cabangSuccess}
+        </div>
+      )}
+
+      {showCabangForm && (
+        <form onSubmit={handleCabangSubmit} className="mb-6 space-y-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+          <div>
+            <label htmlFor="nama_cabang" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangNameField}
+            </label>
+            <input
+              id="nama_cabang"
+              name="nama_cabang"
+              value={cabangForm.nama_cabang}
+              onChange={handleCabangFormChange}
+              required
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label htmlFor="alamat" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangAddressField}
+            </label>
+            <textarea
+              id="alamat"
+              name="alamat"
+              value={cabangForm.alamat}
+              onChange={handleCabangFormChange}
+              required
+              rows={3}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+          </div>
+          <div>
+            <label htmlFor="cabang_maps" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangMapsField}
+            </label>
+            <textarea
+              id="cabang_maps"
+              name="google_maps_embed"
+              value={cabangForm.google_maps_embed}
+              onChange={handleCabangFormChange}
+              required
+              rows={4}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+            />
+            <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+              {t.cabangMapsHelp}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={cabangSubmitting}
+              className="bg-primary hover:bg-primary/90 disabled:bg-primary/50 rounded-md px-6 py-2 text-sm font-semibold text-white"
+            >
+              {cabangSubmitting
+                ? t.cabangSavingButton
+                : cabangEditingId
+                  ? t.cabangUpdateButton
+                  : t.cabangSaveButton}
+            </button>
+            <button
+              type="button"
+              onClick={resetCabangForm}
+              className="border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 rounded-md px-6 py-2 text-sm font-semibold text-body-color dark:text-gray-300"
+            >
+              {t.cabangCancelButton}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {cabangLoading ? (
+        <p className="text-body-color text-sm dark:text-gray-400">Memuat...</p>
+      ) : cabangList.length === 0 ? (
+        <p className="text-body-color text-sm dark:text-gray-400">{t.cabangEmpty}</p>
+      ) : (
+        <div className="space-y-4">
+          {cabangList.map((cabang) => (
+            <div
+              key={cabang.id}
+              className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex-1">
+                  <h3 className="text-dark font-semibold dark:text-white">
+                    {cabang.nama_cabang}
+                  </h3>
+                  <p className="text-body-color mt-1 text-sm dark:text-gray-400">
+                    {cabang.alamat}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleCabangEdit(cabang)}
+                    className="text-primary hover:text-primary/80 text-sm font-semibold"
+                  >
+                    {t.cabangEdit}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCabangDelete(cabang)}
+                    disabled={cabangDeletingId === cabang.id}
+                    className="text-red-600 hover:text-red-700 disabled:text-red-400 text-sm font-semibold"
+                  >
+                    {cabangDeletingId === cabang.id ? t.cabangDeleting : t.cabangDelete}
+                  </button>
+                </div>
+              </div>
+              {cabang.google_maps_embed && (
+                <div
+                  className="mt-3 h-[150px] w-full overflow-hidden rounded-md [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                  dangerouslySetInnerHTML={{ __html: cabang.google_maps_embed }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   const pageHeading = useMemo(
     () =>
       adminName
@@ -1334,13 +1638,26 @@ const AdminBeritaPage = () => {
           >
             {t.manageCommentsTab}
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveSection("cabang")}
+            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+              activeSection === "cabang"
+                ? "bg-primary text-white shadow"
+                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+            }`}
+          >
+            {t.manageCabangTab}
+          </button>
         </div>
 
         {activeSection === "berita"
           ? renderNewsSection()
           : activeSection === "info"
             ? renderInfoSection()
-            : renderCommentsSection()}
+            : activeSection === "cabang"
+              ? renderCabangSection()
+              : renderCommentsSection()}
       </div>
     </section>
   );

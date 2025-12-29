@@ -305,3 +305,62 @@ export async function uploadImageRequest(
 
   return rawBody ? (JSON.parse(rawBody) as UploadImageResponse) : { imageUrl: "" };
 }
+// --- Info Cabang API ---
+
+export type InfoCabang = {
+  id: string;
+  nama_cabang: string;
+  alamat: string;
+  google_maps_embed: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type CreateCabangPayload = {
+  nama_cabang: string;
+  alamat: string;
+  google_maps_embed: string;
+};
+
+export async function getCabangPublic(): Promise<InfoCabang[]> {
+  return fetchJson<InfoCabang[]>("/api/cabang");
+}
+
+export async function getCabangAdmin(token: string): Promise<InfoCabang[]> {
+  return fetchJson<InfoCabang[]>("/api/admin/cabang", {
+    authToken: token,
+  });
+}
+
+export async function createCabangAdmin(
+  token: string,
+  payload: CreateCabangPayload,
+): Promise<InfoCabang> {
+  return fetchJson<InfoCabang>("/api/admin/cabang", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    authToken: token,
+  });
+}
+
+export async function updateCabangAdmin(
+  token: string,
+  id: string,
+  payload: Partial<CreateCabangPayload>,
+): Promise<InfoCabang> {
+  return fetchJson<InfoCabang>(`/api/admin/cabang/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+    authToken: token,
+  });
+}
+
+export async function deleteCabangAdmin(
+  token: string,
+  id: string,
+): Promise<void> {
+  await fetchJson(`/api/admin/cabang/${id}`, {
+    method: "DELETE",
+    authToken: token,
+  });
+}
