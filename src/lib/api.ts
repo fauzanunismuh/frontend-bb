@@ -8,10 +8,16 @@ class ApiError extends Error {
 }
 
 async function fetchJson<T>(path: string, init: FetchOptions = {}): Promise<T> {
-  const { authToken, headers, cache, ...rest } = init;
+  const { authToken, headers, cache, next, ...rest } = init;
   const url = `${API_BASE_URL}${path}`;
+
+  // Use force-cache for GET requests by default, no-store for mutations
+  const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(rest.method as string);
+  const cacheOption = cache ?? (isMutation ? 'no-store' : 'force-cache');
+
   const response = await fetch(url, {
-    cache: cache ?? "no-store",
+    cache: cacheOption,
+    ...next,
     ...rest,
     headers: {
       "Content-Type": "application/json",
@@ -104,11 +110,14 @@ export async function getBeritaPublic(params?: {
 
   return fetchJson<BeritaListResponse>(
     `/api/berita${query ? `?${query}` : ""}`,
+    { next: { revalidate: 300 } }, // Revalidate every 5 minutes
   );
 }
 
 export async function getBeritaDetail(slug: string): Promise<PublicBerita> {
-  return fetchJson<PublicBerita>(`/api/berita/${slug}`);
+  return fetchJson<PublicBerita>(`/api/berita/${slug}`, {
+    next: { revalidate: 300 }, // Revalidate every 5 minutes
+  });
 }
 
 export type CreateKomentarPayload = {
@@ -135,7 +144,9 @@ export type KontakInfo = {
 };
 
 export async function getKontakInfo(): Promise<KontakInfo> {
-  return fetchJson<KontakInfo>("/api/kontak");
+  return fetchJson<KontakInfo>("/api/kontak", {
+    cache: 'no-store', // Always fetch fresh data
+  });
 }
 
 export async function updateKontakAdmin(
@@ -325,7 +336,9 @@ export type CreateCabangPayload = {
 };
 
 export async function getCabangPublic(): Promise<InfoCabang[]> {
-  return fetchJson<InfoCabang[]>("/api/cabang");
+  return fetchJson<InfoCabang[]>("/api/cabang", {
+    next: { revalidate: 1800 }, // Revalidate every 30 minutes
+  });
 }
 
 export async function getCabangAdmin(token: string): Promise<InfoCabang[]> {

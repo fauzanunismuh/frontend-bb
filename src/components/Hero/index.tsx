@@ -1,8 +1,26 @@
 "use client";
-import { useLanguage } from "@/app/providers"; // Impor hook
+import { useLanguage } from "@/app/providers";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+
+// Blur placeholder generator
+const shimmer = (w: number, h: number) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g">
+      <stop offset="0%" stop-color="#1a1a1a" />
+      <stop offset="100%" stop-color="#2a2a2a" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="url(#g)"/>
+</svg>`;
+
+const toBase64 = (str: string) => (typeof window === "undefined"
+  ? Buffer.from(str).toString("base64")
+  : window.btoa(str));
+
+const blurDataUrl = toBase64(shimmer(800, 600));
 
 // Pindahkan data slide ke luar atau buat fungsi untuk mengambilnya
 const getSlidesData = (language: string) => {
@@ -97,9 +115,12 @@ const Hero = () => {
               src={slide.image}
               alt={slide.title}
               fill
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
               className="object-cover object-center"
               priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              placeholder="blur"
+              blurDataURL={blurDataUrl}
             />
 
             {/* 🔲 Overlay hitam transparan di atas gambar */}

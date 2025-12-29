@@ -1,12 +1,26 @@
-import BeritaSekilas from "@/components/BeritaSekilas";
-import ScrollUp from "@/components/Common/ScrollUp";
-import FunFact from "@/components/FunFact";
-import Hero from "@/components/Hero";
-import Mitra from "@/components/Mitra";
-import UnitBisnis from "@/components/UnitBisnis";
-import Video from "@/components/Video";
-import { getBeritaPublic } from "@/lib/api";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import { getBeritaPublic } from "@/lib/api";
+import Hero from "@/components/Hero";
+import ScrollUp from "@/components/Common/ScrollUp";
+
+// Lazy load heavy components below the fold
+const UnitBisnis = dynamic(() => import("@/components/UnitBisnis"), {
+  loading: () => <div className="py-20 text-center">Loading...</div>,
+});
+const Video = dynamic(() => import("@/components/Video"), {
+  loading: () => <div className="py-20 text-center">Loading...</div>,
+});
+const FunFact = dynamic(() => import("@/components/FunFact"), {
+  loading: () => <div className="py-20 text-center">Loading...</div>,
+});
+const Mitra = dynamic(() => import("@/components/Mitra"), {
+  loading: () => <div className="py-20 text-center">Loading...</div>,
+});
+const BeritaSekilas = dynamic(() => import("@/components/BeritaSekilas"), {
+  loading: () => <div className="py-20 text-center">Loading...</div>,
+});
 
 export const metadata: Metadata = {
   title: "Bosowa Bandar Group",
@@ -27,15 +41,25 @@ export default async function Home() {
     <>
       <ScrollUp />
       <Hero />
-      <UnitBisnis />
-      <Video />
-      <FunFact />
-      <Mitra />
+      <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+        <UnitBisnis />
+      </Suspense>
+      <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+        <Video />
+      </Suspense>
+      <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+        <FunFact />
+      </Suspense>
+      <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+        <Mitra />
+      </Suspense>
       {/* <AboutSectionOne /> */}
       {/* <AboutSectionTwo /> */}
       {/* <Testimonials /> */}
       {/* <Pricing /> */}
-      <BeritaSekilas items={publikasi ?? undefined} />
+      <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+        <BeritaSekilas items={publikasi ?? undefined} />
+      </Suspense>
       {/* <Contact /> */}
     </>
   );
