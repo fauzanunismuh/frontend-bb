@@ -35,12 +35,14 @@ export default function BeritaSekilasClient() {
   useEffect(() => {
     setLoading(true);
     setError(null);
+    console.log("BeritaSekilasClient: Starting fetch with limit 3"); // DEBUG LOG
     getBeritaPublic({ limit: 3 })
       .then((res) => {
+        console.log("BeritaSekilasClient: Fetch success. Data received:", res); // DEBUG LOG
         setItems(res.data);
       })
       .catch((err) => {
-        console.error("Failed to fetch berita:", err);
+        console.error("BeritaSekilasClient: Failed to fetch berita:", err); // DEBUG LOG
         setError(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diketahui");
       })
       .finally(() => {
