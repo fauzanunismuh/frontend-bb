@@ -110,7 +110,7 @@ export async function getBeritaPublic(params?: {
 
   return fetchJson<BeritaListResponse>(
     `/api/berita${query ? `?${query}` : ""}`,
-    { next: { revalidate: 300 } }, // Revalidate every 5 minutes
+    { cache: 'no-store' }, // Always fetch fresh data
   );
 }
 
