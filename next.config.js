@@ -46,6 +46,29 @@ const nextConfig = {
   // Output mode for production (disabled for PM2 compatibility)
   // output: 'standalone',
 
+  // Disable caching for dynamic pages
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-cache, no-store, must-revalidate',
+          },
+          {
+            key: 'Pragma',
+            value: 'no-cache',
+          },
+          {
+            key: 'Expires',
+            value: '0',
+          },
+        ],
+      },
+    ];
+  },
+
   // Memory-efficient settings for 2GB RAM
   webpack: (config, { dev, isServer }) => {
     // Reduce memory usage during build
