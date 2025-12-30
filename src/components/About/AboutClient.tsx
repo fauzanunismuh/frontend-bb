@@ -92,7 +92,7 @@ const AboutClient = () => {
                   className="mx-auto rounded-2xl object-cover shadow-lg dark:hidden"
                 />
                 <Image
-                  src="/images/about/bosowa-group.png"
+                  src="/images/about/bosowa-group-white.png"
                   alt="Bosowa Group"
                   fill
                   sizes="(max-width: 768px) 100vw, 500px"
@@ -120,12 +120,19 @@ const AboutClient = () => {
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
-              <div className="relative mb-8 h-18 w-full overflow-hidden rounded-lg">
+              <div className="relative mb-6 h-24 w-full overflow-hidden rounded-lg">
+                {/* Logo Unit Bisnis */}
                 <Image
                   src="/images/about/bosowa-agensi.png"
                   alt="Bosowa Bandar Agensi"
                   fill
-                  className="object-contain transition-transform duration-500 hover:scale-105"
+                  className="object-contain transition-transform duration-500 hover:scale-105 dark:hidden"
+                />
+                <Image
+                  src="/images/about/bosowa-agensi-white.png"
+                  alt="Bosowa Bandar Agensi"
+                  fill
+                  className="hidden object-contain transition-transform duration-500 hover:scale-105 dark:block"
                 />
               </div>
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
@@ -137,12 +144,18 @@ const AboutClient = () => {
             </div>
 
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
-              <div className="relative mb-0 h-35 w-full overflow-hidden rounded-lg">
+              <div className="relative mb-6 h-24 w-full overflow-hidden rounded-lg">
                 <Image
-                  src="/images/about/bosowa-bandar-dark.png"
+                  src="/images/logo/logo-dark.png"
                   alt="Bosowa Bandar Indonesia"
                   fill
-                  className="object-contain transition-transform duration-500 hover:scale-105"
+                  className="object-contain transition-transform duration-500 scale-125 hover:scale-135 dark:hidden"
+                />
+                <Image
+                  src="/images/logo/logo-signin.png"
+                  alt="Bosowa Bandar Indonesia"
+                  fill
+                  className="hidden object-contain transition-transform duration-500 scale-125 hover:scale-135 dark:block"
                 />
               </div>
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">
@@ -154,12 +167,18 @@ const AboutClient = () => {
             </div>
 
             <div className="rounded-xl bg-white p-6 shadow-md dark:bg-gray-800 dark:shadow-none">
-              <div className="relative mb-4 h-24 w-full overflow-hidden rounded-lg">
+              <div className="relative mb-6 h-24 w-full overflow-hidden rounded-lg">
                 <Image
                   src="/images/about/jasa-pelabuhan.png"
                   alt="Jasa Pelabuhan Indonesia"
                   fill
-                  className="object-contain transition-transform duration-500 hover:scale-105"
+                  className="object-contain transition-transform duration-500 hover:scale-105 dark:hidden"
+                />
+                <Image
+                  src="/images/about/jasa-pelabuhan-white.png"
+                  alt="Jasa Pelabuhan Indonesia"
+                  fill
+                  className="hidden object-contain transition-transform duration-500 hover:scale-105 dark:block"
                 />
               </div>
               <h4 className="mb-2 text-xl font-semibold text-[#1E468C] dark:text-white">

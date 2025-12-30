@@ -19,7 +19,7 @@ const texts = {
     websiteLabel: "Website:",
     socialTitle: "Sosial Media",
     locationTitle: "Lokasi Kami",
-    copyright: `© ${new Date().getFullYear()} PT Bosowa Bandar Group. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} Bosowa Bandar Indonesia. All rights reserved.`,
   },
   en: {
     description:
@@ -33,7 +33,7 @@ const texts = {
     websiteLabel: "Website:",
     socialTitle: "Social Media",
     locationTitle: "Our Location",
-    copyright: `© ${new Date().getFullYear()} PT Bosowa Bandar Group. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} Bosowa Bandar Indonesia. All rights reserved.`,
   },
 };
 
