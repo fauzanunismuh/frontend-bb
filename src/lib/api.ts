@@ -116,7 +116,7 @@ export async function getBeritaPublic(params?: {
 
 export async function getBeritaDetail(slug: string): Promise<PublicBerita> {
   return fetchJson<PublicBerita>(`/api/berita/${slug}`, {
-    next: { revalidate: 300 }, // Revalidate every 5 minutes
+    cache: 'no-store', // Disable caching to show approved comments immediately
   });
 }
 
