@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
 import dynamicImport from "next/dynamic";
-import { getBeritaPublic } from "@/lib/api";
 import Hero from "@/components/Hero";
 import ScrollUp from "@/components/Common/ScrollUp";
 
@@ -18,9 +17,13 @@ const FunFact = dynamicImport(() => import("@/components/FunFact"), {
 const Mitra = dynamicImport(() => import("@/components/Mitra"), {
   loading: () => <div className="py-20 text-center">Loading...</div>,
 });
-const BeritaSekilas = dynamicImport(() => import("@/components/BeritaSekilas"), {
-  loading: () => <div className="py-20 text-center">Loading...</div>,
-});
+// Use client-side fetching component to avoid server cache issues
+const BeritaSekilasClient = dynamicImport(
+  () => import("@/components/BeritaSekilas/BeritaSekilasClient"),
+  {
+    loading: () => <div className="py-20 text-center">Loading...</div>,
+  }
+);
 
 export const metadata: Metadata = {
   title: "Bosowa Bandar Group",
@@ -28,19 +31,7 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-// Force dynamic rendering to always fetch fresh data
-export const dynamic = 'force-dynamic';
-
-export default async function Home() {
-  let publikasi = null;
-  try {
-    const { data } = await getBeritaPublic({ limit: 3 });
-    publikasi = data;
-    console.log("[Homepage] Fetched publikasi:", publikasi?.length ?? 0, "items");
-  } catch (error) {
-    console.error("Gagal memuat publikasi terbaru:", error);
-  }
-
+export default function Home() {
   return (
     <>
       <ScrollUp />
@@ -57,14 +48,10 @@ export default async function Home() {
       <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
         <Mitra />
       </Suspense>
-      {/* <AboutSectionOne /> */}
-      {/* <AboutSectionTwo /> */}
-      {/* <Testimonials /> */}
-      {/* <Pricing /> */}
       <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
-        <BeritaSekilas items={publikasi ?? undefined} />
+        <BeritaSekilasClient />
       </Suspense>
-      {/* <Contact /> */}
     </>
   );
 }
+
