@@ -154,7 +154,7 @@ export default function AdminLayout({
           className="h-8 w-auto dark:hidden"
         />
         <Image
-          src="/images/logo/logo-light.png"
+          src="/images/logo/logo-signin.png"
           alt="Bosowa"
           width={120}
           height={30}
@@ -193,7 +193,7 @@ export default function AdminLayout({
               className="h-8 w-auto dark:hidden"
             />
             <Image
-              src="/images/logo/logo-light.png"
+              src="/images/logo/logo-signin.png"
               alt="Bosowa"
               width={120}
               height={30}

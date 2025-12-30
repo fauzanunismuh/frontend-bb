@@ -1,32 +1,33 @@
+import Image from "next/image";
 import { Feature } from "@/types/feature";
 
 // Definisikan ikon di luar agar bisa dipakai ulang
 const iconKeagenan = (
-  <img
+  <Image
     src="/images/unit-bisnis/iconKeagenan.svg"
     alt="Keagenan Kapal"
-    width="44"
-    height="44"
+    width={44}
+    height={44}
     className="text-primary"
   />
 );
 
 const iconBongkar = (
-  <img
+  <Image
     src="/images/unit-bisnis/iconBongkar.svg"
-    alt="Keagenan Kapal"
-    width="44"
-    height="44"
+    alt="Bongkar Muat"
+    width={44}
+    height={44}
     className="text-primary"
   />
 );
 
 const iconTunda = (
-  <img
+  <Image
     src="/images/unit-bisnis/iconTunda.svg"
-    alt="Keagenan Kapal"
-    width="44"
-    height="44"
+    alt="Kapal Tunda"
+    width={44}
+    height={44}
     className="text-primary"
   />
 );

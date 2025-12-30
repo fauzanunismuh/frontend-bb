@@ -161,11 +161,11 @@ const Header = () => {
                 <div className="relative">
                   <div className="absolute inset-0 bg-red-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Image
-                    src="/images/logo/logo-light.png"
+                    src="/images/logo/logo-signin.png"
                     alt="Bosowa Bandar Indonesia"
-                    width={160}
-                    height={40}
-                    className={`relative transition-all duration-300 ${sticky ? "w-[130px]" : "w-[150px]"}`}
+                    width={150}
+                    height={75}
+                    className={`relative transition-all duration-300 ${sticky ? "w-[100px]" : "w-[120px]"}`}
                     priority
                   />
                 </div>
@@ -173,7 +173,7 @@ const Header = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center">
+            <nav className="hidden xl:flex items-center">
               <ul className="flex items-center gap-1">
                 {currentMenuData.map((menuItem, index) => (
                   <li key={index} className="relative group">
@@ -297,7 +297,7 @@ const Header = () => {
             {/* Right Side Actions */}
             <div className="flex items-center gap-3">
               {/* Desktop Actions */}
-              <div className="hidden lg:flex items-center gap-3">
+              <div className="hidden xl:flex items-center gap-3">
                 {/* Language Switcher */}
                 <div className="flex items-center gap-1 p-1 bg-white/5 rounded-full border border-white/10">
                   <button
@@ -346,7 +346,7 @@ const Header = () => {
                 onClick={navbarToggleHandler}
                 id="navbarToggler"
                 aria-label="Mobile Menu"
-                className="relative lg:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300"
+                className="relative xl:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300"
               >
                 <div className="w-5 h-4 flex flex-col justify-between">
                   <span
@@ -373,7 +373,7 @@ const Header = () => {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] lg:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] xl:hidden transition-opacity duration-300 ${
           navbarOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={() => setNavbarOpen(false)}
@@ -381,18 +381,18 @@ const Header = () => {
 
       <nav
         id="navbarCollapse"
-        className={`fixed top-0 right-0 z-[110] h-full w-[300px] bg-gradient-to-b from-[#162d5c] to-[#1E468C] shadow-2xl lg:hidden transform transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 z-[110] h-full w-[300px] bg-gradient-to-b from-[#162d5c] to-[#1E468C] shadow-2xl xl:hidden transform transition-transform duration-300 ease-out ${
           navbarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Mobile Menu Header */}
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <Image
-            src="/images/logo/logo-light.png"
+            src="/images/logo/logo-signin.png"
             alt="Bosowa"
             width={120}
-            height={30}
-            className="w-[100px]"
+            height={60}
+            className="w-[80px]"
           />
           <button
             onClick={() => setNavbarOpen(false)}

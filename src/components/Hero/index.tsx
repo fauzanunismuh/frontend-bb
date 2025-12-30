@@ -46,7 +46,7 @@ const getSlidesData = (language: string) => {
         title: "Integrated Solutions for Agency and Tugboat Services",
         description:
           "As a strategic partner in the maritime industry, we provide agency and tugboat services with high safety standards, supporting port operational smoothness.",
-        image: "/images/hero/slide3.JPG",
+        image: "/images/hero/slide3.jpg",
         primaryLink: "#",
         contactUs: "Contact Us",
       },
@@ -75,7 +75,7 @@ const getSlidesData = (language: string) => {
       title: "Solusi Terpadu untuk Keagenan dan Tunda Kapal",
       description:
         "Sebagai mitra strategis industri maritim, kami menyediakan layanan keagenan dan kapal tunda dengan standar keselamatan tinggi, mendukung kelancaran operasional pelabuhan di seluruh wilayah kerja Bosowa.",
-      image: "/images/hero/slide3.JPG",
+      image: "/images/hero/slide3.jpg",
       primaryLink: "#",
       contactUs: "Hubungi Kami",
     },

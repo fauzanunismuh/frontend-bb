@@ -58,7 +58,7 @@ const SigninPage = () => {
           <div className="relative mb-10 group">
             <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-blue-500/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Image
-              src="/images/logo/logo-dark.png"
+              src="/images/logo/logo-signin.png"
               alt="Bosowa Logo"
               width={200}
               height={100}
