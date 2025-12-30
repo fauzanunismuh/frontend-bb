@@ -30,15 +30,18 @@ export default function BeritaSekilasClient() {
   const t = language === "en" ? texts.en : texts.id;
   const [items, setItems] = useState<PublicBerita[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     getBeritaPublic({ limit: 3 })
       .then((res) => {
         setItems(res.data);
       })
       .catch((err) => {
         console.error("Failed to fetch berita:", err);
+        setError(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diketahui");
       })
       .finally(() => {
         setLoading(false);
@@ -73,6 +76,15 @@ export default function BeritaSekilasClient() {
           <div className="text-center py-12">
             <div className="text-body-color dark:text-gray-400 text-lg">
               {t.loading}
+            </div>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <div className="text-red-500 mb-2 font-semibold">
+              Terjadi kesalahan saat memuat berita:
+            </div>
+            <div className="text-body-color dark:text-gray-400 text-sm bg-gray-100 dark:bg-gray-800 p-4 rounded-md inline-block max-w-lg overflow-auto">
+              {error}
             </div>
           </div>
         ) : cards.length > 0 ? (
