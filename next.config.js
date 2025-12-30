@@ -43,8 +43,8 @@ const nextConfig = {
     optimizePackageImports: ['@fortawesome/react-fontawesome'],
   },
 
-  // Output mode for production (standalone for better containerization)
-  output: 'standalone',
+  // Output mode for production (disabled for PM2 compatibility)
+  // output: 'standalone',
 
   // Memory-efficient settings for 2GB RAM
   webpack: (config, { dev, isServer }) => {
