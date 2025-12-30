@@ -1,17 +1,15 @@
 "use client";
 
 import { useLanguage } from "@/app/providers";
-import AboutClient from "@/components/About/AboutClient";
+import VisiMisiClient from "@/components/VisiMisi/VisiMisiClient";
 import { useEffect } from "react";
 
-const AboutPage = () => {
+export default function VisionMissionPage() {
   const { setLanguage } = useLanguage();
 
   useEffect(() => {
-    setLanguage("id");
+    setLanguage("en");
   }, [setLanguage]);
 
-  return <AboutClient />;
-};
-
-export default AboutPage;
+  return <VisiMisiClient />;
+}

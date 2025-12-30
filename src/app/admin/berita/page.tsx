@@ -3,18 +3,29 @@
 import { useLanguage } from "@/app/providers"; // Impor hook
 import RichTextEditor from "@/components/RichTextEditor";
 import {
+  AdminKomentar,
   CreateBeritaPayload,
+  CreateCabangPayload,
+  InfoCabang,
+  KomentarStatus,
   KontakInfo,
   PublicBerita,
   createBeritaAdmin,
+  createCabangAdmin,
   deleteBeritaAdmin,
+  deleteCabangAdmin,
   getBeritaAdmin,
+  getCabangAdmin,
+  getKomentarAdmin,
   getKontakInfo,
   updateBeritaAdmin,
+  updateCabangAdmin,
+  updateKomentarStatusAdmin,
   updateKontakAdmin,
   uploadImageRequest,
 } from "@/lib/api";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
   FormEvent,
@@ -43,6 +54,8 @@ const initialInfoState: KontakInfo = {
   google_maps_embed:
     '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3973.8071451177057!2d119.41418780000001!3d-5.1347348!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dbf030020151c7f%3A0x91f6cbbf1acbc877!2sPT.%20Bosowa%20Bandar%20Indonesia!5e0!3m2!1sid!2sid!4v1762738404067!5m2!1sid!2sid" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
 };
+
+type CommentFilter = "all" | KomentarStatus;
 
 // Objek Teks
 const texts = {
@@ -107,6 +120,29 @@ const texts = {
     imageEmptyError: "Unggah gambar utama sebelum menyimpan berita.",
     manageNewsTab: "Kelola Berita",
     manageInfoTab: "Info Perusahaan",
+    manageCommentsTab: "Moderasi Komentar",
+    commentsSectionTitle: "Komentar Publik",
+    commentsSectionDesc:
+      "Tinjau komentar dari pembaca sebelum ditampilkan di situs.",
+    commentsFilterLabel: "Filter Status",
+    commentsFilterAll: "Semua",
+    commentsFilterPending: "Menunggu",
+    commentsFilterApproved: "Disetujui",
+    commentsFilterRejected: "Ditolak",
+    commentsRefresh: "Segarkan",
+    commentsRefreshing: "Menyegarkan...",
+    commentsEmpty: "Tidak ada komentar untuk filter ini.",
+    commentsLoadError: "Gagal memuat komentar.",
+    commentStatusPending: "Menunggu",
+    commentStatusApproved: "Disetujui",
+    commentStatusRejected: "Ditolak",
+    commentApprove: "Setujui",
+    commentReject: "Tolak",
+    commentMarkPending: "Tunda",
+    commentUpdating: "Memproses...",
+    commentActionError: "Gagal memperbarui status komentar.",
+    commentNewsLabel: "Untuk berita:",
+    commentEmailLabel: "Email",
     infoSectionTitle: "Informasi Perusahaan",
     infoSectionDesc:
       "Perbarui data alamat, kontak, dan embed Google Maps yang muncul di footer situs.",
@@ -119,6 +155,25 @@ const texts = {
     infoSavingButton: "Menyimpan...",
     infoSuccessMessage: "Informasi perusahaan berhasil diperbarui.",
     infoLoading: "Memuat informasi perusahaan...",
+    // Info Cabang
+    manageCabangTab: "Info Cabang",
+    cabangSectionTitle: "Kelola Informasi Cabang",
+    cabangSectionDesc: "Tambah, edit, atau hapus informasi kantor cabang.",
+    cabangAddButton: "Tambah Cabang",
+    cabangNameField: "Nama Cabang",
+    cabangAddressField: "Alamat",
+    cabangPhoneField: "No. Telepon / WhatsApp",
+    cabangMapsField: "Google Maps Embed (iframe)",
+    cabangMapsHelp: "Tempel kode embed <iframe> dari Google Maps.",
+    cabangSaveButton: "Simpan Cabang",
+    cabangUpdateButton: "Perbarui Cabang",
+    cabangCancelButton: "Batal",
+    cabangSavingButton: "Menyimpan...",
+    cabangEmpty: "Belum ada data cabang.",
+    cabangDeleteConfirm: 'Hapus cabang "{name}"? Tindakan ini tidak dapat dibatalkan.',
+    cabangEdit: "Edit",
+    cabangDelete: "Hapus",
+    cabangDeleting: "Menghapus...",
   },
   en: {
     loading: "Loading...",
@@ -179,6 +234,29 @@ const texts = {
     imageEmptyError: "Upload a main image before saving.",
     manageNewsTab: "Manage News",
     manageInfoTab: "Company Info",
+    manageCommentsTab: "Moderate Comments",
+    commentsSectionTitle: "Public Comments",
+    commentsSectionDesc:
+      "Review comments submitted by readers before they appear on the site.",
+    commentsFilterLabel: "Filter Status",
+    commentsFilterAll: "All",
+    commentsFilterPending: "Pending",
+    commentsFilterApproved: "Approved",
+    commentsFilterRejected: "Rejected",
+    commentsRefresh: "Refresh",
+    commentsRefreshing: "Refreshing...",
+    commentsEmpty: "No comments match this filter.",
+    commentsLoadError: "Failed to load comments.",
+    commentStatusPending: "Pending",
+    commentStatusApproved: "Approved",
+    commentStatusRejected: "Rejected",
+    commentApprove: "Approve",
+    commentReject: "Reject",
+    commentMarkPending: "Mark Pending",
+    commentUpdating: "Updating...",
+    commentActionError: "Failed to update the comment status.",
+    commentNewsLabel: "For article:",
+    commentEmailLabel: "Email",
     infoSectionTitle: "Company Information",
     infoSectionDesc:
       "Update the address, contact, and Google Maps embed shown in the site footer.",
@@ -191,6 +269,25 @@ const texts = {
     infoSavingButton: "Saving...",
     infoSuccessMessage: "Company information updated successfully.",
     infoLoading: "Loading company information...",
+    // Info Cabang
+    manageCabangTab: "Branch Info",
+    cabangSectionTitle: "Manage Branch Information",
+    cabangSectionDesc: "Add, edit, or delete branch office information.",
+    cabangAddButton: "Add Branch",
+    cabangNameField: "Branch Name",
+    cabangAddressField: "Address",
+    cabangPhoneField: "Phone / WhatsApp",
+    cabangMapsField: "Google Maps Embed (iframe)",
+    cabangMapsHelp: "Paste the <iframe> embed code from Google Maps.",
+    cabangSaveButton: "Save Branch",
+    cabangUpdateButton: "Update Branch",
+    cabangCancelButton: "Cancel",
+    cabangSavingButton: "Saving...",
+    cabangEmpty: "No branch data yet.",
+    cabangDeleteConfirm: 'Delete branch "{name}"? This action cannot be undone.',
+    cabangEdit: "Edit",
+    cabangDelete: "Delete",
+    cabangDeleting: "Deleting...",
   },
 };
 
@@ -221,12 +318,19 @@ const AdminBeritaPage = () => {
     setInitializing(false);
   }, []);
 
-  const [activeSection, setActiveSection] = useState<"berita" | "info">(
-    "berita",
-  );
+  const [activeSection, setActiveSection] = useState<
+    "berita" | "info" | "komentar" | "cabang"
+  >("berita");
   const [news, setNews] = useState<PublicBerita[]>([]);
   const [listLoading, setListLoading] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
+  const [comments, setComments] = useState<AdminKomentar[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentsError, setCommentsError] = useState<string | null>(null);
+  const [commentActionId, setCommentActionId] = useState<string | null>(null);
+  const [commentsFilter, setCommentsFilter] = useState<CommentFilter>(
+    "pending",
+  );
 
   const logout = useCallback(() => {
     localStorage.removeItem("bbi_admin_token");
@@ -265,6 +369,37 @@ const AdminBeritaPage = () => {
     }
   }, [loadNews, token]);
 
+  const loadComments = useCallback(async () => {
+    if (!token) return;
+    setCommentsLoading(true);
+    setCommentsError(null);
+    try {
+      const status = commentsFilter === "all" ? undefined : commentsFilter;
+      const data = await getKomentarAdmin(token, { status });
+      setComments(data);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t.commentsLoadError;
+      setCommentsError(message);
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        (error as { status?: number }).status === 401
+      ) {
+        logout();
+      }
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [commentsFilter, logout, t.commentsLoadError, token]);
+
+  useEffect(() => {
+    if (token) {
+      loadComments();
+    }
+  }, [loadComments, token]);
+
   const loadInfo = useCallback(async () => {
     setInfoLoading(true);
     setInfoError(null);
@@ -300,6 +435,22 @@ const AdminBeritaPage = () => {
   const [infoError, setInfoError] = useState<string | null>(null);
   const [infoSuccess, setInfoSuccess] = useState<string | null>(null);
   const [infoSubmitting, setInfoSubmitting] = useState(false);
+
+  // Cabang state
+  const [cabangList, setCabangList] = useState<InfoCabang[]>([]);
+  const [cabangLoading, setCabangLoading] = useState(false);
+  const [cabangError, setCabangError] = useState<string | null>(null);
+  const [cabangSuccess, setCabangSuccess] = useState<string | null>(null);
+  const [cabangSubmitting, setCabangSubmitting] = useState(false);
+  const [cabangEditingId, setCabangEditingId] = useState<string | null>(null);
+  const [cabangDeletingId, setCabangDeletingId] = useState<string | null>(null);
+  const [cabangForm, setCabangForm] = useState<CreateCabangPayload>({
+    nama_cabang: "",
+    alamat: "",
+    no_telepon: "",
+    google_maps_embed: "",
+  });
+  const [showCabangForm, setShowCabangForm] = useState(false);
 
   const resetFormState = useCallback(() => {
     setFormState({ ...initialFormState });
@@ -341,6 +492,139 @@ const AdminBeritaPage = () => {
       );
     } finally {
       setInfoSubmitting(false);
+    }
+  };
+
+  // Cabang handlers
+  const loadCabang = useCallback(async () => {
+    if (!token) return;
+    setCabangLoading(true);
+    setCabangError(null);
+    try {
+      const data = await getCabangAdmin(token);
+      setCabangList(data);
+    } catch (error) {
+      setCabangError(
+        error instanceof Error ? error.message : "Gagal memuat data cabang.",
+      );
+    } finally {
+      setCabangLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      loadCabang();
+    }
+  }, [loadCabang, token]);
+
+  const handleCabangFormChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+    setCabangForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const resetCabangForm = () => {
+    setCabangForm({ nama_cabang: "", alamat: "", no_telepon: "", google_maps_embed: "" });
+    setCabangEditingId(null);
+    setShowCabangForm(false);
+    setCabangError(null);
+    setCabangSuccess(null);
+  };
+
+  const handleCabangSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!token) return;
+    
+    // Debug: log form values
+    console.log("Submitting cabang form:", cabangForm);
+    
+    setCabangSubmitting(true);
+    setCabangError(null);
+    setCabangSuccess(null);
+    try {
+      if (cabangEditingId) {
+        await updateCabangAdmin(token, cabangEditingId, cabangForm);
+      } else {
+        await createCabangAdmin(token, cabangForm);
+      }
+      resetCabangForm();
+      await loadCabang();
+    } catch (error) {
+      console.error("Cabang submit error:", error);
+      setCabangError(
+        error instanceof Error ? error.message : "Gagal menyimpan cabang.",
+      );
+    } finally {
+      setCabangSubmitting(false);
+    }
+  };
+
+  const handleCabangEdit = (cabang: InfoCabang) => {
+    setCabangForm({
+      nama_cabang: cabang.nama_cabang,
+      alamat: cabang.alamat,
+      no_telepon: cabang.no_telepon ?? "",
+      google_maps_embed: cabang.google_maps_embed,
+    });
+    setCabangEditingId(cabang.id);
+    setShowCabangForm(true);
+    setCabangError(null);
+    setCabangSuccess(null);
+  };
+
+  const handleCabangDelete = async (cabang: InfoCabang) => {
+    if (!token) return;
+    const confirmed =
+      typeof window === "undefined"
+        ? true
+        : window.confirm(t.cabangDeleteConfirm.replace("{name}", cabang.nama_cabang));
+    if (!confirmed) return;
+    setCabangDeletingId(cabang.id);
+    setCabangError(null);
+    try {
+      await deleteCabangAdmin(token, cabang.id);
+      await loadCabang();
+    } catch (error) {
+      setCabangError(
+        error instanceof Error ? error.message : "Gagal menghapus cabang.",
+      );
+    } finally {
+      setCabangDeletingId(null);
+    }
+  };
+
+  const handleCommentFilterChange = (
+    event: ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setCommentsFilter(event.target.value as CommentFilter);
+  };
+
+  const handleCommentStatusChange = async (
+    komentarId: string,
+    status: KomentarStatus,
+  ) => {
+    if (!token) return;
+    setCommentActionId(komentarId);
+    setCommentsError(null);
+    try {
+      await updateKomentarStatusAdmin(token, komentarId, status);
+      await loadComments();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t.commentActionError;
+      setCommentsError(message);
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "status" in error &&
+        (error as { status?: number }).status === 401
+      ) {
+        logout();
+      }
+    } finally {
+      setCommentActionId(null);
     }
   };
 
@@ -840,6 +1124,178 @@ const AdminBeritaPage = () => {
     </div>
   );
 
+  const renderCommentsSection = () => {
+    const formatCommentDate = (value: string) =>
+      new Date(value).toLocaleString(language === "en" ? "en-US" : "id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+    return (
+      <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+        <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-dark text-xl font-semibold dark:text-white">
+              {t.commentsSectionTitle}
+            </h2>
+            <p className="text-body-color text-sm dark:text-gray-400">
+              {t.commentsSectionDesc}
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div>
+              <label
+                htmlFor="comment-filter"
+                className="text-dark block text-sm font-medium dark:text-gray-200"
+              >
+                {t.commentsFilterLabel}
+              </label>
+              <select
+                id="comment-filter"
+                value={commentsFilter}
+                onChange={handleCommentFilterChange}
+                className="border-stroke focus:border-primary focus:ring-primary/20 mt-1 w-full rounded-md border bg-white px-4 py-2 text-sm outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800"
+              >
+                <option value="all">{t.commentsFilterAll}</option>
+                <option value="pending">{t.commentsFilterPending}</option>
+                <option value="approved">{t.commentsFilterApproved}</option>
+                <option value="rejected">{t.commentsFilterRejected}</option>
+              </select>
+            </div>
+            <button
+              onClick={loadComments}
+              disabled={commentsLoading}
+              className="text-primary hover:text-primary/80 disabled:text-primary/40 text-sm font-semibold"
+            >
+              {commentsLoading ? t.commentsRefreshing : t.commentsRefresh}
+            </button>
+          </div>
+        </div>
+        {commentsError && (
+          <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+            {commentsError}
+          </div>
+        )}
+        {commentsLoading && comments.length === 0 && (
+          <p className="text-body-color text-sm dark:text-gray-400">
+            {t.loading}
+          </p>
+        )}
+        {!commentsLoading && comments.length === 0 && (
+          <p className="text-body-color text-sm dark:text-gray-400">
+            {t.commentsEmpty}
+          </p>
+        )}
+        <div className="space-y-4">
+          {comments.map((comment) => {
+            const isPending = comment.status === "pending";
+            const isApproved = comment.status === "approved";
+            const statusLabel = isApproved
+              ? t.commentStatusApproved
+              : comment.status === "rejected"
+                ? t.commentStatusRejected
+                : t.commentStatusPending;
+            const statusClass = isApproved
+              ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-100"
+              : comment.status === "rejected"
+                ? "bg-red-100 text-red-600 dark:bg-red-500/20 dark:text-red-100"
+                : "bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-100";
+
+            return (
+              <article
+                key={comment.id}
+                className="rounded-lg border border-gray-100 p-4 dark:border-gray-800"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-dark font-semibold dark:text-white">
+                      {comment.nama}
+                    </p>
+                    <p className="text-body-color text-sm dark:text-gray-400">
+                      {t.commentEmailLabel}: {comment.email}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span
+                      className={`mb-1 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${statusClass}`}
+                    >
+                      {statusLabel}
+                    </span>
+                    <p className="text-body-color text-xs dark:text-gray-400">
+                      {formatCommentDate(comment.created_at)}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-body-color mt-3 text-sm dark:text-gray-300">
+                  <span className="font-semibold text-dark dark:text-gray-100">
+                    {t.commentNewsLabel}
+                  </span>{" "}
+                  <Link
+                    href={`/berita/${comment.berita.slug}`}
+                    target="_blank"
+                    className="text-primary font-semibold hover:underline"
+                  >
+                    {comment.berita.judul}
+                  </Link>
+                </p>
+                <p className="text-body-color mt-3 text-sm dark:text-gray-100 wrap-break-word">
+                  {comment.isi}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {!isApproved && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCommentStatusChange(comment.id, "approved")
+                      }
+                      disabled={commentActionId === comment.id}
+                      className="bg-green-600 hover:bg-green-700 disabled:bg-green-500/60 rounded-md px-4 py-2 text-sm font-semibold text-white"
+                    >
+                      {commentActionId === comment.id
+                        ? t.commentUpdating
+                        : t.commentApprove}
+                    </button>
+                  )}
+                  {comment.status !== "rejected" && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCommentStatusChange(comment.id, "rejected")
+                      }
+                      disabled={commentActionId === comment.id}
+                      className="rounded-md border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:border-red-200/60 disabled:text-red-400 dark:border-red-400/40 dark:hover:bg-red-500/10"
+                    >
+                      {commentActionId === comment.id
+                        ? t.commentUpdating
+                        : t.commentReject}
+                    </button>
+                  )}
+                  {!isPending && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleCommentStatusChange(comment.id, "pending")
+                      }
+                      disabled={commentActionId === comment.id}
+                      className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:border-gray-200/60 disabled:text-gray-400 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                    >
+                      {commentActionId === comment.id
+                        ? t.commentUpdating
+                        : t.commentMarkPending}
+                    </button>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const renderInfoSection = () => (
     <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
       <h2 className="text-dark text-xl font-semibold dark:text-white">
@@ -947,6 +1403,173 @@ const AdminBeritaPage = () => {
     </div>
   );
 
+  const renderCabangSection = () => (
+    <div className="rounded-xl bg-white p-6 shadow dark:bg-gray-900">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-dark text-xl font-semibold dark:text-white">
+            {t.cabangSectionTitle}
+          </h2>
+          <p className="text-body-color text-sm dark:text-gray-400">
+            {t.cabangSectionDesc}
+          </p>
+        </div>
+        {!showCabangForm && (
+          <button
+            type="button"
+            onClick={() => setShowCabangForm(true)}
+            className="bg-primary hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-semibold text-white"
+          >
+            {t.cabangAddButton}
+          </button>
+        )}
+      </div>
+
+      {cabangError && (
+        <div className="mb-4 rounded-md bg-red-50 px-4 py-3 text-sm text-red-600">
+          {cabangError}
+        </div>
+      )}
+      {cabangSuccess && (
+        <div className="mb-4 rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">
+          {cabangSuccess}
+        </div>
+      )}
+
+      {showCabangForm && (
+        <form onSubmit={handleCabangSubmit} className="mb-6 space-y-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+          <div>
+            <label htmlFor="nama_cabang" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangNameField}
+            </label>
+            <input
+              id="nama_cabang"
+              name="nama_cabang"
+              value={cabangForm.nama_cabang}
+              onChange={handleCabangFormChange}
+              required
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            />
+          </div>
+          <div>
+            <label htmlFor="alamat" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangAddressField}
+            </label>
+            <textarea
+              id="alamat"
+              name="alamat"
+              value={cabangForm.alamat}
+              onChange={handleCabangFormChange}
+              required
+              rows={3}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            />
+          </div>
+          <div>
+            <label htmlFor="no_telepon" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangPhoneField}
+            </label>
+            <input
+              id="no_telepon"
+              name="no_telepon"
+              type="tel"
+              value={cabangForm.no_telepon ?? ""}
+              onChange={handleCabangFormChange}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+              placeholder="+62..."
+            />
+          </div>
+          <div>
+            <label htmlFor="cabang_maps" className="text-dark text-sm font-medium dark:text-gray-200">
+              {t.cabangMapsField}
+            </label>
+            <textarea
+              id="cabang_maps"
+              name="google_maps_embed"
+              value={cabangForm.google_maps_embed}
+              onChange={handleCabangFormChange}
+              required
+              rows={4}
+              className="border-stroke focus:border-primary focus:ring-primary/20 mt-2 w-full rounded-md border bg-white px-4 py-2 text-sm text-gray-900 outline-hidden focus:ring-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            />
+            <p className="text-body-color mt-2 text-xs dark:text-gray-400">
+              {t.cabangMapsHelp}
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={cabangSubmitting}
+              className="bg-primary hover:bg-primary/90 disabled:bg-primary/50 rounded-md px-6 py-2 text-sm font-semibold text-white"
+            >
+              {cabangSubmitting
+                ? t.cabangSavingButton
+                : cabangEditingId
+                  ? t.cabangUpdateButton
+                  : t.cabangSaveButton}
+            </button>
+            <button
+              type="button"
+              onClick={resetCabangForm}
+              className="border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800 rounded-md px-6 py-2 text-sm font-semibold text-body-color dark:text-gray-300"
+            >
+              {t.cabangCancelButton}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {cabangLoading ? (
+        <p className="text-body-color text-sm dark:text-gray-400">Memuat...</p>
+      ) : cabangList.length === 0 ? (
+        <p className="text-body-color text-sm dark:text-gray-400">{t.cabangEmpty}</p>
+      ) : (
+        <div className="space-y-4">
+          {cabangList.map((cabang) => (
+            <div
+              key={cabang.id}
+              className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex-1">
+                  <h3 className="text-dark font-semibold dark:text-white">
+                    {cabang.nama_cabang}
+                  </h3>
+                  <p className="text-body-color mt-1 text-sm dark:text-gray-400">
+                    {cabang.alamat}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleCabangEdit(cabang)}
+                    className="text-primary hover:text-primary/80 text-sm font-semibold"
+                  >
+                    {t.cabangEdit}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleCabangDelete(cabang)}
+                    disabled={cabangDeletingId === cabang.id}
+                    className="text-red-600 hover:text-red-700 disabled:text-red-400 text-sm font-semibold"
+                  >
+                    {cabangDeletingId === cabang.id ? t.cabangDeleting : t.cabangDelete}
+                  </button>
+                </div>
+              </div>
+              {cabang.google_maps_embed && (
+                <div
+                  className="mt-3 h-[150px] w-full overflow-hidden rounded-md [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
+                  dangerouslySetInnerHTML={{ __html: cabang.google_maps_embed }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   const pageHeading = useMemo(
     () =>
       adminName
@@ -957,62 +1580,73 @@ const AdminBeritaPage = () => {
 
   if (initializing) {
     return (
-      <section className="container mt-24 py-20 text-center">
-        <p className="text-body-color dark:text-gray-400">{t.loading}</p>
-      </section>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e2836]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#1E468C] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 dark:text-gray-400">{t.loading}</p>
+        </div>
+      </div>
     );
   }
 
   if (!token) {
     return (
-      <section className="bg-gray-light/30 dark:bg-gray-dark/40 mt-24 py-20">
-        <div className="container text-center">
-          <h1 className="text-dark text-3xl font-bold dark:text-white">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#1e2836]">
+        <div className="text-center max-w-md mx-auto p-8">
+          <div className="w-16 h-16 bg-[#1E468C]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-[#1E468C]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             {t.adminDashboard}
           </h1>
-          <p className="text-body-color mt-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             {t.loginFirst}{" "}
-            <Link href="/signin" className="text-primary font-semibold">
+            <Link href="/signin" className="text-[#1E468C] font-semibold hover:underline">
               {t.loginLink}
             </Link>{" "}
             {t.loginMessage}
           </p>
+          <Link
+            href="/signin"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#1E468C] text-white font-semibold rounded-lg hover:bg-[#163663] transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            {language === "id" ? "Masuk ke Dashboard" : "Login to Dashboard"}
+          </Link>
         </div>
-      </section>
+      </div>
     );
   }
 
   return (
-    <section className="bg-gray-light/30 dark:bg-gray-dark/30 mt-24 py-16 md:py-20 lg:py-24">
-      <div className="container">
-        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-primary text-sm tracking-wide uppercase">
-              {t.contentAdmin}
-            </p>
-            <h1 className="text-dark text-3xl font-bold dark:text-white">
-              {pageHeading}
-            </h1>
-            <p className="text-body-color dark:text-gray-400">
-              {t.pageDescription}
-            </p>
-          </div>
-          <button
-            onClick={logout}
-            className="text-sm font-semibold text-red-500 hover:text-red-600"
-          >
-            {t.logout}
-          </button>
+    <section className="min-h-screen bg-gray-50 dark:bg-[#1e2836] pt-24 pb-16">
+      <div className="container mx-auto px-4">
+        {/* Page Header */}
+        <div className="mb-8">
+          <p className="text-[#1E468C] text-sm font-medium tracking-wide uppercase mb-1">
+            {t.contentAdmin}
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+            {pageHeading}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
+            {t.pageDescription}
+          </p>
         </div>
 
-        <div className="mb-8 flex flex-wrap gap-3">
+        {/* Tab Navigation */}
+        <div className="mb-8 flex flex-wrap gap-2 p-1 bg-white dark:bg-[#2a3444] rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
           <button
             type="button"
             onClick={() => setActiveSection("berita")}
-            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeSection === "berita"
-                ? "bg-primary text-white shadow"
-                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {t.manageNewsTab}
@@ -1020,19 +1654,46 @@ const AdminBeritaPage = () => {
           <button
             type="button"
             onClick={() => setActiveSection("info")}
-            className={`rounded-full px-5 py-2 text-sm font-semibold ${
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
               activeSection === "info"
-                ? "bg-primary text-white shadow"
-                : "border border-gray-300 text-body-color hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
             }`}
           >
             {t.manageInfoTab}
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveSection("komentar")}
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+              activeSection === "komentar"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+            }`}
+          >
+            {t.manageCommentsTab}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveSection("cabang")}
+            className={`flex-1 min-w-[120px] px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+              activeSection === "cabang"
+                ? "bg-[#1E468C] text-white shadow-md"
+                : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+            }`}
+          >
+            {t.manageCabangTab}
+          </button>
         </div>
 
+        {/* Content Sections */}
         {activeSection === "berita"
           ? renderNewsSection()
-          : renderInfoSection()}
+          : activeSection === "info"
+            ? renderInfoSection()
+            : activeSection === "cabang"
+              ? renderCabangSection()
+              : renderCommentsSection()}
       </div>
     </section>
   );

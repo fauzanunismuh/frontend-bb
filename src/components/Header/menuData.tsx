@@ -46,12 +46,18 @@ const menuData: Menu[] = [
   },
   {
     id: 5,
+    title: "Info Cabang",
+    path: "/info-cabang",
+    newTab: false,
+  },
+  {
+    id: 6,
     title: "Publikasi",
     path: "/berita",
     newTab: false,
   },
   {
-    id: 6,
+    id: 7,
     title: "Kontak",
     path: "/#Footer",
     newTab: false,

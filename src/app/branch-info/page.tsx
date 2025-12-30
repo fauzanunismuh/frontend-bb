@@ -1,17 +1,15 @@
 "use client";
 
 import { useLanguage } from "@/app/providers";
-import AboutClient from "@/components/About/AboutClient";
+import InfoCabangClient from "@/components/InfoCabang/InfoCabangClient";
 import { useEffect } from "react";
 
-const AboutPage = () => {
+export default function BranchInfoPage() {
   const { setLanguage } = useLanguage();
 
   useEffect(() => {
-    setLanguage("id");
+    setLanguage("en");
   }, [setLanguage]);
 
-  return <AboutClient />;
-};
-
-export default AboutPage;
+  return <InfoCabangClient />;
+}

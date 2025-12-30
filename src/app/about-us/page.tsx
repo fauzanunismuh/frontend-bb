@@ -4,14 +4,12 @@ import { useLanguage } from "@/app/providers";
 import AboutClient from "@/components/About/AboutClient";
 import { useEffect } from "react";
 
-const AboutPage = () => {
+export default function AboutUsPage() {
   const { setLanguage } = useLanguage();
 
   useEffect(() => {
-    setLanguage("id");
+    setLanguage("en");
   }, [setLanguage]);
 
   return <AboutClient />;
-};
-
-export default AboutPage;
+}

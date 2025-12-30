@@ -19,7 +19,7 @@ const texts = {
     websiteLabel: "Website:",
     socialTitle: "Sosial Media",
     locationTitle: "Lokasi Kami",
-    copyright: `© ${new Date().getFullYear()} PT Bosowa Bandar Group. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} Bosowa Bandar Indonesia. All rights reserved.`,
   },
   en: {
     description:
@@ -33,7 +33,7 @@ const texts = {
     websiteLabel: "Website:",
     socialTitle: "Social Media",
     locationTitle: "Our Location",
-    copyright: `© ${new Date().getFullYear()} PT Bosowa Bandar Group. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} Bosowa Bandar Indonesia. All rights reserved.`,
   },
 };
 
@@ -79,7 +79,7 @@ const Footer = () => {
             <div className="mb-5 max-w-[360px] lg:mb-16">
               <Link href="/" className="mb-8 inline-block">
                 <Image
-                  src="/images/logo/logo-light.png"
+                  src="/images/logo/logo-signin.png"
                   alt="logo"
                   width={150}
                   height={50}
@@ -161,7 +161,7 @@ const Footer = () => {
           </div>
 
           {/* === KANAN: Maps (PERBAIKAN) === */}
-          <div className="mt-5 w-full px-4 sm:w-1/2 md:w-1/2 lg:w-4/12">
+          <div className="mt-5 w-full px-4 sm:w-1/2 md:w-1/2 lg:mt-0 lg:w-4/12">
             <div className="mb-12 lg:mb-16 lg:text-left">
               <h2 className="mb-6 text-xl font-bold text-black dark:text-white">
                 {t.locationTitle}
@@ -171,7 +171,13 @@ const Footer = () => {
                 <div
                   className="h-[220px] w-full [&>iframe]:h-full [&>iframe]:w-full [&>iframe]:border-0"
                   dangerouslySetInnerHTML={{
-                    __html: kontak?.google_maps_embed ?? defaultMapEmbed,
+                    __html:
+                      kontak?.google_maps_embed &&
+                      kontak.google_maps_embed.trim() !== "" &&
+                      (kontak.google_maps_embed.includes("google.com/maps") ||
+                        kontak.google_maps_embed.includes("maps.google.com"))
+                        ? kontak.google_maps_embed
+                        : defaultMapEmbed,
                   }}
                 />
               </div>
