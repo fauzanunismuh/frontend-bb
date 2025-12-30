@@ -36,6 +36,7 @@ export default async function Home() {
   try {
     const { data } = await getBeritaPublic({ limit: 3 });
     publikasi = data;
+    console.log("[Homepage] Fetched publikasi:", publikasi?.length ?? 0, "items");
   } catch (error) {
     console.error("Gagal memuat publikasi terbaru:", error);
   }
