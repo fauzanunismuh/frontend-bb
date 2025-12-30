@@ -9,14 +9,15 @@ class ApiError extends Error {
 
 async function fetchJson<T>(path: string, init: FetchOptions = {}): Promise<T> {
   const { authToken, headers, cache, next, ...rest } = init;
-  const url = `${API_BASE_URL}${path}`;
+  
+  // Add cache busting timestamp to prevent browser caching
+  const separator = path.includes('?') ? '&' : '?';
+  const cacheBuster = `${separator}_t=${Date.now()}`;
+  const url = `${API_BASE_URL}${path}${cacheBuster}`;
 
-  // Use force-cache for GET requests by default, no-store for mutations
-  const isMutation = ['POST', 'PUT', 'DELETE', 'PATCH'].includes(rest.method as string);
-  const cacheOption = cache ?? (isMutation ? 'no-store' : 'force-cache');
-
+  // Always use no-store to prevent caching issues
   const response = await fetch(url, {
-    cache: cacheOption,
+    cache: cache ?? 'no-store',
     ...next,
     ...rest,
     headers: {
