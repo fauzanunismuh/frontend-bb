@@ -1,24 +1,24 @@
 import { Metadata } from "next";
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
+import dynamicImport from "next/dynamic";
 import { getBeritaPublic } from "@/lib/api";
 import Hero from "@/components/Hero";
 import ScrollUp from "@/components/Common/ScrollUp";
 
 // Lazy load heavy components below the fold
-const UnitBisnis = dynamic(() => import("@/components/UnitBisnis"), {
+const UnitBisnis = dynamicImport(() => import("@/components/UnitBisnis"), {
   loading: () => <div className="py-20 text-center">Loading...</div>,
 });
-const Video = dynamic(() => import("@/components/Video"), {
+const Video = dynamicImport(() => import("@/components/Video"), {
   loading: () => <div className="py-20 text-center">Loading...</div>,
 });
-const FunFact = dynamic(() => import("@/components/FunFact"), {
+const FunFact = dynamicImport(() => import("@/components/FunFact"), {
   loading: () => <div className="py-20 text-center">Loading...</div>,
 });
-const Mitra = dynamic(() => import("@/components/Mitra"), {
+const Mitra = dynamicImport(() => import("@/components/Mitra"), {
   loading: () => <div className="py-20 text-center">Loading...</div>,
 });
-const BeritaSekilas = dynamic(() => import("@/components/BeritaSekilas"), {
+const BeritaSekilas = dynamicImport(() => import("@/components/BeritaSekilas"), {
   loading: () => <div className="py-20 text-center">Loading...</div>,
 });
 
@@ -27,6 +27,9 @@ export const metadata: Metadata = {
   description: "",
   // other metadata
 };
+
+// Force dynamic rendering to always fetch fresh data
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   let publikasi = null;
