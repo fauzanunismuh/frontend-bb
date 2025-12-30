@@ -161,7 +161,7 @@ const Footer = () => {
           </div>
 
           {/* === KANAN: Maps (PERBAIKAN) === */}
-          <div className="mt-5 w-full px-4 sm:w-1/2 md:w-1/2 lg:w-4/12">
+          <div className="mt-5 w-full px-4 sm:w-1/2 md:w-1/2 lg:mt-0 lg:w-4/12">
             <div className="mb-12 lg:mb-16 lg:text-left">
               <h2 className="mb-6 text-xl font-bold text-black dark:text-white">
                 {t.locationTitle}
